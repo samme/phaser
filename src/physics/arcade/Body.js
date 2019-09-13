@@ -1234,6 +1234,7 @@ var Body = new Class({
         }
 
         this.prev.copy(this.position);
+        this.prevFrame.copy(this.position);
 
         this.rotation = gameObject.angle;
         this.preRotation = gameObject.angle;
