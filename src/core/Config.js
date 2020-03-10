@@ -325,7 +325,7 @@ var Config = new Class({
         /**
          * @const {?Phaser.Types.Core.FPSConfig} Phaser.Core.Config#fps - The Frame Rate Configuration object, as parsed by the Timestep class.
          */
-        this.fps = GetValue(config, 'fps', null);
+        this.fps = GetValue(config, 'fps', {});
 
         //  Renderer Settings
         //  These can either be in a `render` object within the Config, or specified on their own

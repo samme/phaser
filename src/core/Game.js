@@ -19,8 +19,10 @@ var DOMContentLoaded = require('../dom/DOMContentLoaded');
 var EventEmitter = require('eventemitter3');
 var Events = require('./events');
 var InputManager = require('../input/InputManager');
+var Merge = require('../utils/object/Merge');
 var PluginCache = require('../plugins/PluginCache');
 var PluginManager = require('../plugins/PluginManager');
+var RequestAnimationFrame = require('../dom/RequestAnimationFrame');
 var ScaleManager = require('../scale/ScaleManager');
 var SceneManager = require('../scene/SceneManager');
 var TextureEvents = require('../textures/events');
@@ -268,7 +270,11 @@ var Game = new Class({
          * @type {Phaser.Core.TimeStep}
          * @since 3.0.0
          */
-        this.loop = new TimeStep(this, this.config.fps);
+        this.loop = new TimeStep(this, Merge({ forceSetTimeOut: true }, this.config.fps));
+
+        this.renderLoop = new RequestAnimationFrame();
+
+        this.pendingRender = false;
 
         /**
          * An instance of the Plugin Manager.
@@ -418,6 +424,13 @@ var Game = new Class({
         if (this.renderer)
         {
             this.loop.start(this.step.bind(this));
+
+            this.renderLoop.start(this.renderStep.bind(this));
+
+            this.pendingRender = true;
+
+            console.log('loop', this.loop);
+            console.log('renderLoop', this.renderLoop);
         }
         else
         {
@@ -478,25 +491,7 @@ var Game = new Class({
 
         eventEmitter.emit(Events.POST_STEP, time, delta);
 
-        var renderer = this.renderer;
-
-        //  Run the Pre-render (clearing the canvas, setting background colors, etc)
-
-        renderer.preRender();
-
-        eventEmitter.emit(Events.PRE_RENDER, renderer, time, delta);
-
-        //  The main render loop. Iterates all Scenes and all Cameras in those scenes, rendering to the renderer instance.
-
-        this.scene.render(renderer);
-
-        //  The Post-Render call. Tidies up loose end, takes snapshots, etc.
-
-        renderer.postRender();
-
-        //  The final event before the step repeats. Your last chance to do anything to the canvas before it all starts again.
-
-        eventEmitter.emit(Events.POST_RENDER, renderer, time, delta);
+        this.pendingRender = true;
     },
 
     /**
@@ -543,6 +538,38 @@ var Game = new Class({
         eventEmitter.emit(Events.PRE_RENDER);
 
         eventEmitter.emit(Events.POST_RENDER);
+    },
+
+    renderStep: function (time)
+    {
+        if (!this.pendingRender)
+        {
+            return;
+        }
+
+        this.pendingRender = false;
+
+        var renderer = this.renderer;
+        var eventEmitter = this.events;
+        var delta = time - this.renderLoop.lastTime;
+
+        //  Run the Pre-render (clearing the canvas, setting background colors, etc)
+
+        renderer.preRender();
+
+        eventEmitter.emit(Events.PRE_RENDER, renderer, time, delta);
+
+        //  The main render loop. Iterates all Scenes and all Cameras in those scenes, rendering to the renderer instance.
+
+        this.scene.render(renderer);
+
+        //  The Post-Render call. Tidies up loose end, takes snapshots, etc.
+
+        renderer.postRender();
+
+        //  The final event before the step repeats. Your last chance to do anything to the canvas before it all starts again.
+
+        eventEmitter.emit(Events.POST_RENDER, renderer, time, delta);
     },
 
     /**
@@ -672,7 +699,7 @@ var Game = new Class({
     runDestroy: function ()
     {
         this.scene.destroy();
-        
+
         this.events.emit(Events.DESTROY);
 
         this.events.removeAllListeners();
