@@ -622,12 +622,6 @@ var SceneManager = new Class({
             sys.events.emit(Events.TRANSITION_START, settings.transitionFrom, settings.transitionDuration);
         }
 
-        //  If the Scene has an update function we'll set it now, otherwise it'll remain as NOOP
-        if (scene.update)
-        {
-            sys.sceneUpdate = scene.update;
-        }
-
         settings.status = CONST.RUNNING;
 
         sys.events.emit(Events.CREATE, scene);

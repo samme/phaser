@@ -289,19 +289,6 @@ var Systems = new Class({
          * @since 3.0.0
          */
         this.updateList;
-
-        /**
-         * The Scene Update function.
-         *
-         * This starts out as NOOP during init, preload and create, and at the end of create
-         * it swaps to be whatever the Scene.update function is.
-         *
-         * @name Phaser.Scenes.Systems#sceneUpdate
-         * @type {function}
-         * @private
-         * @since 3.10.0
-         */
-        this.sceneUpdate = NOOP;
     },
 
     /**
@@ -319,9 +306,6 @@ var Systems = new Class({
     init: function (game)
     {
         this.settings.status = CONST.INIT;
-
-        //  This will get replaced by the SceneManager with the actual update function, if it exists, once create is over.
-        this.sceneUpdate = NOOP;
 
         this.game = game;
         this.renderer = game.renderer;
@@ -378,7 +362,10 @@ var Systems = new Class({
 
         this.events.emit(Events.UPDATE, time, delta);
 
-        this.sceneUpdate.call(this.scene, time, delta);
+        if (this.settings.status === CONST.RUNNING)
+        {
+            this.scene.update.call(this.scene, time, delta);
+        }
 
         this.events.emit(Events.POST_UPDATE, time, delta);
     },
