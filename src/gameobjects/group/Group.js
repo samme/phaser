@@ -12,7 +12,6 @@ var GetFastValue = require('../../utils/object/GetFastValue');
 var GetValue = require('../../utils/object/GetValue');
 var IsPlainObject = require('../../utils/object/IsPlainObject');
 var Range = require('../../utils/array/Range');
-var Set = require('../../structs/Set');
 var Sprite = require('../sprite/Sprite');
 
 /**
@@ -23,7 +22,12 @@ var Sprite = require('../sprite/Sprite');
  *
  * Groups themselves aren't displayable, and can't be positioned, rotated, scaled, or hidden.
  *
+ * @example
+ * var first = group[0];
+ * var last = group[group.length] - 1;
+ *
  * @class Group
+ * @extends Array
  * @memberof Phaser.GameObjects
  * @constructor
  * @since 3.0.0
@@ -35,6 +39,8 @@ var Sprite = require('../sprite/Sprite');
  * @see Phaser.Physics.Arcade.StaticGroup
  */
 var Group = new Class({
+
+    Extends: Array,
 
     initialize:
 
@@ -86,13 +92,12 @@ var Group = new Class({
         this.scene = scene;
 
         /**
-         * Members of this group.
+         * Compatible properties.
          *
          * @name Phaser.GameObjects.Group#children
-         * @type {Phaser.Structs.Set.<Phaser.GameObjects.GameObject>}
-         * @since 3.0.0
+         * @type {object}
          */
-        this.children = new Set();
+        this.children = { each: this.forEach.bind(this), entries: this, iterate: this.forEach.bind(this) };
 
         /**
          * A flag identifying this object as a group.
@@ -503,13 +508,13 @@ var Group = new Class({
      */
     preUpdate: function (time, delta)
     {
-        if (!this.runChildUpdate || this.children.size === 0)
+        if (!this.runChildUpdate || this.length === 0)
         {
             return;
         }
 
         //  Because a Group child may mess with the length of the Group during its update
-        var temp = this.children.entries.slice();
+        var temp = this.slice();
 
         for (var i = 0; i < temp.length; i++)
         {
@@ -544,7 +549,10 @@ var Group = new Class({
             return this;
         }
 
-        this.children.set(child);
+        if (!this.includes(child))
+        {
+            this.push(child);
+        }
 
         if (this.internalCreateCallback)
         {
@@ -618,12 +626,14 @@ var Group = new Class({
         if (removeFromScene === undefined) { removeFromScene = false; }
         if (destroyChild === undefined) { destroyChild = false; }
 
-        if (!this.children.contains(child))
+        var idx = this.indexOf(child);
+
+        if (idx === -1)
         {
             return this;
         }
 
-        this.children.delete(child);
+        this.splice(idx, 1);
 
         if (this.internalRemoveCallback)
         {
@@ -695,7 +705,7 @@ var Group = new Class({
             }
         }
 
-        this.children.clear();
+        this.length = 0;
 
         return this;
     },
@@ -712,7 +722,7 @@ var Group = new Class({
      */
     contains: function (child)
     {
-        return this.children.contains(child);
+        return this.includes(child);
     },
 
     /**
@@ -725,7 +735,7 @@ var Group = new Class({
      */
     getChildren: function ()
     {
-        return this.children.entries;
+        return this;
     },
 
     /**
@@ -738,7 +748,7 @@ var Group = new Class({
      */
     getLength: function ()
     {
-        return this.children.size;
+        return this.length;
     },
 
     /**
@@ -899,7 +909,7 @@ var Group = new Class({
 
         var i;
         var total = 0;
-        var children = this.children.entries;
+        var children = this;
 
         if (forwards)
         {
@@ -1056,7 +1066,7 @@ var Group = new Class({
      */
     playAnimation: function (key, startFrame)
     {
-        Actions.PlayAnimation(this.children.entries, key, startFrame);
+        Actions.PlayAnimation(this, key, startFrame);
 
         return this;
     },
@@ -1077,7 +1087,7 @@ var Group = new Class({
         }
         else
         {
-            return (this.children.size >= this.maxSize);
+            return (this.length >= this.maxSize);
         }
     },
 
@@ -1097,9 +1107,9 @@ var Group = new Class({
 
         var total = 0;
 
-        for (var i = 0; i < this.children.size; i++)
+        for (var i = 0; i < this.length; i++)
         {
-            if (this.children.entries[i].active === value)
+            if (this[i].active === value)
             {
                 total++;
             }
@@ -1191,7 +1201,7 @@ var Group = new Class({
      */
     propertyValueSet: function (key, value, step, index, direction)
     {
-        Actions.PropertyValueSet(this.children.entries, key, value, step, index, direction);
+        Actions.PropertyValueSet(this, key, value, step, index, direction);
 
         return this;
     },
@@ -1212,7 +1222,7 @@ var Group = new Class({
      */
     propertyValueInc: function (key, value, step, index, direction)
     {
-        Actions.PropertyValueInc(this.children.entries, key, value, step, index, direction);
+        Actions.PropertyValueInc(this, key, value, step, index, direction);
 
         return this;
     },
@@ -1230,7 +1240,7 @@ var Group = new Class({
      */
     setX: function (value, step)
     {
-        Actions.SetX(this.children.entries, value, step);
+        Actions.SetX(this, value, step);
 
         return this;
     },
@@ -1248,7 +1258,7 @@ var Group = new Class({
      */
     setY: function (value, step)
     {
-        Actions.SetY(this.children.entries, value, step);
+        Actions.SetY(this, value, step);
 
         return this;
     },
@@ -1268,7 +1278,7 @@ var Group = new Class({
      */
     setXY: function (x, y, stepX, stepY)
     {
-        Actions.SetXY(this.children.entries, x, y, stepX, stepY);
+        Actions.SetXY(this, x, y, stepX, stepY);
 
         return this;
     },
@@ -1286,7 +1296,7 @@ var Group = new Class({
      */
     incX: function (value, step)
     {
-        Actions.IncX(this.children.entries, value, step);
+        Actions.IncX(this, value, step);
 
         return this;
     },
@@ -1304,7 +1314,7 @@ var Group = new Class({
      */
     incY: function (value, step)
     {
-        Actions.IncY(this.children.entries, value, step);
+        Actions.IncY(this, value, step);
 
         return this;
     },
@@ -1324,7 +1334,7 @@ var Group = new Class({
      */
     incXY: function (x, y, stepX, stepY)
     {
-        Actions.IncXY(this.children.entries, x, y, stepX, stepY);
+        Actions.IncXY(this, x, y, stepX, stepY);
 
         return this;
     },
@@ -1346,7 +1356,7 @@ var Group = new Class({
      */
     shiftPosition: function (x, y, direction)
     {
-        Actions.ShiftPosition(this.children.entries, x, y, direction);
+        Actions.ShiftPosition(this, x, y, direction);
 
         return this;
     },
@@ -1364,7 +1374,7 @@ var Group = new Class({
      */
     angle: function (value, step)
     {
-        Actions.Angle(this.children.entries, value, step);
+        Actions.Angle(this, value, step);
 
         return this;
     },
@@ -1382,7 +1392,7 @@ var Group = new Class({
      */
     rotate: function (value, step)
     {
-        Actions.Rotate(this.children.entries, value, step);
+        Actions.Rotate(this, value, step);
 
         return this;
     },
@@ -1400,7 +1410,7 @@ var Group = new Class({
      */
     rotateAround: function (point, angle)
     {
-        Actions.RotateAround(this.children.entries, point, angle);
+        Actions.RotateAround(this, point, angle);
 
         return this;
     },
@@ -1419,7 +1429,7 @@ var Group = new Class({
      */
     rotateAroundDistance: function (point, angle, distance)
     {
-        Actions.RotateAroundDistance(this.children.entries, point, angle, distance);
+        Actions.RotateAroundDistance(this, point, angle, distance);
 
         return this;
     },
@@ -1437,7 +1447,7 @@ var Group = new Class({
      */
     setAlpha: function (value, step)
     {
-        Actions.SetAlpha(this.children.entries, value, step);
+        Actions.SetAlpha(this, value, step);
 
         return this;
     },
@@ -1457,7 +1467,7 @@ var Group = new Class({
      */
     setTint: function (topLeft, topRight, bottomLeft, bottomRight)
     {
-        Actions.SetTint(this.children.entries, topLeft, topRight, bottomLeft, bottomRight);
+        Actions.SetTint(this, topLeft, topRight, bottomLeft, bottomRight);
 
         return this;
     },
@@ -1477,7 +1487,7 @@ var Group = new Class({
      */
     setOrigin: function (originX, originY, stepX, stepY)
     {
-        Actions.SetOrigin(this.children.entries, originX, originY, stepX, stepY);
+        Actions.SetOrigin(this, originX, originY, stepX, stepY);
 
         return this;
     },
@@ -1495,7 +1505,7 @@ var Group = new Class({
      */
     scaleX: function (value, step)
     {
-        Actions.ScaleX(this.children.entries, value, step);
+        Actions.ScaleX(this, value, step);
 
         return this;
     },
@@ -1513,7 +1523,7 @@ var Group = new Class({
      */
     scaleY: function (value, step)
     {
-        Actions.ScaleY(this.children.entries, value, step);
+        Actions.ScaleY(this, value, step);
 
         return this;
     },
@@ -1533,7 +1543,7 @@ var Group = new Class({
      */
     scaleXY: function (scaleX, scaleY, stepX, stepY)
     {
-        Actions.ScaleXY(this.children.entries, scaleX, scaleY, stepX, stepY);
+        Actions.ScaleXY(this, scaleX, scaleY, stepX, stepY);
 
         return this;
     },
@@ -1551,7 +1561,7 @@ var Group = new Class({
      */
     setDepth: function (value, step)
     {
-        Actions.SetDepth(this.children.entries, value, step);
+        Actions.SetDepth(this, value, step);
 
         return this;
     },
@@ -1568,7 +1578,7 @@ var Group = new Class({
      */
     setBlendMode: function (value)
     {
-        Actions.SetBlendMode(this.children.entries, value);
+        Actions.SetBlendMode(this, value);
 
         return this;
     },
@@ -1586,7 +1596,7 @@ var Group = new Class({
      */
     setHitArea: function (hitArea, hitAreaCallback)
     {
-        Actions.SetHitArea(this.children.entries, hitArea, hitAreaCallback);
+        Actions.SetHitArea(this, hitArea, hitAreaCallback);
 
         return this;
     },
@@ -1601,7 +1611,7 @@ var Group = new Class({
      */
     shuffle: function ()
     {
-        Actions.Shuffle(this.children.entries);
+        Actions.Shuffle(this);
 
         return this;
     },
@@ -1616,7 +1626,7 @@ var Group = new Class({
      */
     kill: function (gameObject)
     {
-        if (this.children.contains(gameObject))
+        if (this.includes(gameObject))
         {
             gameObject.setActive(false);
         }
@@ -1632,7 +1642,7 @@ var Group = new Class({
      */
     killAndHide: function (gameObject)
     {
-        if (this.children.contains(gameObject))
+        if (this.includes(gameObject))
         {
             gameObject.setActive(false);
             gameObject.setVisible(false);
@@ -1653,7 +1663,7 @@ var Group = new Class({
      */
     setVisible: function (value, index, direction)
     {
-        Actions.SetVisible(this.children.entries, value, index, direction);
+        Actions.SetVisible(this, value, index, direction);
 
         return this;
     },
@@ -1668,7 +1678,7 @@ var Group = new Class({
      */
     toggleVisible: function ()
     {
-        Actions.ToggleVisible(this.children.entries);
+        Actions.ToggleVisible(this);
 
         return this;
     },
