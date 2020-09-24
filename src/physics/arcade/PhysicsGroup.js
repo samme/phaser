@@ -129,31 +129,31 @@ var PhysicsGroup = new Class({
          * @since 3.0.0
          */
         this.defaults = {
-            setCollideWorldBounds: GetFastValue(config, 'collideWorldBounds', false),
-            setBoundsRectangle: GetFastValue(config, 'customBoundsRectangle', null),
-            setAccelerationX: GetFastValue(config, 'accelerationX', 0),
-            setAccelerationY: GetFastValue(config, 'accelerationY', 0),
-            setAllowDrag: GetFastValue(config, 'allowDrag', true),
-            setAllowGravity: GetFastValue(config, 'allowGravity', true),
-            setAllowRotation: GetFastValue(config, 'allowRotation', true),
-            setBounceX: GetFastValue(config, 'bounceX', 0),
-            setBounceY: GetFastValue(config, 'bounceY', 0),
-            setDragX: GetFastValue(config, 'dragX', 0),
-            setDragY: GetFastValue(config, 'dragY', 0),
-            setEnable: GetFastValue(config, 'enable', true),
-            setGravityX: GetFastValue(config, 'gravityX', 0),
-            setGravityY: GetFastValue(config, 'gravityY', 0),
-            setFrictionX: GetFastValue(config, 'frictionX', 0),
-            setFrictionY: GetFastValue(config, 'frictionY', 0),
-            setMaxVelocityX: GetFastValue(config, 'maxVelocityX', 10000),
-            setMaxVelocityY: GetFastValue(config, 'maxVelocityY', 10000),
-            setVelocityX: GetFastValue(config, 'velocityX', 0),
-            setVelocityY: GetFastValue(config, 'velocityY', 0),
-            setAngularVelocity: GetFastValue(config, 'angularVelocity', 0),
-            setAngularAcceleration: GetFastValue(config, 'angularAcceleration', 0),
-            setAngularDrag: GetFastValue(config, 'angularDrag', 0),
-            setMass: GetFastValue(config, 'mass', 1),
-            setImmovable: GetFastValue(config, 'immovable', false)
+            setCollideWorldBounds: GetFastValue(config, 'collideWorldBounds', undefined),
+            setBoundsRectangle: GetFastValue(config, 'customBoundsRectangle', undefined),
+            setAccelerationX: GetFastValue(config, 'accelerationX', undefined),
+            setAccelerationY: GetFastValue(config, 'accelerationY', undefined),
+            setAllowDrag: GetFastValue(config, 'allowDrag', undefined),
+            setAllowGravity: GetFastValue(config, 'allowGravity', undefined),
+            setAllowRotation: GetFastValue(config, 'allowRotation', undefined),
+            setBounceX: GetFastValue(config, 'bounceX', undefined),
+            setBounceY: GetFastValue(config, 'bounceY', undefined),
+            setDragX: GetFastValue(config, 'dragX', undefined),
+            setDragY: GetFastValue(config, 'dragY', undefined),
+            setEnable: GetFastValue(config, 'enable', undefined),
+            setGravityX: GetFastValue(config, 'gravityX', undefined),
+            setGravityY: GetFastValue(config, 'gravityY', undefined),
+            setFrictionX: GetFastValue(config, 'frictionX', undefined),
+            setFrictionY: GetFastValue(config, 'frictionY', undefined),
+            setMaxVelocityX: GetFastValue(config, 'maxVelocityX', undefined),
+            setMaxVelocityY: GetFastValue(config, 'maxVelocityY', undefined),
+            setVelocityX: GetFastValue(config, 'velocityX', undefined),
+            setVelocityY: GetFastValue(config, 'velocityY', undefined),
+            setAngularVelocity: GetFastValue(config, 'angularVelocity', undefined),
+            setAngularAcceleration: GetFastValue(config, 'angularAcceleration', undefined),
+            setAngularDrag: GetFastValue(config, 'angularDrag', undefined),
+            setMass: GetFastValue(config, 'mass', undefined),
+            setImmovable: GetFastValue(config, 'immovable', undefined)
         };
 
         Group.call(this, scene, children, config);
@@ -189,7 +189,12 @@ var PhysicsGroup = new Class({
 
         for (var key in this.defaults)
         {
-            body[key](this.defaults[key]);
+            var val = this.defaults[key];
+
+            if (val !== undefined)
+            {
+                body[key](val);
+            }
         }
     },
 
