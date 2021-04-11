@@ -1052,7 +1052,7 @@ var InputManager = new Class({
     {
         this.events.removeAllListeners();
 
-        this.game.events.off(GameEvents.PRE_RENDER);
+        this.game.events.off(GameEvents.PRE_RENDER, this.preRender, this);
 
         if (this.keyboard)
         {
