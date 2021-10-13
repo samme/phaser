@@ -19659,7 +19659,7 @@ declare namespace Phaser {
             /**
              * The class to create new group members from.
              */
-            classType: Function;
+            classType: Phaser.Types.GameObjects.Group.GroupClassTypeConstructor;
 
             /**
              * The name of this group.
@@ -23889,7 +23889,7 @@ declare namespace Phaser {
                 /**
                  * The Particle Class which will be emitted by this Emitter.
                  */
-                particleClass: Phaser.GameObjects.Particles.Particle;
+                particleClass: Phaser.Types.GameObjects.Particles.ParticleClassConstructor;
 
                 /**
                  * The x-coordinate of the particle origin (where particles will be emitted).
@@ -61822,6 +61822,8 @@ declare namespace Phaser {
             namespace Group {
                 type GroupCallback = (item: Phaser.GameObjects.GameObject)=>void;
 
+                type GroupClassTypeConstructor = (scene: Phaser.Scene, x: number, y: number, texture: string | Phaser.Textures.Texture, frame?: string | number)=>void;
+
                 type GroupConfig = {
                     /**
                      * Sets {@link Phaser.GameObjects.Group#classType}.
@@ -62231,6 +62233,8 @@ declare namespace Phaser {
                     gravity?: number;
                 };
 
+                type ParticleClassConstructor = (emitter: Phaser.GameObjects.Particles.ParticleEmitter)=>void;
+
                 type ParticleDeathCallback = (particle: Phaser.GameObjects.Particles.Particle)=>void;
 
                 type ParticleEmitterBounds = {
@@ -62353,7 +62357,7 @@ declare namespace Phaser {
                     /**
                      * Sets {@link Phaser.GameObjects.Particles.ParticleEmitter#particleClass}.
                      */
-                    particleClass?: Phaser.GameObjects.Particles.Particle;
+                    particleClass?: Phaser.Types.GameObjects.Particles.ParticleClassConstructor;
                     /**
                      * Sets {@link Phaser.GameObjects.Particles.ParticleEmitter#radial}.
                      */
@@ -72138,7 +72142,7 @@ declare namespace Phaser {
                  * 
                  * This should be either `Phaser.Physics.Arcade.Image`, `Phaser.Physics.Arcade.Sprite`, or a class extending one of those.
                  */
-                classType: Function;
+                classType: Phaser.Types.GameObjects.Group.GroupClassTypeConstructor;
 
                 /**
                  * The physics type of the Group's members.
