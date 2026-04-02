@@ -21,6 +21,7 @@ if (typeof CANVAS_RENDERER)
 module.exports = {
 
     renderWebGL: renderWebGL,
-    renderCanvas: renderCanvas
+    renderCanvas: renderCanvas,
+    renderCSS: NOOP
 
 };
