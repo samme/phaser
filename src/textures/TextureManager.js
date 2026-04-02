@@ -1256,19 +1256,16 @@ var TextureManager = new Class({
      * See {@link Phaser.Textures.Texture#setSource}
      * for more information on replacing the proxy with a real texture.
      *
-     * This is only available in WebGL mode.
-     *
      * @method Phaser.Textures.TextureManager#addFlatColor
      * @fires Phaser.Textures.Events#ADD
-     * @since 4.0.0
-     * @webglonly
+     * @since 5.0.0
      *
      * @param {string} key - The unique string-based key of the Texture.
      * @param {number} width - The width of the texture.
      * @param {number} height - The height of the texture.
      * @param {number} [color=0x000000] - The color of the texture.
      * @param {number} [alpha=0] - The alpha of the texture.
-     * @return {?Phaser.Textures.Texture} The Texture that was created, or `null` if the key is already in use or the width or height is not positive.
+     * @return {?Phaser.Textures.CanvasTexture} The Texture that was created, or `null` if the key is already in use or the width or height is not positive.
      */
     addFlatColor: function (key, width, height, color, alpha)
     {
@@ -1285,19 +1282,13 @@ var TextureManager = new Class({
         if (alpha === undefined) { alpha = 0; }
 
         var col = IntegerToColor(color);
-        var r = col.red;
-        var g = col.green;
-        var b = col.blue;
-        var data = new Uint8Array(width * height * 4);
-        for (var i = 0; i < width * height; i++)
-        {
-            data[i * 4] = r;
-            data[i * 4 + 1] = g;
-            data[i * 4 + 2] = b;
-            data[i * 4 + 3] = alpha * 255;
-        }
+        var texture = this.createCanvas(key, width, height);
+        var ctx = texture.getContext();
 
-        return this.addUint8Array(key, data, width, height);
+        ctx.fillStyle = col.rgba;
+        ctx.fillRect(0, 0, width, height);
+
+        return texture;
     },
 
     /**
