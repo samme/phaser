@@ -16,26 +16,9 @@ var Render = require('./PointLightRender');
  * The Point Light Game Object provides a way to add a point light effect into your game,
  * without the expensive shader processing requirements of the traditional Light Game Object.
  *
- * The difference is that the Point Light renders using a custom shader, designed to give the
- * impression of a point light source, of variable radius, intensity and color, in your game.
- * However, unlike the Light Game Object, it does not impact any other Game Objects, or use their
- * normal maps for calculations. This makes them extremely fast to render compared to Lights
- * and perfect for special effects, such as flickering torches or muzzle flashes.
- *
- * For maximum performance you should batch Point Light Game Objects together. This means
- * ensuring they follow each other consecutively on the display list. Ideally, use a Layer
- * Game Object and then add just Point Lights to it, so that it can batch together the rendering
- * of the lights. You don't _have_ to do this, and if you've only a handful of Point Lights in
- * your game then it's perfectly safe to mix them into the display list as normal. However, if
- * you're using a large number of them, please consider how they are mixed into the display list.
- *
- * The renderer will automatically cull Point Lights. Those with a radius that does not intersect
- * with the Camera will be skipped in the rendering list. This happens automatically and the
- * culled state is refreshed every frame, for every camera.
- *
  * The origin of a Point Light is always 0.5 and it cannot be changed.
  *
- * Point Lights are a WebGL only feature and do not have a Canvas counterpart.
+ * Point Lights do not have a Canvas counterpart.
  *
  * @class PointLight
  * @extends Phaser.GameObjects.GameObject
@@ -241,6 +224,39 @@ var PointLight = new Class({
             return this._radius;
         }
 
+    },
+
+    /**
+     * Returns a CSS `radial-gradient` string representing this Point Light,
+     * suitable for use as a CSS `background-image` property.
+     *
+     * The gradient uses the light's color, intensity, attenuation and radius
+     * to approximate the visual appearance of the Point Light shader.
+     *
+     * @method Phaser.GameObjects.PointLight#getCSSBackground
+     * @since 4.0.0
+     *
+     * @return {string} A CSS radial-gradient string.
+     */
+    getCSSBackground: function ()
+    {
+        var { color, attenuation, intensity } = this;
+        var { red, green, blue, alpha, rgba } = color;
+
+        var adjustedColor = `rgba(${red}, ${green}, ${blue}, ${Math.min(1, intensity * alpha / 255)})`;
+
+        console.log('adjustedColor', adjustedColor);
+
+        // Attenuation is 0 (full), 0.1 (default), 1 (none)!
+
+        var stops = [
+            `${rgba} 0%`,
+            `${adjustedColor} ${100 * Math.min(1, Math.pow(attenuation, 0.2 / intensity))}%`,
+            'rgba(0, 0, 0, 0) 100%'
+        ].join(', ');
+
+
+        return `radial-gradient(circle closest-side at center, ${stops})`;
     }
 
 });
