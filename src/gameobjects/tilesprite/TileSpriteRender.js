@@ -7,6 +7,7 @@
 var NOOP = require('../../utils/NOOP');
 var renderWebGL = NOOP;
 var renderCanvas = NOOP;
+var renderCSS = require('./TileSpriteCSSRenderer');
 
 if (typeof WEBGL_RENDERER)
 {
@@ -21,6 +22,7 @@ if (typeof CANVAS_RENDERER)
 module.exports = {
 
     renderWebGL: renderWebGL,
-    renderCanvas: renderCanvas
+    renderCanvas: renderCanvas,
+    renderCSS: renderCSS
 
 };
