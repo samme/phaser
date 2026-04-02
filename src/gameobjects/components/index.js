@@ -13,6 +13,7 @@ module.exports = {
     Alpha: require('./Alpha'),
     AlphaSingle: require('./AlphaSingle'),
     BlendMode: require('./BlendMode'),
+    CSSRenderNode: require('./CSSRenderNode'),
     ComputedSize: require('./ComputedSize'),
     Crop: require('./Crop'),
     Depth: require('./Depth'),
