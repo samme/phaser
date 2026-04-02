@@ -12,6 +12,7 @@ var Components = require('../components');
 var GameObject = require('../GameObject');
 var Rectangle = require('../../geom/rectangle/Rectangle');
 var RectangleContains = require('../../geom/rectangle/Contains');
+var RenderZone = require('./ZoneRender');
 
 /**
  * @classdesc
@@ -54,7 +55,8 @@ var Zone = new Class({
         Components.Origin,
         Components.Transform,
         Components.ScrollFactor,
-        Components.Visible
+        Components.Visible,
+        RenderZone
     ],
 
     initialize:
