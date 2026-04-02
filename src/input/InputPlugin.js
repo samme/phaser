@@ -2418,6 +2418,11 @@ var InputPlugin = new Class({
                 continue;
             }
 
+            if (gameObject.type === 'Text' && hitArea.width === 1 && hitArea.height === 1)
+            {
+                console.warn('This 1x1 hit area is probably too small. Call a Text Game Object\'s setSize(w, h) before setInteractive() or provide a custom hit area shape and callback.');
+            }
+
             var io = (!gameObject.input) ? CreateInteractiveObject(gameObject, hitArea, hitAreaCallback) : gameObject.input;
 
             io.customHitArea = customHitArea;
