@@ -28,7 +28,7 @@
         "eqeqeq": [ "error", "smart" ],
         "no-alert": "error",
         "no-caller": "error",
-        "no-console": [ "error", { "allow": ["warn", "log"] } ],
+        "no-console": [ "error", { "allow": ["warn", "log", "info", "debug", "count", "time", "timeEnd"] } ],
         "no-floating-decimal": "error",
         "no-invalid-this": "error",
         "no-multi-spaces": "error",
