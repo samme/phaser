@@ -153,6 +153,9 @@ var Tint = {
         this.tintBottomLeft = bottomLeft;
         this.tintBottomRight = bottomRight;
 
+        this.initTintNode();
+        this.tintNode.setColor(topLeft);
+
         return this;
     },
 
@@ -172,6 +175,10 @@ var Tint = {
     setTintMode: function (mode)
     {
         this.tintMode = mode;
+
+        this.initTintNode();
+        this.tintNode.setMode(mode);
+
         return this;
     },
 
@@ -187,8 +194,7 @@ var Tint = {
      */
     setTintFill: function ()
     {
-        // eslint-disable-next-line no-console
-        console.error('`setTintFill(color)` is removed as of Phaser 4. Use setTint(color).setTintMode(Phaser.TintModes.FILL)` instead.');
+        throw new Error('`setTintFill(color)` is removed as of Phaser 4. Use setTint(color).setTintMode(Phaser.TintModes.FILL)` instead.');
     },
 
     /**
