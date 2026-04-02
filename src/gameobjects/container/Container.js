@@ -163,6 +163,8 @@ var Container = new Class({
          */
         this.localTransform = new Components.TransformMatrix();
 
+        this.dirty = false;
+
         /**
          * The property key to sort by.
          *
@@ -431,6 +433,8 @@ var Container = new Class({
     {
         gameObject.once(Events.DESTROY, this.onChildDestroyed, this);
 
+        this.dirty = true;
+
         if (this.exclusive)
         {
             if (gameObject.parentContainer)
@@ -458,6 +462,8 @@ var Container = new Class({
     removeHandler: function (gameObject)
     {
         gameObject.off(Events.DESTROY, this.remove, this);
+
+        this.dirty = true;
 
         if (this.exclusive)
         {
