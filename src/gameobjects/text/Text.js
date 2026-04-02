@@ -4,30 +4,17 @@
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
 
-var AddToDOM = require('../../dom/AddToDOM');
-var CanvasPool = require('../../display/canvas/CanvasPool');
 var DefaultImageNodes = require('../../renderer/webgl/renderNodes/defaults/DefaultImageNodes');
 var Class = require('../../utils/Class');
 var Components = require('../components');
 var GameObject = require('../GameObject');
-var GetTextSize = require('./GetTextSize');
 var GetValue = require('../../utils/object/GetValue');
-var RemoveFromDOM = require('../../dom/RemoveFromDOM');
 var TextRender = require('./TextRender');
 var TextStyle = require('./TextStyle');
-var UUID = require('../../utils/string/UUID');
 
 /**
  * @classdesc
  * A Text Game Object.
- *
- * Text objects work by creating their own internal hidden Canvas and then renders text to it using
- * the standard Canvas `fillText` API. It then creates a texture from this canvas which is rendered
- * to your game during the render pass.
- *
- * Because it uses the Canvas API you can take advantage of all the features this offers, such as
- * applying gradient fills to the text, or strokes, shadows and more. You can also use custom fonts
- * loaded externally, such as Google or TypeKit Web fonts.
  *
  * **Important:** The font name must be quoted if it contains certain combinations of digits or
  * special characters, either when creating the Text object, or when setting the font via `setFont`
@@ -47,12 +34,6 @@ var UUID = require('../../utils/string/UUID');
  *
  * See {@link http://www.jordanm.co.uk/tinytype this compatibility table} for the available default fonts
  * across mobile browsers.
- *
- * A note on performance: Every time the contents of a Text object changes, i.e. changing the text being
- * displayed, or the style of the text, it needs to remake the Text canvas, and if on WebGL, re-upload the
- * new texture to the GPU. This can be an expensive operation if used often, or with large quantities of
- * Text objects in your game. If you run into performance issues you would be better off using Bitmap Text
- * instead, as it benefits from batching and avoids expensive Canvas API calls.
  *
  * @class Text
  * @extends Phaser.GameObjects.GameObject
@@ -135,7 +116,7 @@ var Text = new Class({
          * @type {HTMLCanvasElement}
          * @since 3.0.0
          */
-        this.canvas = CanvasPool.create(this);
+        this.canvas = null;
 
         /**
          * The context of the canvas element that the text is rendered to.
@@ -144,7 +125,7 @@ var Text = new Class({
          * @type {CanvasRenderingContext2D}
          * @since 3.0.0
          */
-        this.context;
+        this.context = null;
 
         /**
          * The Text Style object.
@@ -203,7 +184,7 @@ var Text = new Class({
          *
          * @name Phaser.GameObjects.Text#width
          * @type {number}
-         * @default 1
+         * @default 100
          * @since 3.0.0
          */
         this.width = 1;
@@ -269,27 +250,15 @@ var Text = new Class({
          * @private
          * @since 3.80.0
          */
-        this._textureKey = UUID();
+        this._textureKey = null;
 
-        //  Create a Texture for this Text object
-        this.texture = scene.sys.textures.addCanvas(this._textureKey, this.canvas);
+        //  No texture
+        this.texture = null;
 
-        //  Set the context to be the CanvasTexture context
-        this.context = this.texture.context;
+        //  No frame
+        this.frame = null;
 
-        //  Get the frame
-        this.frame = this.texture.get();
-
-        //  Set the resolution
-        this.frame.source.resolution = this.style.resolution;
-
-        if (this.renderer && this.renderer.gl)
-        {
-            //  Clear the default 1x1 glTexture, as we override it later
-            this.renderer.deleteTexture(this.frame.source.glTexture);
-
-            this.frame.source.glTexture = null;
-        }
+        this.dirty = false;
 
         this.initRTL();
 
@@ -336,30 +305,7 @@ var Text = new Class({
      */
     initRTL: function ()
     {
-        if (!this.style.rtl)
-        {
-            this.canvas.dir = 'ltr';
-            this.context.direction = 'ltr';
-            return;
-        }
-
-        //  Here is where the crazy starts.
-        //
-        //  Due to browser implementation issues, you cannot fillText BiDi text to a canvas
-        //  that is not part of the DOM. It just completely ignores the direction property.
-
-        this.canvas.dir = 'rtl';
-
-        //  Experimental atm, but one day ...
-        this.context.direction = 'rtl';
-
-        //  Add it to the DOM, but hidden within the parent canvas.
-        this.canvas.style.display = 'none';
-
-        AddToDOM(this.canvas, this.scene.sys.canvas);
-
-        //  And finally we set the x origin
-        this.originX = 1;
+        // Nope
     },
 
     /**
@@ -616,8 +562,6 @@ var Text = new Class({
     getWrappedText: function (text)
     {
         if (text === undefined) { text = this._text; }
-
-        this.style.syncFont(this.canvas, this.context);
 
         var wrappedLines = this.runWordWrap(text);
 
@@ -1227,20 +1171,6 @@ var Text = new Class({
 
         style.rtl = rtl;
 
-        if (rtl)
-        {
-            this.canvas.dir = 'rtl';
-            this.context.direction = 'rtl';
-            this.canvas.style.display = 'none';
-
-            AddToDOM(this.canvas, this.scene.sys.canvas);
-        }
-        else
-        {
-            this.canvas.dir = 'ltr';
-            this.context.direction = 'ltr';
-        }
-
         if (style.align === 'left')
         {
             style.align = 'right';
@@ -1268,236 +1198,7 @@ var Text = new Class({
      */
     updateText: function ()
     {
-        var canvas = this.canvas;
-        var context = this.context;
-        var style = this.style;
-        var resolution = style.resolution;
-        var size = style.metrics;
-
-        style.syncFont(canvas, context);
-
-        var outputText = this._text;
-
-        if (style.wordWrapWidth || style.wordWrapCallback)
-        {
-            outputText = this.runWordWrap(this._text);
-        }
-
-        //  Split text into lines
-        var lines = outputText.split(this.splitRegExp);
-
-        var textSize = GetTextSize(this, size, lines);
-
-        var padding = this.padding;
-
-        var textWidth;
-
-        if (style.fixedWidth === 0)
-        {
-            this.width = textSize.width + padding.left + padding.right;
-
-            textWidth = textSize.width;
-        }
-        else
-        {
-            this.width = style.fixedWidth;
-
-            textWidth = this.width - padding.left - padding.right;
-
-            if (textWidth < textSize.width)
-            {
-                textWidth = textSize.width;
-            }
-        }
-
-        if (style.fixedHeight === 0)
-        {
-            this.height = textSize.height + padding.top + padding.bottom;
-        }
-        else
-        {
-            this.height = style.fixedHeight;
-        }
-
-        var w = this.width;
-        var h = this.height;
-
-        this.updateDisplayOrigin();
-
-        w *= resolution;
-        h *= resolution;
-
-        w = Math.max(w, 1);
-        h = Math.max(h, 1);
-
-        if (canvas.width !== w || canvas.height !== h)
-        {
-            canvas.width = w;
-            canvas.height = h;
-
-            this.frame.setSize(w, h);
-
-            // Resizing the canvas changes the size of the texture source.
-            // Because this is a dedicated texture for this Text object,
-            // we know this is a simple resize.
-            this.frame.source.updateSize(w, h);
-            this.frame.source.resolution = resolution;
-            this.frame.updateUVs();
-
-            //  Because resizing the canvas resets the context
-            style.syncFont(canvas, context);
-
-            if (style.rtl)
-            {
-                context.direction = 'rtl';
-            }
-        }
-        else
-        {
-            context.clearRect(0, 0, w, h);
-        }
-
-        context.save();
-
-        context.scale(resolution, resolution);
-
-        if (style.backgroundColor)
-        {
-            context.fillStyle = style.backgroundColor;
-            context.fillRect(0, 0, w, h);
-        }
-
-        style.syncStyle(canvas, context);
-
-        //  Apply padding
-        context.translate(padding.left, padding.top);
-
-        var linePositionX;
-        var linePositionY;
-
-        //  Draw text line by line
-        for (var i = 0; i < textSize.lines; i++)
-        {
-            linePositionX = style.strokeThickness / 2;
-            linePositionY = (style.strokeThickness / 2 + i * textSize.lineHeight) + size.ascent;
-
-            if (i > 0)
-            {
-                linePositionY += (textSize.lineSpacing * i);
-            }
-
-            if (style.rtl)
-            {
-                linePositionX = w - linePositionX - padding.left - padding.right;
-            }
-            else if (style.align === 'right')
-            {
-                linePositionX += textWidth - textSize.lineWidths[i];
-            }
-            else if (style.align === 'center')
-            {
-                linePositionX += (textWidth - textSize.lineWidths[i]) / 2;
-            }
-            else if (style.align === 'justify')
-            {
-                //  To justify text line its width must be no less than 85% of defined width
-                var minimumLengthToApplyJustification = 0.85;
-
-                if (textSize.lineWidths[i] / textSize.width >= minimumLengthToApplyJustification)
-                {
-                    var extraSpace = textSize.width - textSize.lineWidths[i];
-                    var spaceSize = context.measureText(' ').width;
-                    var trimmedLine = lines[i].trim();
-                    var array = trimmedLine.split(' ');
-
-                    extraSpace += (lines[i].length - trimmedLine.length) * spaceSize;
-
-                    var extraSpaceCharacters = Math.floor(extraSpace / spaceSize);
-                    var idx = 0;
-
-                    while (extraSpaceCharacters > 0)
-                    {
-                        array[idx] += ' ';
-                        idx = (idx + 1) % (array.length - 1 || 1);
-                        --extraSpaceCharacters;
-                    }
-
-                    lines[i] = array.join(' ');
-                }
-            }
-
-            if (this.autoRound)
-            {
-                linePositionX = Math.round(linePositionX);
-                linePositionY = Math.round(linePositionY);
-            }
-
-            var letterSpacing = this.letterSpacing;
-
-            // Apply stroke to the whole line only if there's no custom letter spacing
-
-            if (style.strokeThickness && letterSpacing === 0)
-            {
-                style.syncShadow(context, style.shadowStroke);
-
-                context.strokeText(lines[i], linePositionX, linePositionY);
-            }
-
-            if (style.color)
-            {
-                style.syncShadow(context, style.shadowFill);
-
-                // Looping fillText could be an expensive operation, we should ignore it if it is not needed
-
-                if (letterSpacing !== 0)
-                {
-                    var charPositionX = 0;
-
-                    var line = lines[i].split('');
-
-                    //  Draw text letter by letter
-                    for (var l = 0; l < line.length; l++)
-                    {
-                        if (style.strokeThickness)
-                        {
-                            style.syncShadow(context, style.shadowStroke);
-
-                            context.strokeText(line[l], linePositionX + charPositionX, linePositionY);
-
-                            style.syncShadow(context, style.shadowFill);
-                        }
-
-                        context.fillText(line[l], linePositionX + charPositionX, linePositionY);
-
-                        charPositionX += context.measureText(line[l]).width + letterSpacing;
-                    }
-                }
-                else
-                {
-                    context.fillText(lines[i], linePositionX, linePositionY);
-                }
-            }
-        }
-
-        context.restore();
-
-        if (this.renderer && this.renderer.gl)
-        {
-            this.frame.source.glTexture = this.renderer.canvasToTexture(canvas, this.frame.source.glTexture, true);
-
-            if (typeof WEBGL_DEBUG)
-            {
-                this.frame.glTexture.spectorMetadata = { textureKey: 'Text Game Object' };
-            }
-        }
-
-        var input = this.input;
-
-        if (input && !input.customHitArea)
-        {
-            input.hitArea.width = this.width;
-            input.hitArea.height = this.height;
-        }
+        this.dirty = true;
 
         return this;
     },
@@ -1576,16 +1277,6 @@ var Text = new Class({
      */
     preDestroy: function ()
     {
-        RemoveFromDOM(this.canvas);
-
-        CanvasPool.remove(this.canvas);
-
-        var texture = this.texture;
-
-        if (texture)
-        {
-            texture.destroy();
-        }
     }
 
     /**
