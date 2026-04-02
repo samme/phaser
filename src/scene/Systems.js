@@ -6,6 +6,7 @@
 
 var Class = require('../utils/Class');
 var CONST = require('./const');
+var CSSRenderNode = require('../renderer/css/CSSRenderNode');
 var DefaultPlugins = require('../plugins/DefaultPlugins');
 var Events = require('./events');
 var GetPhysicsPlugins = require('./GetPhysicsPlugins');
@@ -67,6 +68,9 @@ var Systems = new Class({
          * @since 3.17.0
          */
         this.renderer;
+
+        // TODO
+        this.renderNode;
 
         /**
          * The Scene Configuration object, as passed in when creating the Scene.
@@ -320,6 +324,10 @@ var Systems = new Class({
         this.game = game;
         this.renderer = game.renderer;
 
+        this.renderNode = new CSSRenderNode(this.renderer.pool.acquire());
+        this.renderNode.setType('Scene');
+        this.renderNode.setKey(this.settings.key);
+
         this.canvas = game.canvas;
         this.context = game.context;
 
@@ -379,9 +387,19 @@ var Systems = new Class({
 
         this.events.emit(Events.PRE_RENDER, renderer);
 
-        this.cameras.render(renderer, displayList);
+        this.renderNode.show();
+
+        if (this.settings.active)
+        {
+            this.cameras.render(renderer, displayList);
+        }
 
         this.events.emit(Events.RENDER, renderer);
+    },
+
+    renderInvisible: function (renderer)
+    {
+        this.renderNode.hide();
     },
 
     /**

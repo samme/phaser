@@ -109,6 +109,8 @@ var SceneManager = new Class({
          */
         this._data = {};
 
+        this.dirty = false;
+
         /**
          * Is the Scene Manager actively processing the Scenes list?
          *
@@ -229,6 +231,8 @@ var SceneManager = new Class({
             this.keys[key] = newScene;
 
             this.scenes.push(newScene);
+
+            this.dirty = true;
 
             //  Any data to inject?
             if (this._data[key])
@@ -394,6 +398,8 @@ var SceneManager = new Class({
         this.keys[key] = newScene;
 
         this.scenes.push(newScene);
+
+        this.dirty = true;
 
         if (autoStart || newScene.sys.settings.active)
         {
@@ -588,6 +594,8 @@ var SceneManager = new Class({
      */
     render: function (renderer)
     {
+        var dirty = this.dirty;
+
         //  Loop through the scenes in forward order
         for (var i = 0; i < this.scenes.length; i++)
         {
@@ -597,9 +605,20 @@ var SceneManager = new Class({
             {
                 sys.render(renderer);
             }
+            else
+            {
+                sys.renderInvisible(renderer);
+            }
+
+            if (dirty)
+            {
+                renderer.attachScene(sys.scene);
+            }
         }
 
         this.isProcessing = false;
+
+        this.dirty = false;
     },
 
     /**
@@ -1414,6 +1433,8 @@ var SceneManager = new Class({
             scenes.push(scene);
         }
 
+        this.dirty = true;
+
         return this;
     },
 
@@ -1448,6 +1469,8 @@ var SceneManager = new Class({
             this.scenes.splice(index, 1);
             this.scenes.unshift(scene);
         }
+
+        this.dirty = true;
 
         return this;
     },
@@ -1484,6 +1507,8 @@ var SceneManager = new Class({
             this.scenes[indexB] = sceneA;
         }
 
+        this.dirty = true;
+
         return this;
     },
 
@@ -1518,6 +1543,8 @@ var SceneManager = new Class({
             this.scenes[indexA] = sceneB;
             this.scenes[indexB] = sceneA;
         }
+
+        this.dirty = true;
 
         return this;
     },
@@ -1564,6 +1591,8 @@ var SceneManager = new Class({
             //  Add in new location
             this.scenes.splice(indexA + (indexB > indexA), 0, tempScene);
         }
+
+        this.dirty = true;
 
         return this;
     },
@@ -1617,6 +1646,8 @@ var SceneManager = new Class({
                 this.scenes.splice(indexA - (indexB < indexA), 0, tempScene);
             }
         }
+
+        this.dirty = true;
 
         return this;
     },
@@ -1677,6 +1708,8 @@ var SceneManager = new Class({
 
             this.scenes[indexA] = this.scenes[indexB];
             this.scenes[indexB] = tempScene;
+
+            this.dirty = true;
         }
 
         return this;
