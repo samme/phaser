@@ -32,6 +32,7 @@ var TilemapLayerCSSRenderer = function (renderer, src, camera)
     }
 
     var gidMap = src.gidMap;
+    var tileRenderNodes = src.tileRenderNodes;
     var tiles = src.cull(camera);
     var drawCount = 0;
 
@@ -45,7 +46,7 @@ var TilemapLayerCSSRenderer = function (renderer, src, camera)
         // We count all styled tiles, visible or not.
         drawCount++;
 
-        var node = tile.renderNode;
+        var node = tileRenderNodes.get(tile);
 
         if (node)
         {
@@ -53,10 +54,9 @@ var TilemapLayerCSSRenderer = function (renderer, src, camera)
         }
         else
         {
-            tile.scene = src.scene;
-            tile.initRenderNode();
-            node = tile.renderNode;
+            node = renderer.createRenderNode();
             renderer.appendChildToParentRenderNode(node, src.renderNode);
+            tileRenderNodes.set(tile, node);
             renderer.countDirtyState(true, 1);
         }
 

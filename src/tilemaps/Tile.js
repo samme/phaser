@@ -6,7 +6,6 @@
 
 var Class = require('../utils/Class');
 var Components = require('../gameobjects/components');
-var CSSRenderNode = require('../gameobjects/components/CSSRenderNode');
 var CONST = require('./const/ORIENTATION_CONST');
 var DeepCopy = require('../utils/object/DeepCopy');
 var Rectangle = require('../geom/rectangle');
@@ -52,8 +51,7 @@ var Tile = new Class({
     Mixins: [
         Components.AlphaSingle,
         Components.Flip,
-        Components.Visible,
-        CSSRenderNode
+        Components.Visible
     ],
 
     initialize:
@@ -340,10 +338,6 @@ var Tile = new Class({
          * @since 3.0.0
          */
         this.physics = {};
-
-        this.type = 'Tile';
-
-        this.scene = null;
     },
 
     /**
@@ -873,8 +867,6 @@ var Tile = new Class({
         this.collisionCallback = undefined;
         this.collisionCallbackContext = undefined;
         this.properties = undefined;
-
-        this.destroyRenderNode();
     },
 
     /**

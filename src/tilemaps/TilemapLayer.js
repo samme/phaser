@@ -88,6 +88,8 @@ var TilemapLayer = new Class({
          */
         this.tilesTotal = this.layer.width * this.layer.height;
 
+        console.debug('tilesTotal', this.tilesTotal);
+
         /**
          * Used internally during rendering. This holds the tiles that are visible within the Camera.
          *
@@ -184,6 +186,16 @@ var TilemapLayer = new Class({
          * @since 3.50.0
          */
         this._renderOrder = 0;
+
+        /**
+         * A Map of Tile objects to their CSS render nodes.
+         * Managed by the CSS renderer; destroyed when the layer is destroyed.
+         *
+         * @name Phaser.Tilemaps.TilemapLayer#tileRenderNodes
+         * @type {Map<Phaser.Tilemaps.Tile, Phaser.Renderer.CSS.CSSRenderNode>}
+         * @since 5.0.0
+         */
+        this.tileRenderNodes = new Map();
 
         this.setTilesets(tileset);
 
@@ -449,6 +461,14 @@ var TilemapLayer = new Class({
      */
     destroy: function (removeFromTilemap)
     {
+        for (var node of this.tileRenderNodes.values())
+        {
+            node.destroy();
+        }
+
+        this.tileRenderNodes.clear();
+        this.tileRenderNodes = null;
+
         this.culledTiles.length = 0;
         this.cullCallback = null;
 
