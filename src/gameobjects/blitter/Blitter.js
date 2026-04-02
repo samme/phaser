@@ -276,7 +276,6 @@ var Blitter = new Class({
         if (this.dirty)
         {
             this.renderList = this.children.list.filter(this.childCanRender, this);
-            this.dirty = false;
         }
 
         return this.renderList;

@@ -6,6 +6,7 @@
 
 var Class = require('../../utils/Class');
 var Frame = require('../../textures/Frame');
+var CSSRenderNode = require('../../gameobjects/components/CSSRenderNode');
 
 /**
  * @classdesc
@@ -35,6 +36,8 @@ var Frame = require('../../textures/Frame');
  * @param {boolean} visible - Should the Bob render visible or not to start with?
  */
 var Bob = new Class({
+
+    Mixins: [ CSSRenderNode ],
 
     initialize:
 
@@ -99,25 +102,26 @@ var Bob = new Class({
         this.tint = 0xffffff;
 
         /**
-         * The visible state of this Bob.
+         * The visible state of the Bob.
          *
-         * @name Phaser.GameObjects.Bob#_visible
+         * An invisible Bob will skip rendering.
+         *
+         * @name Phaser.GameObjects.Bob#visible
          * @type {boolean}
-         * @private
          * @since 3.0.0
          */
-        this._visible = visible;
+        this.visible = visible;
 
         /**
-         * The alpha value of this Bob.
+         * The alpha value of the Bob, between 0 and 1.
          *
-         * @name Phaser.GameObjects.Bob#_alpha
+         * A Bob with alpha 0 will skip rendering.
+         *
+         * @name Phaser.GameObjects.Bob#alpha
          * @type {number}
-         * @private
-         * @default 1
          * @since 3.0.0
          */
-        this._alpha = 1;
+        this.alpha = 1;
 
         /**
          * The horizontally flipped state of the Bob.
@@ -151,6 +155,10 @@ var Bob = new Class({
          * @since 3.60.0
          */
         this.hasTransformComponent = true;
+
+        this.scene = this.parent.scene;
+
+        this.initRenderNode();
     },
 
     /**
@@ -380,57 +388,12 @@ var Bob = new Class({
 
         this.parent.children.remove(this);
 
+        this.destroyRenderNode();
+
         this.parent = undefined;
         this.frame = undefined;
         this.data = undefined;
-    },
-
-    /**
-     * The visible state of the Bob.
-     *
-     * An invisible Bob will skip rendering.
-     *
-     * @name Phaser.GameObjects.Bob#visible
-     * @type {boolean}
-     * @since 3.0.0
-     */
-    visible: {
-
-        get: function ()
-        {
-            return this._visible;
-        },
-
-        set: function (value)
-        {
-            this.parent.dirty |= (this._visible !== value);
-            this._visible = value;
-        }
-
-    },
-
-    /**
-     * The alpha value of the Bob, between 0 and 1.
-     *
-     * A Bob with alpha 0 will skip rendering.
-     *
-     * @name Phaser.GameObjects.Bob#alpha
-     * @type {number}
-     * @since 3.0.0
-     */
-    alpha: {
-
-        get: function ()
-        {
-            return this._alpha;
-        },
-
-        set: function (value)
-        {
-            this.parent.dirty |= ((this._alpha > 0) !== (value > 0));
-            this._alpha = value;
-        }
-
+        this.scene = undefined;
     }
 
 });
