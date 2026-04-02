@@ -7,10 +7,12 @@
 var AnimationState = require('../../animations/AnimationState');
 var Clamp = require('../../math/Clamp');
 var Class = require('../../utils/Class');
+var CSSRenderNode = require('../components/CSSRenderNode');
 var DegToRad = require('../../math/DegToRad');
 var Rectangle = require('../../geom/rectangle/Rectangle');
 var RotateAround = require('../../math/RotateAround');
 var Vector2 = require('../../math/Vector2');
+
 
 /**
  * @classdesc
@@ -32,6 +34,10 @@ var Vector2 = require('../../math/Vector2');
  */
 var Particle = new Class({
 
+    Mixins: [
+        CSSRenderNode
+    ],
+
     initialize:
 
     function Particle (emitter)
@@ -46,6 +52,8 @@ var Particle = new Class({
          * @since 3.0.0
          */
         this.emitter = emitter;
+
+        this.type = 'Particle';
 
         /**
          * The texture used by this Particle when it renders.
@@ -360,6 +368,10 @@ var Particle = new Class({
          * @since 3.60.0
          */
         this.bounds = new Rectangle();
+
+        this.dirty = false;
+
+        this.initRenderNode();
     },
 
     /**
@@ -407,6 +419,8 @@ var Particle = new Class({
     kill: function ()
     {
         this.lifeCurrent = 0;
+
+        this.dirty = true;
     },
 
     /**
@@ -442,6 +456,8 @@ var Particle = new Class({
      */
     fire: function (x, y)
     {
+        this.dirty = true;
+
         var emitter = this.emitter;
         var ops = emitter.ops;
 
@@ -807,6 +823,8 @@ var Particle = new Class({
         {
             this.anims.destroy();
         }
+
+        this.destroyRenderNode();
 
         this.anims = null;
         this.emitter = null;

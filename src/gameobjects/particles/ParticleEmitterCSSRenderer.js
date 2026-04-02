@@ -1,0 +1,123 @@
+const RectangleToRectangle = require('../../geom/intersects/RectangleToRectangle');
+
+/**
+ * Renders this Game Object with the CSS Renderer to the given Camera.
+ * The object will not render if any of its renderFlags are set or it is being actively filtered out by the Camera.
+ * This method should not be called directly. It is a utility function of the Render module.
+ *
+ * @method Phaser.GameObjects.Particles.Emitter#renderCSS
+ * @since 4.0.0
+ * @private
+ *
+ * @param {Phaser.Renderer.CSS.CSSRenderer} renderer - A reference to the current active CSS renderer.
+ * @param {Phaser.GameObjects.Particles.ParticleEmitter} emitter - The Game Object being rendered in this call.
+ * @param {Phaser.Cameras.Scene2D.Camera} camera - The Camera that is rendering the Game Object.
+ */
+const ParticleEmitterCSSRenderer = function (renderer, emitter, camera)
+{
+    const aliveParticles = emitter.alive;
+    const aliveCount = aliveParticles.length;
+    const deadParticles = emitter.dead;
+    const deadCount = deadParticles.length;
+    const viewBounds = emitter.viewBounds;
+
+    if (!emitter.visible || aliveCount === 0 || (viewBounds && !RectangleToRectangle(viewBounds, camera.worldView)))
+    {
+        emitter.renderNode.hide();
+
+        return;
+    }
+
+    renderer.drawCount += aliveCount;
+
+    const renderNode = emitter.renderNode;
+
+    renderNode.show();
+    renderNode.setAlpha(emitter.alpha);
+    renderNode.setBlendMode(emitter.blendMode);
+
+    if (emitter.rotation === 0 && emitter.scaleX === 1 && emitter.scaleY === 1)
+    {
+        renderNode.setXY(emitter.x, emitter.y);
+    }
+    else
+    {
+        renderNode.setTSR(emitter.x, emitter.y, emitter.scaleX, emitter.scaleY, emitter.rotation);
+    }
+
+
+    if (emitter.sortCallback)
+    {
+        emitter.depthSort();
+    }
+
+    for (let i = 0; i < aliveCount; i++)
+    {
+        const particle = aliveParticles[i];
+        const particleRenderNode = particle.renderNode;
+        const dirty = particle.dirty;
+
+        renderer.countDirtyState(dirty, 1);
+
+        if (dirty)
+        {
+            renderer.appendChildToParentRenderNode(particleRenderNode, renderNode);
+
+            particle.dirty = false;
+        }
+
+        const alpha = particle.alpha;
+
+        if (alpha <= 0 || particle.scaleX === 0 || particle.scaleY === 0)
+        {
+            particleRenderNode.hide();
+
+            continue;
+        }
+
+        const frame = particle.frame;
+
+        if (frame.cutWidth > 0 && frame.cutHeight > 0)
+        {
+            particleRenderNode.show();
+            particleRenderNode.setAlpha(alpha);
+            particleRenderNode.setBlendMode(particle.blendMode);
+            particleRenderNode.setProperty('background', frame.cssBackground);
+            particleRenderNode.setSize(frame.cutWidth, frame.cutHeight);
+
+            const x = particle.x - frame.halfWidth;
+            const y = particle.y - frame.halfHeight;
+
+            if (particle.rotation === 0 && particle.scaleX === 1 && particle.scaleY === 1)
+            {
+                particleRenderNode.setXY(x, y);
+            }
+            else
+            {
+                particleRenderNode.setTSR(x, y, particle.scaleX, particle.scaleY, particle.rotation);
+                particleRenderNode.setTransformOrigin(frame.halfWidth, frame.halfHeight);
+            }
+        }
+        else
+        {
+            particleRenderNode.hide();
+        }
+    }
+
+    for (let i = 0; i < deadCount; i++)
+    {
+        const particle = deadParticles[i];
+        const dirty = particle.dirty;
+
+        renderer.countDirtyState(dirty, 1);
+
+        if (dirty)
+        {
+            renderer.removeRenderNode(particle.renderNode);
+
+            particle.dirty = false;
+        }
+    }
+};
+
+module.exports = ParticleEmitterCSSRenderer;
