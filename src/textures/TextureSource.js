@@ -144,6 +144,12 @@ var TextureSource = new Class({
          */
         this.scaleMode = ScaleModes.DEFAULT;
 
+        this.isImage = (source instanceof HTMLImageElement);
+
+        this.cssImage = this.isImage ? `url("${source.src}")` : 'none';
+
+        console.debug('cssImage', this.texture.key, this.cssImage);
+
         /**
          * Is the source image a Canvas Element?
          *

@@ -337,6 +337,8 @@ var Frame = new Class({
             }
         };
 
+        this.cssBackground = 'none';
+
         this.setSize(width, height, x, y);
     },
 
@@ -358,6 +360,14 @@ var Frame = new Class({
 
         this.cutX = x;
         this.cutY = y;
+
+        if (this.source.isImage)
+        {
+            this.cssBackground = `${-x}px ${-y}px ${this.source.cssImage}`;
+
+            console.debug('cssBackground', this.texture.key, this.name, this.cssBackground);
+        }
+
 
         return this.updateUVs();
     },
@@ -529,7 +539,7 @@ var Frame = new Class({
      * required UV coordinates in order to crop this Frame for WebGL and Canvas rendering.
      *
      * The crop size as well as coordinates can not exceed the size of the frame.
-     * 
+     *
      * This is called directly by the Game Object Texture Components `setCrop` method.
      * Please use that method to crop a Game Object.
      *
@@ -837,7 +847,7 @@ var Frame = new Class({
 
     /**
      * A reference to the Texture Source WebGL Texture that this Frame is using.
-     * 
+     *
      * @name Phaser.Textures.Frame#glTexture
      * @type {Phaser.Renderer.WebGL.Wrappers.WebGLTextureWrapper}
      * @readonly
