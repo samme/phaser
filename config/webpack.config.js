@@ -3,6 +3,17 @@
 const webpack = require('webpack');
 const exec = require('child_process').exec;
 
+const flags = {
+    "typeof CANVAS_RENDERER": JSON.stringify(false),
+    "typeof WEBGL_RENDERER": JSON.stringify(false),
+    "typeof WEBGL_DEBUG": JSON.stringify(false),
+    "typeof EXPERIMENTAL": JSON.stringify(false),
+    "typeof FEATURE_SOUND": JSON.stringify(true),
+    "typeof CSS_DEBUG": JSON.stringify(false),
+};
+
+console.log(flags);
+
 module.exports = [
 
     {
@@ -15,6 +26,19 @@ module.exports = [
         },
 
         devtool: 'source-map',
+
+        module: {
+            rules: [
+                {
+                    test: /\.css$/,
+                    use: ['style-loader', 'css-loader']
+                },
+                {
+                  test: /\.html$/,
+                  type: 'asset/source'
+                }
+            ]
+        },
 
         output: {
             path: `${__dirname}/../build/`,
@@ -33,12 +57,7 @@ module.exports = [
         performance: { hints: false },
 
         plugins: [
-            new webpack.DefinePlugin({
-                "typeof CANVAS_RENDERER": JSON.stringify(true),
-                "typeof WEBGL_RENDERER": JSON.stringify(true),
-                "typeof WEBGL_DEBUG": JSON.stringify(true),
-                "typeof FEATURE_SOUND": JSON.stringify(true)
-            }),
+            new webpack.DefinePlugin(flags),
             {
                 apply: (compiler) => {
                     compiler.hooks.afterEmit.tap('AfterEmitPlugin', (compilation) => {

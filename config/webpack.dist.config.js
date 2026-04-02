@@ -4,6 +4,17 @@ const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
+const flags = {
+    "typeof CANVAS_RENDERER": JSON.stringify(false),
+    "typeof WEBGL_RENDERER": JSON.stringify(false),
+    "typeof WEBGL_DEBUG": JSON.stringify(false),
+    "typeof EXPERIMENTAL": JSON.stringify(false),
+    "typeof FEATURE_SOUND": JSON.stringify(true),
+    "typeof CSS_DEBUG": JSON.stringify(true),
+};
+
+console.log(flags);
+
 module.exports = [
     {
         name: 'phaser-umd',
@@ -51,12 +62,7 @@ module.exports = [
         },
 
         plugins: [
-            new webpack.DefinePlugin({
-                "typeof CANVAS_RENDERER": JSON.stringify(true),
-                "typeof WEBGL_RENDERER": JSON.stringify(true),
-                "typeof WEBGL_DEBUG": JSON.stringify(false),
-                "typeof FEATURE_SOUND": JSON.stringify(true)
-            }),
+            new webpack.DefinePlugin(flags),
 
             new CleanWebpackPlugin()
         ]
@@ -107,13 +113,7 @@ module.exports = [
         },
 
         plugins: [
-            new webpack.DefinePlugin({
-                "typeof CANVAS_RENDERER": JSON.stringify(true),
-                "typeof WEBGL_RENDERER": JSON.stringify(true),
-                "typeof WEBGL_DEBUG": JSON.stringify(false),
-                "typeof EXPERIMENTAL": JSON.stringify(false),
-                "typeof FEATURE_SOUND": JSON.stringify(true)
-            })
+            new webpack.DefinePlugin(flags)
         ]
     }
 ];
