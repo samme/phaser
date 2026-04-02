@@ -36,6 +36,8 @@ var DisplayList = new Class({
     {
         List.call(this, scene);
 
+        this.dirty = false;
+
         /**
          * The flag that determines whether Game Objects should be sorted when `depthSort()` is called.
          *
@@ -123,6 +125,8 @@ var DisplayList = new Class({
 
             gameObject.displayList = this;
 
+            gameObject.initRenderNode();
+
             gameObject.emit(GameObjectEvents.ADDED_TO_SCENE, gameObject, this.scene);
 
             this.events.emit(SceneEvents.ADDED_TO_SCENE, gameObject, this.scene);
@@ -145,6 +149,8 @@ var DisplayList = new Class({
         this.queueDepthSort();
 
         gameObject.displayList = null;
+
+        gameObject.renderNode.hide();
 
         gameObject.emit(GameObjectEvents.REMOVED_FROM_SCENE, gameObject, this.scene);
 
@@ -173,6 +179,7 @@ var DisplayList = new Class({
      */
     queueDepthSort: function ()
     {
+        this.dirty = true;
         this.sortChildrenFlag = true;
     },
 
