@@ -43,25 +43,3 @@ GameObjectFactory.register('arc', function (x, y, radius, startAngle, endAngle, 
     return this.displayList.add(new Arc(this.scene, x, y, radius, startAngle, endAngle, anticlockwise, fillColor, fillAlpha));
 });
 
-/**
- * Creates a new Circle Shape Game Object and adds it to the Scene.
- *
- * A Circle is an Arc with a fixed start angle of 0 and end angle of 360 degrees, so it always renders as a complete circle. Use the `arc` factory method if you need control over the start and end angles.
- *
- * Note: This method will only be available if the Arc Game Object has been built into Phaser.
- *
- * @method Phaser.GameObjects.GameObjectFactory#circle
- * @since 3.13.0
- *
- * @param {number} [x=0] - The horizontal position of this Game Object in the world.
- * @param {number} [y=0] - The vertical position of this Game Object in the world.
- * @param {number} [radius=128] - The radius of the circle.
- * @param {number} [fillColor] - The color the circle will be filled with, i.e. 0xff0000 for red.
- * @param {number} [fillAlpha] - The alpha the circle will be filled with. You can also set the alpha of the overall Shape using its `alpha` property.
- *
- * @return {Phaser.GameObjects.Arc} The Game Object that was created.
- */
-GameObjectFactory.register('circle', function (x, y, radius, fillColor, fillAlpha)
-{
-    return this.displayList.add(new Arc(this.scene, x, y, radius, 0, 360, false, fillColor, fillAlpha));
-});

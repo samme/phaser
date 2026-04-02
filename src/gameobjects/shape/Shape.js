@@ -4,11 +4,12 @@
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
 
-var DefaultGraphicsNodes = require('../../renderer/webgl/renderNodes/defaults/DefaultGraphicsNodes');
 var Class = require('../../utils/Class');
 var Components = require('../components');
 var GameObject = require('../GameObject');
 var Line = require('../../geom/line/Line');
+var ShapeRender = require('./ShapeRender');
+var SVGShapeFactory = require('../../renderer/css/SVGShapeFactory');
 
 /**
  * @classdesc
@@ -57,10 +58,10 @@ var Shape = new Class({
         Components.Lighting,
         Components.Mask,
         Components.Origin,
-        Components.RenderNodes,
         Components.ScrollFactor,
         Components.Transform,
-        Components.Visible
+        Components.Visible,
+        ShapeRender
     ],
 
     initialize:
@@ -219,30 +220,15 @@ var Shape = new Class({
          */
         this.height = 0;
 
-        if (this.enableFilters)
-        {
-            // Prevent Shape stroke from being cut off in filters.
-            this.filtersFocusContext = true;
-        }
+        this.isShape = true;
 
-        this.initRenderNodes(this._defaultRenderNodesMap);
-    },
+        this.dirty = false;
 
-    /**
-     * The default render nodes for this Game Object.
-     *
-     * @name Phaser.GameObjects.Shape#_defaultRenderNodesMap
-     * @type {Map<string, string>}
-     * @private
-     * @webglOnly
-     * @readonly
-     * @since 4.0.0
-     */
-    _defaultRenderNodesMap: {
-        get: function ()
-        {
-            return DefaultGraphicsNodes;
-        }
+        this.element = SVGShapeFactory(this.type);
+
+        this.initRenderNode();
+
+        this.renderNode.element.appendChild(this.element);
     },
 
     /**
