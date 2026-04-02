@@ -574,6 +574,48 @@ var BaseCamera = new Class({
          * @since 3.86.0
          */
         this.renderRoundPixels = true;
+
+        // TODO
+        this.viewportRenderNode = null;
+
+        // TODO
+        this.worldViewRenderNode = null;
+
+        // TODO
+        this.fadeRenderNode = null;
+
+        // TODO
+        this.flashRenderNode = null;
+    },
+
+    initRenderNodes: function ()
+    {
+        const { renderer } = this.scene.sys;
+
+        this.viewportRenderNode = renderer.createRenderNode();
+        this.worldViewRenderNode = renderer.createRenderNode();
+        this.fadeRenderNode = renderer.createRenderNode();
+        this.flashRenderNode = renderer.createRenderNode();
+
+        this.viewportRenderNode.setType('CameraViewport');
+        this.viewportRenderNode.setName(this.name);
+        this.viewportRenderNode.setProperty('contain', 'strict');
+        this.viewportRenderNode.setProperty('overflow', 'hidden');
+        this.viewportRenderNode.element.dataset.cameraId = this.id;
+
+        this.worldViewRenderNode.setType('CameraWorldView');
+        this.fadeRenderNode.setType('CameraFadeEffect');
+        this.flashRenderNode.setType('CameraFlashEffect');
+
+        renderer.attachCamera(this);
+    },
+
+    destroyRenderNodes: function ()
+    {
+        const { renderer } = this.scene.sys;
+
+        renderer.destroyRenderNode(this.viewportRenderNode);
+        renderer.destroyRenderNode(this.worldViewRenderNode);
     },
 
     /**
@@ -1623,6 +1665,8 @@ var BaseCamera = new Class({
         this.emit(Events.DESTROY, this);
 
         this.removeAllListeners();
+
+        this.destroyRenderNodes();
 
         this.matrix.destroy();
         this.matrixCombined.destroy();

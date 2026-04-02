@@ -156,6 +156,7 @@ var CameraManager = new Class({
         }
 
         this.main = this.cameras[0];
+        this.main.initRenderNodes();
 
         //  Create a default camera
         this.default = new Camera(0, 0, sys.scale.width, sys.scale.height).setScene(this.scene);
@@ -194,6 +195,7 @@ var CameraManager = new Class({
             }
 
             this.main = this.cameras[0];
+            this.main.initRenderNodes();
         }
 
         var eventEmitter = this.systems.events;
@@ -292,6 +294,11 @@ var CameraManager = new Class({
             camera.setRoundPixels(this.roundPixels);
 
             this.cameras.push(camera);
+
+            if (this.cameras.length > 1)
+            {
+                console.warn('Only the main camera will render');
+            }
 
             if (makeMain)
             {
@@ -571,6 +578,7 @@ var CameraManager = new Class({
         if (!this.main && cameras[0])
         {
             this.main = cameras[0];
+            this.main.initRenderNodes();
         }
 
         return total;
@@ -592,20 +600,15 @@ var CameraManager = new Class({
     render: function (renderer, displayList)
     {
         var scene = this.scene;
-        var cameras = this.cameras;
+        var camera = this.main;
 
-        for (var i = 0; i < cameras.length; i++)
+        if (camera.visible && camera.alpha > 0)
         {
-            var camera = cameras[i];
+            camera.preRender();
 
-            if (camera.visible && camera.alpha > 0)
-            {
-                camera.preRender();
+            renderer.render(scene, displayList.getChildren(), camera, displayList.dirty);
 
-                var visibleChildren = this.getVisibleChildren(displayList.getChildren(), camera);
-
-                renderer.render(scene, visibleChildren, camera);
-            }
+            displayList.dirty = false;
         }
     },
 
@@ -651,6 +654,7 @@ var CameraManager = new Class({
         this.cameras = [];
 
         this.main = this.add();
+        this.main.initRenderNodes();
 
         return this.main;
     },
