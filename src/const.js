@@ -30,7 +30,7 @@ var CONST = {
      * @type {string}
      * @since 3.87.0
      */
-    LOG_VERSION: 'v400 👽 CSS Renderer',
+    LOG_VERSION: 'v400 👽 CSS/SVG Renderer',
 
     BlendModes: require('./renderer/BlendModes'),
 
