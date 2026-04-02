@@ -80,6 +80,7 @@ var Layer = new Class({
     Mixins: [
         Components.AlphaSingle,
         Components.BlendMode,
+        Components.CSSRenderNode,
         Components.Depth,
         Components.Filters,
         Components.Mask,
@@ -297,6 +298,8 @@ var Layer = new Class({
          * @since 3.50.0
          */
         this.sortChildrenFlag = false;
+
+        this.dirty = false;
 
         //  Set the List callbacks
         this.addCallback = this.addChildCallback;
@@ -768,6 +771,8 @@ var Layer = new Class({
 
         gameObject.displayList = null;
 
+        gameObject.renderNode.hide();
+
         gameObject.emit(GameObjectEvents.REMOVED_FROM_SCENE, gameObject, this.scene);
 
         this.events.emit(SceneEvents.REMOVED_FROM_SCENE, gameObject, this.scene);
@@ -781,6 +786,7 @@ var Layer = new Class({
      */
     queueDepthSort: function ()
     {
+        this.dirty = true;
         this.sortChildrenFlag = true;
     },
 
@@ -912,6 +918,8 @@ var Layer = new Class({
 
             this.displayList = null;
 
+            this.renderNode.hide();
+
             this.emit(GameObjectEvents.REMOVED_FROM_SCENE, this, this.scene);
 
             displayList.events.emit(SceneEvents.REMOVED_FROM_SCENE, this, this.scene);
@@ -924,9 +932,9 @@ var Layer = new Class({
      * Returns a reference to the underlying display list _array_ that contains this Game Object,
      * which will be either the Scene's Display List or the internal list belonging
      * to its parent Container, if it has one.
-     * 
+     *
      * If this Game Object is not on a display list or in a container, it will return `null`.
-     * 
+     *
      * You should be very careful with this method, and understand that it returns a direct reference to the
      * internal array used by the Display List. Mutating this array directly can cause all kinds of subtle
      * and difficult to debug issues in your game.
