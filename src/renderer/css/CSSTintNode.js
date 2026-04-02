@@ -5,18 +5,19 @@ const IntegerToColor = require('../../display/color/IntegerToColor');
 const defaultColor = 0xffffff;
 const defaultMode = 0;
 const tempColor = new Color();
-const parser = new DOMParser();
+
 const svgString = `
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="0" height="0">
-    <defs>
-        <filter id="">
-            <feFlood flood-color="" result="flood" />
-            <feComposite in="flood" in2="SourceGraphic" operator="in" result="composite" />
-            <feBlend in="composite" in2="SourceGraphic" mode="" />
-        </filter>
-    </defs>
+    <filter id="">
+        <feFlood flood-color="" result="flood" />
+        <feComposite in="flood" in2="SourceGraphic" operator="in" result="composite" />
+        <feBlend in="composite" in2="SourceGraphic" mode="" />
+    </filter>
 </svg>
 `;
+
+const svgDoc = new DOMParser().parseFromString(svgString, 'image/svg+xml');
+const templateFilter = svgDoc.querySelector('filter');
 
 let idCounter = 0;
 
@@ -24,11 +25,7 @@ class CSSTintNode
 {
     constructor ()
     {
-        const svgDoc = parser.parseFromString(svgString, 'image/svg+xml');
-
-        this.element = svgDoc.documentElement;
-
-        this.filterElement = this.element.querySelector('filter');
+        this.element = templateFilter.cloneNode(true);
         this.floodElement = this.element.querySelector('feFlood');
         this.blendElement = this.element.querySelector('feBlend');
 
@@ -39,7 +36,7 @@ class CSSTintNode
 
         this.url = `url(#${id})`;
 
-        this.filterElement.setAttribute('id', id);
+        this.element.setAttribute('id', id);
 
         this.clear();
     }
@@ -84,7 +81,6 @@ class CSSTintNode
         // Renderer will remove element.
 
         this.element = null;
-        this.filterElement = null;
         this.floodElement = null;
         this.blendElement = null;
         this.color = -1;

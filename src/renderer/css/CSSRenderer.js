@@ -176,8 +176,14 @@ const CSSRenderer = new Class({
         this.pool = new HTMLElementPool('div');
         this.pool.reserve(100);
 
-        this.filterContainer = document.createElement('div');
-        this.filterContainer.dataset.name = 'filterContainer';
+        const filterContainer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        filterContainer.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        filterContainer.setAttribute('width', '0');
+        filterContainer.setAttribute('height', '0');
+        filterContainer.dataset.name = 'filterContainer';
+
+        this.filterContainer = filterContainer;
+
         parent.appendChild(this.filterContainer);
 
         this.stage.dataset.name = 'stage';
