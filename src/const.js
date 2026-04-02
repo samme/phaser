@@ -30,15 +30,14 @@ var CONST = {
      * @type {string}
      * @since 3.87.0
      */
-    LOG_VERSION: 'v400',
+    LOG_VERSION: 'v400 👽 CSS Renderer',
 
     BlendModes: require('./renderer/BlendModes'),
 
     ScaleModes: require('./renderer/ScaleModes'),
 
     /**
-     * This setting will auto-detect if the browser is capable of supporting WebGL.
-     * If it is, it will use the WebGL Renderer. If not, it will fall back to the Canvas Renderer.
+     * AUTO is the CSS Renderer.
      *
      * @name Phaser.AUTO
      * @const
@@ -48,8 +47,7 @@ var CONST = {
     AUTO: 0,
 
     /**
-     * Forces Phaser to only use the Canvas Renderer, regardless if the browser supports
-     * WebGL or not.
+     * Forces Phaser to only use the Canvas Renderer.
      *
      * @name Phaser.CANVAS
      * @const
@@ -59,9 +57,7 @@ var CONST = {
     CANVAS: 1,
 
     /**
-     * Forces Phaser to use the WebGL Renderer. If the browser does not support it, there is
-     * no fallback to Canvas with this setting, so you should trap it and display a suitable
-     * message to the user.
+     * The WebGL Renderer. Not used.
      *
      * @name Phaser.WEBGL
      * @const
@@ -71,9 +67,7 @@ var CONST = {
     WEBGL: 2,
 
     /**
-     * A Headless Renderer doesn't create either a Canvas or WebGL Renderer. However, it still
-     * absolutely relies on the DOM being present and available. This mode is meant for unit testing,
-     * not for running Phaser on the server, which is something you really shouldn't do.
+     * The Headless Renderer. Not used.
      *
      * @name Phaser.HEADLESS
      * @const
@@ -81,6 +75,9 @@ var CONST = {
      * @since 3.0.0
      */
     HEADLESS: 3,
+
+
+    CSS: 4,
 
     /**
      * In Phaser the value -1 means 'forever' in lots of cases, this const allows you to use it instead

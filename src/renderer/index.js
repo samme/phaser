@@ -14,6 +14,7 @@
 
 module.exports = {
 
+    CSS: require('./css'),
     Events: require('./events'),
     Snapshot: require('./snapshot')
 

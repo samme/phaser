@@ -30,20 +30,9 @@ var DebugHeader = function (game)
         return;
     }
 
-    var renderType = 'WebGL';
-
-    if (config.renderType === CONST.CANVAS)
-    {
-        renderType = 'Canvas';
-    }
-    else if (config.renderType === CONST.HEADLESS)
-    {
-        renderType = 'Headless';
-    }
-
+    var renderType = [ '?', 'WebGL', 'Canvas', 'Headless', 'CSS' ][config.renderType];
     var audioConfig = config.audio;
     var deviceAudio = game.device.audio;
-
     var audioType;
 
     if (deviceAudio.webAudio && !audioConfig.disableWebAudio)
@@ -59,67 +48,7 @@ var DebugHeader = function (game)
         audioType = 'HTML5 Audio';
     }
 
-    if (!game.device.browser.ie)
-    {
-        var logoDataURI = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAOCAYAAAAmL5yKAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAARBJREFUeNpi/P//P0OHsPB/BiCoePuWkYFEwALSXJElzMBgLwE2CNkQxgWr/yMr/p8QimlBu5DQ//+8vBBco/ofzAe6imH+qv/53/6jYJAYSA4ZoxoANYTPKhiuCQZwGcJU+e4dqpMmvsDq14krV2MPAxDha2CMKvoXoiE/PBQUDgQD8j82UFae9B9bOIC8B9UD9gIjjIMN7Ns6lWHn4XMoYu62RgxO3tkMjIyMII2MYAOAtmFVhA+ADHf2ycGMRhANjUq8YO+WKWCvgAORIV8CkpDCrzIwsLIymC1qAtuAD4Bsh3sBmqAY3qcGwL2AC4DCpKtzHlgzOLWihwEuzTCN0GhDJHeYC4gByBphACDAAH2dDIxdjr+VAAAAAElFTkSuQmCC';
-
-        var mainStyle = 'color: ' + config.bannerTextColor + ';';
-
-        var bannerBackgroundColor = Array.isArray(config.bannerBackgroundColor)
-            ? config.bannerBackgroundColor
-            : [ config.bannerBackgroundColor ];
-
-        //  linear-gradient requires at least two color stops, so duplicate if there's only one
-        if (bannerBackgroundColor.length === 1)
-        {
-            bannerBackgroundColor = [ bannerBackgroundColor[0], bannerBackgroundColor[0] ];
-        }
-
-        var gradient = 'linear-gradient(to bottom, ' + bannerBackgroundColor.join(', ') + ')';
-
-        mainStyle += ' background-image: url("' + logoDataURI + '"), ' + gradient + ';';
-        mainStyle += ' background-repeat: no-repeat;';
-        mainStyle += ' background-position: 4px center, 0 0;';
-
-        mainStyle += ' padding: 2px 6px 2px 24px;';
-
-        var c = '%c';
-        var args = [ null, mainStyle ];
-
-        //  URL link background color (always transparent to support different browser themes)
-        args.push('background: transparent');
-
-        if (config.gameTitle)
-        {
-            c = c.concat(config.gameTitle);
-
-            if (config.gameVersion)
-            {
-                c = c.concat(' v' + config.gameVersion);
-            }
-
-            if (!config.hidePhaser)
-            {
-                c = c.concat(' / ');
-            }
-        }
-
-        if (!config.hidePhaser)
-        {
-            c = c.concat('Phaser v' + CONST.VERSION + ' (' + renderType + ' | ' + audioType + ')');
-        }
-
-        c = c.concat('%c ' + config.gameURL);
-
-        //  Inject the new string back into the args array
-        args[0] = c;
-
-        console.log.apply(console, args);
-    }
-    else if (window['console'])
-    {
-        console.log('Phaser v' + CONST.VERSION + ' / https://phaser.io');
-    }
+    console.log('Phaser v%s (%s | %s) %s', CONST.VERSION, renderType, audioType, 'TODO');
 };
 
 module.exports = DebugHeader;

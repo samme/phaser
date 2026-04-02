@@ -367,18 +367,16 @@ var Game = new Class({
 
         DebugHeader(this);
 
-        AddToDOM(this.canvas, this.config.parent);
+        if (this.canvas)
+        {
+            AddToDOM(this.canvas, this.config.parent);
+        }
 
         //  The Texture Manager has to wait on a couple of non-blocking events before it's fully ready.
         //  So it will emit this internal event when done:
         this.textures.once(TextureEvents.READY, this.texturesReady, this);
 
         this.events.emit(Events.BOOT);
-
-        if (typeof WEBGL_DEBUG && window)
-        {
-            window.PHASER_GAME = this;
-        }
     },
 
     /**
@@ -569,6 +567,8 @@ var Game = new Class({
      */
     onHidden: function ()
     {
+        console.info('onHidden');
+
         this.loop.pause();
 
         this.events.emit(Events.PAUSE);
@@ -608,6 +608,8 @@ var Game = new Class({
      */
     onVisible: function ()
     {
+        console.info('onVisible');
+
         this.loop.resume();
 
         this.events.emit(Events.RESUME, this.loop.pauseDuration);
@@ -644,9 +646,13 @@ var Game = new Class({
      */
     onBlur: function ()
     {
+        console.info('onBlur');
+
         this.hasFocus = false;
 
         this.loop.blur();
+
+        this.pause();
     },
 
     /**
@@ -659,9 +665,13 @@ var Game = new Class({
      */
     onFocus: function ()
     {
+        console.info('onFocus');
+
         this.hasFocus = true;
 
         this.loop.focus();
+
+        this.resume();
     },
 
     /**

@@ -68,9 +68,9 @@ var Config = new Class({
         this.zoom = GetValue(scaleConfig, 'zoom', 1, config);
 
         /**
-         * @const {?*} Phaser.Core.Config#parent - A parent DOM element into which the canvas created by the renderer will be injected.
+         * @const {HTMLElement} Phaser.Core.Config#parent - A parent DOM element into which the canvas created by the renderer will be injected.
          */
-        this.parent = GetValue(scaleConfig, 'parent', undefined, config);
+        this.parent = GetValue(scaleConfig, 'parent', document.body, config);
 
         /**
          * @const {Phaser.Scale.ScaleModeType} Phaser.Core.Config#scaleMode - The scale mode as used by the Scale Manager. The default is zero, which is no scaling.
@@ -177,7 +177,7 @@ var Config = new Class({
         /**
          * @const {string} Phaser.Core.Config#gameURL - The URL of the game.
          */
-        this.gameURL = GetValue(config, 'url', 'https://phaser.io/' + CONST.LOG_VERSION);
+        this.gameURL = GetValue(config, 'url', '');
 
         /**
          * @const {string} Phaser.Core.Config#gameVersion - The version of the game.
@@ -204,14 +204,15 @@ var Config = new Class({
         //  DOM Element Container
 
         /**
-         * @const {?boolean} Phaser.Core.Config#domCreateContainer - Should the game create a div element to act as a DOM Container? Only enable if you're using DOM Element objects. You must provide a parent object if you use this feature.
+         * @const {?boolean} Phaser.Core.Config#domCreateContainer - Required.
          */
-        this.domCreateContainer = GetValue(config, 'dom.createContainer', false);
+        this.domCreateContainer = GetValue(config, 'dom.createContainer', true);
 
         /**
          * @const {?string} Phaser.Core.Config#domPointerEvents - The default `pointerEvents` attribute set on the DOM Container.
          */
-        this.domPointerEvents = GetValue(config, 'dom.pointerEvents', 'none');
+        // TODO: change to 'auto' once pointer input has been redone.
+        this.domPointerEvents = GetValue(config, 'dom.pointerEvents', 'auto');
 
         //  Input
 
@@ -556,7 +557,7 @@ var Config = new Class({
         /**
          * @const {string} Phaser.Core.Config#loaderImageLoadType - Optional load type for image, `XHR` is default, or `HTMLImageElement` for a lightweight way.
          */
-        this.loaderImageLoadType = GetValue(config, 'loader.imageLoadType', 'XHR');
+        this.loaderImageLoadType = GetValue(config, 'loader.imageLoadType', 'HTMLImageElement');
 
         // On iOS, Capacitor often runs on a capacitor:// protocol, meaning local files are served from capacitor:// rather than file://
         // See: https://github.com/photonstorm/phaser/issues/5685
