@@ -289,6 +289,19 @@ var Triangle = new Class({
     },
 
     /**
+     * Returns a CSS clip-path string for this triangle.
+     *
+     * @method Phaser.Geom.Triangle#getCSSClipPath
+     * @since 5.0.0
+     *
+     * @return {string} A CSS clip-path string representation of this triangle.
+     */
+    getCSSClipPath: function ()
+    {
+        return `polygon(${this.x1}px ${this.y1}px, ${this.x2}px ${this.y2}px, ${this.x3}px ${this.y3}px)`;
+    },
+
+    /**
      * Left most X coordinate of the triangle. Setting it moves the triangle on the X axis accordingly.
      *
      * @name Phaser.Geom.Triangle#left

@@ -345,6 +345,11 @@ var Rectangle = new Class({
         return line;
     },
 
+    getCSSClipPath: function ()
+    {
+        return `xywh(${this.x}, ${this.y}, ${this.width}, ${this.height})`;
+    },
+
     /**
      * The x coordinate of the left of the Rectangle.
      * Changing the left property of a Rectangle object has no effect on the y and height properties. However it does affect the width property, whereas changing the x value does not affect the width property.

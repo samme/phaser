@@ -245,6 +245,11 @@ var Line = new Class({
         return vec2;
     },
 
+    getCSSClipPath: function ()
+    {
+        return 'none';
+    },
+
     /**
      * The left-most x coordinate of this Line, i.e. the lesser of `x1` and `x2`.
      * When set, the endpoint that currently holds the smaller x value is moved to the new position.

@@ -243,6 +243,19 @@ var Circle = new Class({
     },
 
     /**
+     * Returns a CSS clip-path string for this Circle.
+     *
+     * @method Phaser.Geom.Circle#getCSSClipPath
+     * @since 5.0.0
+     *
+     * @return {string} A CSS clip-path string representation of this Circle.
+     */
+    getCSSClipPath: function ()
+    {
+        return `circle(${this._radius}px at ${this.x}px ${this.y}px)`;
+    },
+
+    /**
      * The radius of the Circle. Setting this value also updates the diameter accordingly.
      *
      * @name Phaser.Geom.Circle#radius

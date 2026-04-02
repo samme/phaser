@@ -294,6 +294,19 @@ var Ellipse = new Class({
     },
 
     /**
+     * Returns a CSS clip-path compatible string for this Ellipse.
+     *
+     * @method Phaser.Geom.Ellipse#getCSSClipPath
+     * @since 5.0.0
+     *
+     * @return {string} A CSS clip-path string representation of this Ellipse.
+     */
+    getCSSClipPath: function ()
+    {
+        return `ellipse(${this.width / 2}px ${this.height / 2}px at ${this.x}px ${this.y}px)`;
+    },
+
+    /**
      * The left position of the Ellipse.
      *
      * @name Phaser.Geom.Ellipse#left

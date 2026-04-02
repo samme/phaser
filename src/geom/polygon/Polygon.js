@@ -214,6 +214,21 @@ var Polygon = new Class({
     getPoints: function (quantity, step, output)
     {
         return GetPoints(this, quantity, step, output);
+    },
+
+    /**
+     * Returns a string containing the CSS clip-path value for this Polygon.
+     *
+     * @method Phaser.Geom.Polygon#getCSSClipPath
+     * @since 5.0.0
+     *
+     * @return {string} A string in the format `polygon(x1px y1px, x2px y2px, ...)`.
+     */
+    getCSSClipPath: function ()
+    {
+        var points = this.points.map(p => `${p.x}px ${p.y}px`);
+
+        return `polygon(${points.join(', ')})`;
     }
 
 });
