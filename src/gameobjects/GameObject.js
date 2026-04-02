@@ -4,6 +4,7 @@
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
 
+var CSSFilters = require('./components/CSSFilters');
 var Class = require('../utils/Class');
 var Components = require('./components');
 var ComponentsToJSON = require('./components/ToJSON');
@@ -46,6 +47,7 @@ var GameObject = new Class({
     Extends: EventEmitter,
 
     Mixins: [
+        Components.CSSRenderNode,
         Components.Filters,
         Components.RenderSteps
     ],
@@ -272,6 +274,10 @@ var GameObject = new Class({
          * @since 4.0.0
          */
         this.isDestroyed = false;
+
+        this.isShape = false;
+
+        this.filters = new CSSFilters();
 
         // Initialize RenderSteps mixin.
         if (this.addRenderStep)
@@ -575,7 +581,7 @@ var GameObject = new Class({
      *
      * @method Phaser.GameObjects.GameObject#disableInteractive
      * @since 3.7.0
-     * 
+     *
      * @param {boolean} [resetCursor=false] - Should the currently active Input cursor, if any, be reset to the default cursor?
      *
      * @return {this} This GameObject.
@@ -611,7 +617,7 @@ var GameObject = new Class({
      *
      * @method Phaser.GameObjects.GameObject#removeInteractive
      * @since 3.7.0
-     * 
+     *
      * @param {boolean} [resetCursor=false] - Should the currently active Input cursor, if any, be reset to the default cursor?
      *
      * @return {this} This GameObject.
@@ -731,7 +737,7 @@ var GameObject = new Class({
         {
             case 'safe':
                 return onlyTranslated;
-            
+
             case 'safeAuto':
                 return onlyTranslated && camera.roundPixels;
 
@@ -856,6 +862,8 @@ var GameObject = new Class({
 
             displayList.queueDepthSort();
 
+            this.initRenderNode();
+
             this.emit(Events.ADDED_TO_SCENE, this, this.scene);
 
             displayList.events.emit(SceneEvents.ADDED_TO_SCENE, this, this.scene);
@@ -919,6 +927,8 @@ var GameObject = new Class({
 
             this.displayList = null;
 
+            this.renderNode.hide();
+
             this.emit(Events.REMOVED_FROM_SCENE, this, this.scene);
 
             displayList.events.emit(SceneEvents.REMOVED_FROM_SCENE, this, this.scene);
@@ -956,9 +966,9 @@ var GameObject = new Class({
      * Returns a reference to the underlying display list _array_ that contains this Game Object,
      * which will be either the Scene's Display List or the internal list belonging
      * to its parent Container, if it has one.
-     * 
+     *
      * If this Game Object is not on a display list or in a container, it will return `null`.
-     * 
+     *
      * You should be very careful with this method, and understand that it returns a direct reference to the
      * internal array used by the Display List. Mutating this array directly can cause all kinds of subtle
      * and difficult to debug issues in your game.
@@ -1025,6 +1035,9 @@ var GameObject = new Class({
         this.removeAllListeners();
         this.removeFromDisplayList();
         this.removeFromUpdateList();
+
+        this.destroyRenderNode();
+        this.destroyTintNode();
 
         if (this.input)
         {

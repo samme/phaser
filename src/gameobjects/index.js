@@ -51,10 +51,14 @@ var GameObjects = {
     Zone: require('./zone/Zone'),
     Video: require('./video/Video'),
 
+    Gradient: require('./gradient/Gradient'),
+    PointLight: require('./pointlight/PointLight'),
+
     //  Shapes
 
     Shape: require('./shape/Shape'),
     Arc: require('./shape/arc/Arc'),
+    Circle: require('./shape/circle/Circle'),
     Curve: require('./shape/curve/Curve'),
     Ellipse: require('./shape/ellipse/Ellipse'),
     Grid: require('./shape/grid/Grid'),
@@ -90,8 +94,12 @@ var GameObjects = {
         Zone: require('./zone/ZoneFactory'),
         Video: require('./video/VideoFactory'),
 
+        Gradient: require('./gradient/GradientFactory'),
+        PointLight: require('./pointlight/PointLightFactory'),
+
         //  Shapes
         Arc: require('./shape/arc/ArcFactory'),
+        Circle: require('./shape/circle/CircleFactory'),
         Curve: require('./shape/curve/CurveFactory'),
         Ellipse: require('./shape/ellipse/EllipseFactory'),
         Grid: require('./shape/grid/GridFactory'),
@@ -121,7 +129,10 @@ var GameObjects = {
         Text: require('./text/TextCreator'),
         TileSprite: require('./tilesprite/TileSpriteCreator'),
         Zone: require('./zone/ZoneCreator'),
-        Video: require('./video/VideoCreator')
+        Video: require('./video/VideoCreator'),
+
+        Gradient: require('./gradient/GradientCreator'),
+        PointLight: require('./pointlight/PointLightCreator')
     }
 
 };
@@ -130,7 +141,6 @@ var GameObjects = {
 if (typeof WEBGL_RENDERER)
 {
     GameObjects.CaptureFrame = require('./captureframe/CaptureFrame');
-    GameObjects.Gradient = require('./gradient/Gradient');
     GameObjects.Noise = require('./noise/Noise');
     GameObjects.NoiseCell2D = require('./noise/noisecell2d/NoiseCell2D');
     GameObjects.NoiseCell3D = require('./noise/noisecell3d/NoiseCell3D');
@@ -139,11 +149,9 @@ if (typeof WEBGL_RENDERER)
     GameObjects.NoiseSimplex3D = require('./noise/noisesimplex3d/NoiseSimplex3D');
     GameObjects.Shader = require('./shader/Shader');
     GameObjects.NineSlice = require('./nineslice/NineSlice');
-    GameObjects.PointLight = require('./pointlight/PointLight');
     GameObjects.SpriteGPULayer = require('./spritegpulayer/SpriteGPULayer');
 
     GameObjects.Factories.CaptureFrame = require('./captureframe/CaptureFrameFactory');
-    GameObjects.Factories.Gradient = require('./gradient/GradientFactory');
     GameObjects.Factories.Noise = require('./noise/NoiseFactory');
     GameObjects.Factories.NoiseCell2D = require('./noise/noisecell2d/NoiseCell2DFactory');
     GameObjects.Factories.NoiseCell3D = require('./noise/noisecell3d/NoiseCell3DFactory');
@@ -152,11 +160,9 @@ if (typeof WEBGL_RENDERER)
     GameObjects.Factories.NoiseSimplex3D = require('./noise/noisesimplex3d/NoiseSimplex3DFactory');
     GameObjects.Factories.Shader = require('./shader/ShaderFactory');
     GameObjects.Factories.NineSlice = require('./nineslice/NineSliceFactory');
-    GameObjects.Factories.PointLight = require('./pointlight/PointLightFactory');
     GameObjects.Factories.SpriteGPULayer = require('./spritegpulayer/SpriteGPULayerFactory');
 
     GameObjects.Creators.CaptureFrame = require('./captureframe/CaptureFrameCreator');
-    GameObjects.Creators.Gradient = require('./gradient/GradientCreator');
     GameObjects.Creators.Noise = require('./noise/NoiseCreator');
     GameObjects.Creators.NoiseCell2D = require('./noise/noisecell2d/NoiseCell2DCreator');
     GameObjects.Creators.NoiseCell3D = require('./noise/noisecell3d/NoiseCell3DCreator');
@@ -165,7 +171,6 @@ if (typeof WEBGL_RENDERER)
     GameObjects.Creators.NoiseSimplex3D = require('./noise/noisesimplex3d/NoiseSimplex3DCreator');
     GameObjects.Creators.Shader = require('./shader/ShaderCreator');
     GameObjects.Creators.NineSlice = require('./nineslice/NineSliceCreator');
-    GameObjects.Creators.PointLight = require('./pointlight/PointLightCreator');
     GameObjects.Creators.SpriteGPULayer = require('./spritegpulayer/SpriteGPULayerCreator');
 
     GameObjects.Light = require('./lights/Light');
