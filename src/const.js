@@ -47,7 +47,7 @@ var CONST = {
     AUTO: 0,
 
     /**
-     * Forces Phaser to only use the Canvas Renderer.
+     * The Canvas Renderer. Not used.
      *
      * @name Phaser.CANVAS
      * @const
@@ -77,7 +77,15 @@ var CONST = {
     HEADLESS: 3,
 
 
-    CSS: 4,
+    /**
+     * The CSS Renderer.
+     *
+     * @name Phaser.CSS
+     * @const
+     * @type {number}
+     * @since 5.0.0
+     */
+    CSS: 10,
 
     /**
      * In Phaser the value -1 means 'forever' in lots of cases, this const allows you to use it instead
