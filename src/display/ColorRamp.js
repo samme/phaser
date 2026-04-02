@@ -180,11 +180,6 @@ var ColorRamp = new Class({
             lastEnd = newBand.end;
         }
 
-        if ((encode !== false) && this.gpuEncode)
-        {
-            this.encode();
-        }
-
         return this;
     },
 

@@ -24,10 +24,9 @@ var GameObjectFactory = require('../GameObjectFactory');
  *
  * @return {Phaser.GameObjects.Gradient} The Game Object that was created.
  */
-if (typeof WEBGL_RENDERER)
+
+GameObjectFactory.register('gradient', function (config, x, y, width, height)
 {
-    GameObjectFactory.register('gradient', function (config, x, y, width, height)
-    {
-        return this.displayList.add(new Gradient(this.scene, config, x, y, width, height));
-    });
-}
+    return this.displayList.add(new Gradient(this.scene, config, x, y, width, height));
+});
+

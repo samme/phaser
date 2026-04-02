@@ -4,12 +4,12 @@
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
 */
 
-var ColorRamp = require('../../display/ColorRamp');
-var Vector2 = require('../../math/Vector2');
-var GradientFrag = require('../../renderer/webgl/shaders/Gradient-frag');
-var RampGlsl = require('../../renderer/webgl/shaders/Ramp-glsl');
 var Class = require('../../utils/Class');
-var Shader = require('../shader/Shader');
+var ColorRamp = require('../../display/ColorRamp');
+var Components = require('../components');
+var GameObject = require('../GameObject');
+var GradientRender = require('./GradientRender');
+var Vector2 = require('../../math/Vector2');
 
 /**
  * @classdesc
@@ -85,34 +85,38 @@ var Shader = require('../shader/Shader');
  * @param {number} [height=128] - The height of the Game Object.
  */
 var Gradient = new Class({
-    Extends: Shader,
+    Extends: GameObject,
+
+    Mixins: [
+        Components.AlphaSingle,
+        Components.BlendMode,
+        Components.ComputedSize,
+        Components.Depth,
+        Components.GetBounds,
+        Components.Origin,
+        Components.ScrollFactor,
+        Components.Transform,
+        Components.Visible,
+        GradientRender
+    ],
 
     initialize: function Gradient (scene, config, x, y, width, height)
     {
         if (!config) { config = {}; }
+        if (typeof config === 'string')
+        {
+            config = { fragmentKey: config };
+        }
+        if (x === undefined) { x = 0; }
+        if (y === undefined) { y = 0; }
+        if (width === undefined) { width = 128; }
+        if (height === undefined) { height = 128; }
 
-        var shaderConfig = {
-            name: 'gradient',
-            fragmentSource: GradientFrag,
-            shaderAdditions: [
-                {
-                    name: 'RAMP_0',
-                    tags: 'RAMP',
-                    additions: {
-                        fragmentHeader: RampGlsl
-                    }
-                }
-            ],
-            initialUniforms: {
-                uRampTexture: 0
-            },
-            setupUniforms: this._setupUniforms,
-            updateShaderConfig: this._updateShaderConfig
-        };
+        GameObject.call(this, scene, 'Gradient');
 
-        Shader.call(this, scene, shaderConfig, x, y, width, height);
-
-        this.type = 'Gradient';
+        this.setPosition(x, y);
+        this.setSize(width, height);
+        this.setOrigin(0.5, 0.5);
 
         /**
          * The ramp which contains the color data for the gradient.
@@ -154,26 +158,17 @@ var Gradient = new Class({
          * where 0 is the start of the `shape` vector and 1 is the end.
          * Repeat mode tells us how to handle that number below 0/above 1.
          *
-         * This can be one of the following:
+         * This can be only the following:
          *
          * - 0 (EXTEND): values are clamped between 0 and 1,
          *   so the ends of the gradient become flat color.
-         * - 1 (TRUNCATE): values are discarded outside 0-1,
-         *   so the ends of the gradient become transparent.
-         * - 2 (SAWTOOTH): values are modulo 1,
-         *   so the gradient repeats.
-         * - 3 (TRIANGULAR): values rise to 1 then fall to 0,
-         *   so the gradient goes smoothly back and forth.
-         *
-         * Note that conic gradients never leave the range 0-1
-         * unless offset is applied. They may look weird if you do.
          *
          * @name Phaser.GameObjects.Gradient#repeatMode
          * @type {number}
          * @default 0
          * @since 4.0.0
          */
-        this.repeatMode = config.repeatMode || 0;
+        this.repeatMode = 0;
 
         /**
          * The shape mode of the gradient.
@@ -251,9 +246,7 @@ var Gradient = new Class({
          * @since 4.0.0
          * @default false
          */
-        this.dither = !!config.dither;
-
-        this.setTextures([ this.ramp.dataTexture ]);
+        this.dither = false;
     },
 
     /**
@@ -280,42 +273,105 @@ var Gradient = new Class({
     },
 
     /**
-     * The function which updates shader configuration.
-     * This is provided to the Shader base class as `updateShaderConfig`.
-     * You should not override `updateShaderConfig` on a Gradient.
-     *
-     * @method Phaser.GameObjects.Gradient#_updateShaderConfig
-     * @private
-     * @since 4.0.0
-     * @param {Phaser.Renderer.WebGL.DrawingContext} drawingContext - A reference to the current drawing context.
-     * @param {Phaser.GameObjects.Gradient} gameObject - The game object which is rendering.
-     * @param {Phaser.Renderer.WebGL.RenderNodes.ShaderQuad} renderNode - The render node currently rendering.
-     */
-    _updateShaderConfig: function (drawingContext, gameObject, renderNode)
-    {
-        var depth = gameObject.ramp.bandTreeDepth;
-
-        var bandTreeDepth = renderNode.programManager.getAdditionsByTag('RAMP')[0];
-        bandTreeDepth.name = 'RAMP_' + depth;
-        bandTreeDepth.additions.fragmentHeader = RampGlsl.replace(
-            '#define BAND_TREE_DEPTH 0.0',
-            '#define BAND_TREE_DEPTH ' + depth + '.0'
-        );
-    },
-
-    /**
      * Internal destroy handler, called as part of the destroy process.
      *
-     * @method Phaser.GameObjects.Gradient#preDestroy
+     * @method Phaser.GameObjects.Shader#preDestroy
      * @protected
      * @since 4.0.0
      */
     preDestroy: function ()
     {
         this.ramp.destroy();
+    },
 
-        Shader.prototype.preDestroy.call(this);
+    /**
+     * Converts a 0-1 value to a CSS percentage string.
+     *
+     * @method Phaser.GameObjects.Gradient#_pct
+     * @private
+     * @since 4.0.0
+     * @param {number} value - A value between 0 and 1.
+     * @returns {string}
+     */
+    _pct: function (value)
+    {
+        return `${(value * 100).toFixed(1)}%`;
+    },
+
+    /**
+     * Converts this Gradient to a CSS `background-image` string.
+     *
+     * Note: CSS gradients are a best-effort approximation.
+     * Dither, repeat modes beyond EXTEND/SAWTOOTH, and BILINEAR shape
+     * are not fully supported by CSS.
+     *
+     * @method Phaser.GameObjects.Gradient#toCSSGradient
+     * @since 4.0.0
+     * @returns {string|null} A CSS gradient string, or null if not supported.
+     */
+    getCSSGradient: function ()
+    {
+        var bands = this.ramp.bands;
+        if (!bands || bands.length === 0) { return null; }
+
+        var stops = [];
+        for (var i = 0; i < bands.length; i++)
+        {
+            var { colorStart, colorEnd, start, end } = bands[i];
+            stops.push(`${colorStart.rgba} ${this._pct(start)}`);
+            stops.push(`${colorEnd.rgba} ${this._pct(end)}`);
+        }
+        var stopsStr = stops.join(', ');
+        var fromAngle, position;
+
+        switch (this.shapeMode)
+        {
+            case 0: // LINEAR
+            case 1: // BILINEAR (approximate as linear)
+            {
+                var angle = Math.atan2(-this.shape.y, this.shape.x) + Math.PI / 2;
+                return `linear-gradient(${angle}rad, ${stopsStr})`;
+            }
+
+            case 2: // RADIAL
+            {
+                var radius = this.shape.length();
+                position = `circle ${this._pct(radius)} at ${this._pct(this.start.x)} ${this._pct(this.start.y)}`;
+                return `radial-gradient(${position}, ${stopsStr})`;
+            }
+
+            case 3: // CONIC_SYMMETRIC
+            {
+                throw new Error('CONIC_SYMMETRIC not supported');
+            }
+
+            case 4: // CONIC_ASYMMETRIC
+            {
+                fromAngle = Math.atan2(-this.shape.y, this.shape.x) + Math.PI / 2;
+                position = `from ${fromAngle}rad at ${this._pct(this.start.x)} ${this._pct(this.start.y)}`;
+                return `conic-gradient(${position}, ${stopsStr})`;
+            }
+
+            default:
+                return null;
+        }
+    },
+
+    /**
+     * Converts a ColorBand color value to a CSS color stop string.
+     *
+     * @method Phaser.GameObjects.Gradient#_bandToColorStop
+     * @private
+     * @since 4.0.0
+     * @param {number|number[]|object} color - A hex color or [r, g, b, a] array (0-1 range) or Color (??) object.
+     * @param {number} position - Stop position 0-1.
+     * @returns {string}
+     */
+    _bandToColorStop: function (color, position)
+    {
+        return `${color.rgba} ${this._pct(position)}`;
     }
+
 });
 
 module.exports = Gradient;
