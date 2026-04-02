@@ -117,6 +117,8 @@ var ImageFile = new Class({
 
         this.data.onload = function ()
         {
+            console.debug('revokeObjectURL', this.type, this.key, _this.data);
+
             File.revokeObjectURL(_this.data);
 
             _this.onProcessComplete();
@@ -124,6 +126,8 @@ var ImageFile = new Class({
 
         this.data.onerror = function ()
         {
+            console.debug('revokeObjectURL', this.type, this.key, _this.data);
+
             File.revokeObjectURL(_this.data);
 
             _this.onProcessError();

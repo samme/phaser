@@ -160,6 +160,8 @@ var SVGFile = new Class({
         {
             if (!retry)
             {
+                console.debug('revokeObjectURL', _this.data);
+
                 File.revokeObjectURL(_this.data);
             }
 
@@ -172,6 +174,8 @@ var SVGFile = new Class({
             if (!retry)
             {
                 retry = true;
+
+                console.debug('revokeObjectURL', _this.data);
 
                 File.revokeObjectURL(_this.data);
 
