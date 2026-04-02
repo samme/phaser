@@ -1,0 +1,29 @@
+#debug-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
+}
+
+#debug-text {
+    width: 800px;
+    height: 20px;
+    padding: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    font: 12px/20px monospace;
+    color: white;
+    background: #000c;
+}
+
+svg {
+    outline: thin solid lime;
+}
+
+svg * {
+    outline: thin solid aqua;
+}
+
+[data-type] {
+    outline: thin solid red;
+}

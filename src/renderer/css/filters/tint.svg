@@ -1,0 +1,9 @@
+<svg>
+    <defs>
+        <filter id="tint" color-interpolation-filters="sRGB">
+            <feFlood flood-color="rgba(255, 255, 255, 1)" result="flood" />
+            <feComposite in="flood" in2="SourceGraphic" operator="in" result="composite" />
+            <feBlend in="composite" in2="SourceGraphic" mode="multiply" />
+        </filter>
+    </defs>
+</svg>

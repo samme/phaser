@@ -1,0 +1,38 @@
+{
+    "extends": ["../../../.eslintrc.json"],
+
+    "rules": {
+        "no-var": "error",
+
+        "prefer-const": ["error", {
+            "destructuring": "any",
+            "ignoreReadBeforeAssign": false
+        }],
+
+        "prefer-template": "error",
+
+        "prefer-destructuring": ["warn", {
+            "VariableDeclarator": {
+                "array": false,
+                "object": true
+            },
+            "AssignmentExpression": {
+                "array": false,
+                "object": false
+            }
+        }],
+
+        "object-shorthand": ["warn", "always", {
+            "avoidQuotes": true,
+            "ignoreConstructors": true
+        }],
+
+        "prefer-arrow-callback": ["warn", {
+            "allowNamedFunctions": false,
+            "allowUnboundThis": true
+        }],
+
+        "prefer-spread": "warn",
+        "prefer-rest-params": "warn"
+    }
+}
