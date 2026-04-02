@@ -6,6 +6,7 @@
 
 var DefaultTilemapLayerNodes = require('../renderer/webgl/renderNodes/defaults/DefaultTilemapLayerNodes');
 var Class = require('../utils/Class');
+var CSSFreeze = require('../gameobjects/components/CSSFreeze');
 var TilemapComponents = require('./components');
 var TilemapLayerRender = require('./TilemapLayerRender');
 var TilemapLayerBase = require('./TilemapLayerBase');
@@ -48,7 +49,8 @@ var TilemapLayer = new Class({
     Extends: TilemapLayerBase,
 
     Mixins: [
-        TilemapLayerRender
+        TilemapLayerRender,
+        CSSFreeze
     ],
 
     initialize:

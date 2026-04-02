@@ -524,11 +524,13 @@ var Tileset = new Class({
         var tx = this.tileMargin + offsetX;
         var ty = this.tileMargin + offsetY;
 
+        var cssImage = this.image ? this.image.get().source.cssImage : 'none';
+
         for (var y = 0; y < this.rows; y++)
         {
             for (var x = 0; x < this.columns; x++)
             {
-                this.texCoordinates.push({ x: tx, y: ty });
+                this.texCoordinates.push({ x: tx, y: ty, cssBackground: this.image ? `${-tx}px ${-ty}px ${cssImage} no-repeat` : null });
                 tx += this.tileWidth + this.tileSpacing;
             }
 
