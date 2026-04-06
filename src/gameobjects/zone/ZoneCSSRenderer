@@ -13,18 +13,21 @@
  */
 var ZoneCSSRenderer = function (renderer, src, camera)
 {
-    const {renderNode} = src;
+    camera.addToRenderList(src);
 
-    renderNode.setSize(src.width, src.height);
+    const { renderNode, x, y, displayOriginX, displayOriginY, width, height, rotation, scaleX, scaleY } = src;
 
-    if (src.rotation === 0 && src.scaleX === 1 && src.scaleY === 1)
+    renderNode.setSize(width, height);
+
+    if (rotation === 0 && scaleX === 1 && scaleY === 1)
     {
-        renderNode.setXY(src.x, src.y);
+        renderNode.setXY(x - displayOriginX, y - displayOriginY);
+        renderNode.setTransformOrigin(null);
     }
     else
     {
-        renderNode.setTSR(src.x, src.y, src.scaleX, src.scaleY, src.rotation);
-        renderNode.setTransformOrigin(src.displayOriginX, src.displayOriginY);
+        renderNode.setTSR(x - displayOriginX, y - displayOriginY, scaleX, scaleY, rotation);
+        renderNode.setTransformOrigin(displayOriginX, displayOriginY);
     }
 };
 
