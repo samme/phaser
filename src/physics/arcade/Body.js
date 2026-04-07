@@ -1872,7 +1872,7 @@ var Body = new Class({
      *
      * @param {Phaser.GameObjects.Graphics} graphic - The Graphics object to draw on.
      */
-    drawDebug: function (graphic)
+    drawDebug: function (ctx)
     {
         var pos = this.position;
 
@@ -1881,41 +1881,55 @@ var Body = new Class({
 
         if (this.debugShowBody)
         {
-            graphic.lineStyle(graphic.defaultStrokeWidth, this.debugBodyColor);
-
             if (this.isCircle)
             {
-                graphic.strokeCircle(x, y, this.width / 2);
+                ctx.beginPath();
+                ctx.arc(x, y, this.width / 2, 0, Math.PI * 2);
+                ctx.stroke();
             }
             else
             {
                 //  Only draw the sides where checkCollision is true, similar to debugger in layer
                 if (this.checkCollision.up)
                 {
-                    graphic.lineBetween(pos.x, pos.y, pos.x + this.width, pos.y);
+                    ctx.beginPath();
+                    ctx.moveTo(pos.x, pos.y);
+                    ctx.lineTo(pos.x + this.width, pos.y);
+                    ctx.stroke();
                 }
 
                 if (this.checkCollision.right)
                 {
-                    graphic.lineBetween(pos.x + this.width, pos.y, pos.x + this.width, pos.y + this.height);
+                    ctx.beginPath();
+                    ctx.moveTo(pos.x + this.width, pos.y);
+                    ctx.lineTo(pos.x + this.width, pos.y + this.height);
+                    ctx.stroke();
                 }
 
                 if (this.checkCollision.down)
                 {
-                    graphic.lineBetween(pos.x, pos.y + this.height, pos.x + this.width, pos.y + this.height);
+                    ctx.beginPath();
+                    ctx.moveTo(pos.x, pos.y + this.height);
+                    ctx.lineTo(pos.x + this.width, pos.y + this.height);
+                    ctx.stroke();
                 }
 
                 if (this.checkCollision.left)
                 {
-                    graphic.lineBetween(pos.x, pos.y, pos.x, pos.y + this.height);
+                    ctx.beginPath();
+                    ctx.moveTo(pos.x, pos.y);
+                    ctx.lineTo(pos.x, pos.y + this.height);
+                    ctx.stroke();
                 }
             }
         }
 
         if (this.debugShowVelocity)
         {
-            graphic.lineStyle(graphic.defaultStrokeWidth, this.world.defaults.velocityDebugColor, 1);
-            graphic.lineBetween(x, y, x + this.velocity.x / 2, y + this.velocity.y / 2);
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + this.velocity.x / 2, y + this.velocity.y / 2);
+            ctx.stroke();
         }
     },
 

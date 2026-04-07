@@ -511,9 +511,9 @@ var StaticBody = new Class({
 
     /**
      * Changes the Game Object this Body is bound to.
-     * 
+     *
      * First it removes its reference from the old Game Object, then sets the new one.
-     * 
+     *
      * This body will be resized to match the frame dimensions of the given Game Object, if it has a texture frame.
      * You can optionally update the position and dimensions of this Body to reflect that of the new Game Object.
      *
@@ -932,7 +932,7 @@ var StaticBody = new Class({
      *
      * @param {Phaser.GameObjects.Graphics} graphic - The Graphics object to use for the debug drawing of the StaticBody.
      */
-    drawDebug: function (graphic)
+    drawDebug: function (ctx)
     {
         var pos = this.position;
 
@@ -941,17 +941,16 @@ var StaticBody = new Class({
 
         if (this.debugShowBody)
         {
-            graphic.lineStyle(graphic.defaultStrokeWidth, this.debugBodyColor, 1);
-
             if (this.isCircle)
             {
-                graphic.strokeCircle(x, y, this.width / 2);
+                ctx.beginPath();
+                ctx.arc(x, y, this.width / 2, 0, Math.PI * 2);
+                ctx.stroke();
             }
             else
             {
-                graphic.strokeRect(pos.x, pos.y, this.width, this.height);
+                ctx.strokeRect(pos.x, pos.y, this.width, this.height);
             }
-
         }
     },
 

@@ -21,6 +21,7 @@ var GetOverlapX = require('./GetOverlapX');
 var GetOverlapY = require('./GetOverlapY');
 var GetTilesWithinWorldXY = require('../../tilemaps/components/GetTilesWithinWorldXY');
 var GetValue = require('../../utils/object/GetValue');
+var IntegerToCSSColor = require('../../renderer/css/IntegerToCSSColor');
 var MATH_CONST = require('../../math/const');
 var ProcessQueue = require('../../structs/ProcessQueue');
 var ProcessTileCallbacks = require('./tilemap/ProcessTileCallbacks');
@@ -297,7 +298,7 @@ var World = new Class({
          * The graphics object drawing the debug display.
          *
          * @name Phaser.Physics.Arcade.World#debugGraphic
-         * @type {Phaser.GameObjects.Graphics}
+         * @type {Phaser.GameObjects.CanvasImage}
          * @since 3.0.0
          */
         this.debugGraphic;
@@ -683,19 +684,21 @@ var World = new Class({
      * @method Phaser.Physics.Arcade.World#createDebugGraphic
      * @since 3.0.0
      *
-     * @return {Phaser.GameObjects.Graphics} The Graphics object that was created for use by the World.
+     * @return {Phaser.GameObjects.CanvasImage} The CanvasImage object that was created for use by the World.
      */
     createDebugGraphic: function ()
     {
-        var graphic = this.scene.sys.add.graphics({ x: 0, y: 0 });
+        var { width, height } = this.scene.sys.scale;
 
-        graphic.setDepth(Number.MAX_VALUE);
+        var canvasImage = this.scene.sys.add.canvasImage(0, 0, width, height).setOrigin(0, 0);
 
-        this.debugGraphic = graphic;
+        canvasImage.setDepth(Number.MAX_VALUE);
+
+        this.debugGraphic = canvasImage;
 
         this.drawDebug = true;
 
-        return graphic;
+        return canvasImage;
     },
 
     /**
@@ -1095,25 +1098,35 @@ var World = new Class({
 
         if (this.drawDebug)
         {
-            var graphics = this.debugGraphic;
+            var { context, width, height } = this.debugGraphic.texture;
+            var lineWidth = 1;
+            var bodyDebugColor = IntegerToCSSColor(this.defaults.bodyDebugColor);
+            var staticBodyDebugColor = IntegerToCSSColor(this.defaults.staticBodyDebugColor);
 
-            graphics.clear();
+            // var velocityDebugColor = IntegerToCSSColor(this.defaults.velocityDebugColor);
 
-            dynamic.forEach(function (body)
+            context.clearRect(0, 0, width, height);
+
+            context.lineWidth = lineWidth;
+            context.strokeStyle = bodyDebugColor;
+
+            for (const body of dynamic)
             {
                 if (body.willDrawDebug())
                 {
-                    body.drawDebug(graphics);
+                    body.drawDebug(context);
                 }
-            });
+            }
 
-            staticBodies.forEach(function (body)
+            context.strokeStyle = staticBodyDebugColor;
+
+            for (const body of staticBodies)
             {
                 if (body.willDrawDebug())
                 {
-                    body.drawDebug(graphics);
+                    body.drawDebug(context);
                 }
-            });
+            }
         }
 
         var pending = this.pendingDestroy;
