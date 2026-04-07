@@ -33,8 +33,6 @@ var LayerCSSRenderer = function (renderer, src, camera)
 
     const children = src.list;
 
-    renderer.countDirtyState(dirty, children.length);
-
     if (children.length === 0)
     {
         renderNode.hide();
@@ -58,6 +56,10 @@ var LayerCSSRenderer = function (renderer, src, camera)
 
         src._frozenRendered = true;
     }
+
+    renderer.countDirtyState(dirty, children.length);
+
+    renderer.drawCount += children.length;
 
     for (var i = 0; i < children.length; i++)
     {
