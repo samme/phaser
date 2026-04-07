@@ -36,6 +36,10 @@ module.exports = [
                 {
                   test: /\.html$/,
                   type: 'asset/source'
+                },
+                {
+                    test: /\.svg$/,
+                    type: 'asset/source'
                 }
             ]
         },
