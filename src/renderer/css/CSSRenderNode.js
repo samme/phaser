@@ -72,7 +72,7 @@ class CSSRenderNode
         {
             this._backgroundColor = value;
 
-            if (value)
+            if (value !== null)
             {
                 IntegerToColor(value, tempColor);
 
