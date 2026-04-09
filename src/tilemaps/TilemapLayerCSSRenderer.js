@@ -1,9 +1,13 @@
+const RenderFilters = require('../renderer/css/RenderFilters');
+const RenderMask = require('../renderer/css/RenderMask');
+const RenderTransformWithSize = require('../renderer/css/RenderTransformWithSize');
+
 /**
  * Renders this Game Object with the CSS Renderer.
  * This method should not be called directly. It is a utility function of the Render module.
  *
  * @method Phaser.Tilemaps.TilemapLayer#renderCSS
- * @since 4.0.0
+ * @since 5.0.0
  * @private
  *
  * @param {Phaser.Renderer.CSS.CSSRenderer} renderer - A reference to the current active CSS renderer.
@@ -18,11 +22,12 @@ var TilemapLayerCSSRenderer = function (renderer, src, camera)
     }
 
     src.renderNode.show();
-
     src.renderNode.setAlpha(src.alpha);
     src.renderNode.setBlendMode(src.blendMode);
-    src.renderNode.setSize(src.width, src.height);
-    src.renderNode.setTSR(src.x, src.y, src.scaleX, src.scaleY, src.rotation);
+
+    RenderFilters(src);
+    RenderMask(src);
+    RenderTransformWithSize(src, camera);
 
     if (src.isFrozen)
     {

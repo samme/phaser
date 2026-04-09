@@ -1,8 +1,6 @@
-/**
- * @author       Richard Davey <rich@phaser.io>
- * @copyright    2013-2026 Phaser Studio Inc.
- * @license      {@link https://opensource.org/licenses/MIT|MIT License}
- */
+const RenderFilters = require('../../renderer/css/RenderFilters');
+const RenderMask = require('../../renderer/css/RenderMask');
+const RenderTransform = require('../../renderer/css/RenderTransform');
 
 /**
  * Renders this Game Object with the CSS Renderer to the given Camera.
@@ -10,7 +8,7 @@
  * This method should not be called directly. It is a utility function of the Render module.
  *
  * @method Phaser.GameObjects.Blitter#renderCSS
- * @since 3.0.0
+ * @since 5.0.0
  * @private
  *
  * @param {Phaser.Renderer.CSS.CSSRenderer} renderer - A reference to the current active CSS renderer.
@@ -19,23 +17,30 @@
  */
 const BlitterCSSRenderer = function (renderer, src, camera)
 {
-    const list = src.children.list;
+    const { renderNode } = src;
+    const { list } = src.children;
 
     if (!src.willRenderCSS() || list.length === 0)
     {
+        renderNode.hide();
+
         return;
     }
 
     // For now addToRenderList() is required for correct pointer input.
     camera.addToRenderList(src);
 
-    const { dirty, renderNode } = src;
+    const { dirty } = src;
 
     renderer.countDirtyState(dirty, list.length);
 
+    renderNode.show();
     renderNode.setAlpha(src.alpha);
     renderNode.setBlendMode(src.blendMode);
-    renderNode.setXY(src.x, src.y);
+
+    RenderFilters(src);
+    RenderMask(src);
+    RenderTransform(src, camera);
 
     if (src.isFrozen)
     {

@@ -1,3 +1,7 @@
+const RenderFilters = require('../../renderer/css/RenderFilters');
+const RenderMask = require('../../renderer/css/RenderMask');
+const RenderTransformWithSize = require('../../renderer/css/RenderTransformWithSize');
+
 const UpdateSVGShape = require('../../renderer/css/UpdateSVGShape');
 
 /**
@@ -10,7 +14,7 @@ const UpdateSVGShape = require('../../renderer/css/UpdateSVGShape');
  * @param {Phaser.Renderer.CSS.CSSRenderer} renderer - A reference to the current active CSS Renderer.
  * @param {Phaser.GameObjects.Shape} shape - The Game Object being rendered in this call.
  */
-const ShapeCSSRenderer = function (renderer, shape)
+const ShapeCSSRenderer = function (renderer, shape, camera)
 {
     const renderNode = shape.renderNode;
 
@@ -21,26 +25,12 @@ const ShapeCSSRenderer = function (renderer, shape)
     }
 
     renderNode.show();
-
     renderNode.setAlpha(shape.alpha);
     renderNode.setBlendMode(shape.blendMode);
 
-    const x = shape.x - shape.displayOriginX;
-    const y = shape.y - shape.displayOriginY;
-
-    if (shape.rotation === 0 && shape.scaleX === 1 && shape.scaleY === 1)
-    {
-        renderNode.setXY(x, y);
-    }
-    else
-    {
-        renderNode.setTransformOrigin(shape.displayOriginX, shape.displayOriginY);
-        renderNode.setTSR(x, y, shape.scaleX, shape.scaleY, shape.rotation);
-    }
-
-    renderNode.setSize(shape.width, shape.height);
-
-    // TODO: tint & filters
+    RenderFilters(shape);
+    RenderMask(shape);
+    RenderTransformWithSize(shape, camera);
 
     UpdateSVGShape(shape, shape.element);
 };

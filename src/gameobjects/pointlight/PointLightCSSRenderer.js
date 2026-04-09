@@ -1,4 +1,6 @@
-
+const RenderFilters = require('../../renderer/css/RenderFilters');
+const RenderMask = require('../../renderer/css/RenderMask');
+const RenderTransformWithSize = require('../../renderer/css/RenderTransformWithSize');
 
 const PointLightCSSRenderer = function (renderer, src, camera)
 {
@@ -15,14 +17,15 @@ const PointLightCSSRenderer = function (renderer, src, camera)
 
     renderNode.show();
 
-    const { alpha, blendMode, width, height, x, y, radius } = src;
+    const { alpha, blendMode } = src;
 
     renderNode.setAlpha(alpha);
     renderNode.setBlendMode(blendMode);
-    renderNode.setSize(width, height);
     renderNode.setProperty('backgroundImage', src.getCSSBackground());
 
-    renderNode.setXY(x - radius, y - radius);
+    RenderFilters(src);
+    RenderMask(src);
+    RenderTransformWithSize(src, camera);
 };
 
 module.exports = PointLightCSSRenderer;

@@ -1,10 +1,14 @@
+const RenderFilters = require('../../renderer/css/RenderFilters');
+const RenderTransformWithSize = require('../../renderer/css/RenderTransformWithSize');
+const RenderMask = require('../../renderer/css/RenderMask');
+
 const GradientCSSRenderer = function (renderer, src, camera)
 {
     const { renderNode } = src;
 
     if (!src.willRenderCSS())
     {
-        src.renderNode.hide();
+        renderNode.hide();
 
         return;
     }
@@ -15,18 +19,11 @@ const GradientCSSRenderer = function (renderer, src, camera)
 
     renderNode.setAlpha(src.alpha);
     renderNode.setBlendMode(src.blendMode);
-    renderNode.setSize(src.width, src.height);
     renderNode.setProperty('backgroundImage', src.getCSSGradient());
 
-    if (src.rotation === 0 && src.scaleX === 1 && src.scaleY === 1)
-    {
-        renderNode.setXY(src.x, src.y);
-    }
-    else
-    {
-        renderNode.setTSR(src.x - src.displayOriginX, src.y - src.displayOriginY, src.scaleX, src.scaleY, src.rotation);
-        renderNode.setTransformOrigin(src.displayOriginX, src.displayOriginY);
-    }
+    RenderFilters(src);
+    RenderMask(src);
+    RenderTransformWithSize(src, camera);
 };
 
 module.exports = GradientCSSRenderer;

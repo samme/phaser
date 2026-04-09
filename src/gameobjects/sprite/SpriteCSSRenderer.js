@@ -1,8 +1,6 @@
-/**
- * @author       Richard Davey <rich@phaser.io>
- * @copyright    2013-2026 Phaser Studio Inc.
- * @license      {@link https://opensource.org/licenses/MIT|MIT License}
- */
+const RenderFilters = require('../../renderer/css/RenderFilters');
+const RenderFrameWithCrop = require('../../renderer/css/RenderFrameWithCrop');
+const RenderMask = require('../../renderer/css/RenderMask');
 
 /**
  * Renders this Game Object with the CSS Renderer to the given Camera.
@@ -10,28 +8,33 @@
  * This method should not be called directly. It is a utility function of the Render module.
  *
  * @method Phaser.GameObjects.Sprite#renderCSS
- * @since 3.0.0
+ * @since 5.0.0
  * @private
  *
  * @param {Phaser.Renderer.CSS.CSSRenderer} renderer - A reference to the current active CSS renderer.
  * @param {Phaser.GameObjects.Sprite} src - The Game Object being rendered in this call.
  * @param {Phaser.Cameras.Scene2D.Camera} camera - The Camera that is rendering the Game Object.
- * @param {Phaser.GameObjects.Components.TransformMatrix} parentMatrix - This transform matrix is defined if the game object is nested
  */
-var SpriteCSSRenderer = function (renderer, src, camera, parentMatrix)
+var SpriteCSSRenderer = function (renderer, src, camera)
 {
+    const { renderNode } = src;
+
     if (!src.willRenderCSS())
     {
-        src.renderNode.hide();
+        renderNode.hide();
 
         return;
     }
 
     camera.addToRenderList(src);
 
-    src.renderNode.show();
+    renderNode.show();
+    renderNode.setAlpha(src.alpha);
+    renderNode.setBlendMode(src.blendMode);
 
-    renderer.batchSprite(src, src.frame, camera, parentMatrix);
+    RenderFrameWithCrop(src, camera);
+    RenderMask(src);
+    RenderFilters(src);
 };
 
 module.exports = SpriteCSSRenderer;

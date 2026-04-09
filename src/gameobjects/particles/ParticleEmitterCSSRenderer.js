@@ -1,3 +1,7 @@
+const RenderFilters = require('../../renderer/css/RenderFilters');
+const RenderMask = require('../../renderer/css/RenderMask');
+const RenderTransform = require('../../renderer/css/RenderTransform');
+
 const RectangleToRectangle = require('../../geom/intersects/RectangleToRectangle');
 
 /**
@@ -36,15 +40,9 @@ const ParticleEmitterCSSRenderer = function (renderer, emitter, camera)
     renderNode.setAlpha(emitter.alpha);
     renderNode.setBlendMode(emitter.blendMode);
 
-    if (emitter.rotation === 0 && emitter.scaleX === 1 && emitter.scaleY === 1)
-    {
-        renderNode.setXY(emitter.x, emitter.y);
-    }
-    else
-    {
-        renderNode.setTSR(emitter.x, emitter.y, emitter.scaleX, emitter.scaleY, emitter.rotation);
-    }
-
+    RenderFilters(emitter);
+    RenderMask(emitter);
+    RenderTransform(emitter, camera);
 
     if (emitter.sortCallback)
     {

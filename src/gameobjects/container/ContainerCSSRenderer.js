@@ -1,3 +1,7 @@
+const RenderFilters = require('../../renderer/css/RenderFilters');
+const RenderTransformWithSize = require('../../renderer/css/RenderTransformWithSize');
+const RenderMask = require('../../renderer/css/RenderMask');
+
 /**
  * Renders this Game Object with the CSS Renderer to the given Camera.
  * The object will not render if any of its renderFlags are set or it is being actively filtered out by the Camera.
@@ -39,21 +43,9 @@ var ContainerCSSRenderer = function (renderer, src, camera)
     renderNode.setAlpha(src.alpha);
     renderNode.setBlendMode(src.blendMode);
 
-    if (src.rotation === 0 && src.scaleX === 1 && src.scaleY === 1)
-    {
-        renderNode.setXY(src.x, src.y);
-    }
-    else
-    {
-        renderNode.setTSR(src.x, src.y, src.scaleX, src.scaleY, src.rotation);
-        renderNode.setTransformOrigin(null);
-    }
-
-    if (src.mask)
-    {
-        // TODO
-        // container.mask.preRenderCSS(renderer, null, camera);
-    }
+    RenderFilters(src);
+    RenderMask(src);
+    RenderTransformWithSize(src, camera);
 
     if (src.isFrozen)
     {
