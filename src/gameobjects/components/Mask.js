@@ -4,9 +4,6 @@
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
 
-var CONST = require('../../const');
-var GeometryMask = require('../../display/mask/GeometryMask');
-
 /**
  * Provides methods used for setting, clearing, and creating masks on a Game Object.
  *
@@ -56,12 +53,6 @@ var Mask = {
      */
     setMask: function (mask)
     {
-        if (this.scene.renderer.type === CONST.WEBGL)
-        {
-            console.warn('Phaser.GameObjects.Components.Mask.setMask: This method is not supported in WebGL. Create a Mask filter instead.');
-            return this;
-        }
-
         this.mask = mask;
 
         return this;
@@ -92,42 +83,6 @@ var Mask = {
         this.mask = null;
 
         return this;
-    },
-
-    /**
-     * Creates and returns a Geometry Mask. This mask can be used by any Game Object,
-     * including this one.
-     *
-     * To create the mask you need to pass in a reference to a Graphics Game Object.
-     *
-     * If you do not provide a graphics object, and this Game Object is an instance
-     * of a Graphics object, then it will use itself to create the mask.
-     *
-     * This means you can call this method to create a Geometry Mask from any Graphics Game Object.
-     *
-     * This only works in the Canvas Renderer.
-     * In WebGL, use a Mask filter instead (see {@link Phaser.GameObjects.Components.FilterList#addMask}).
-     *
-     * @method Phaser.GameObjects.Components.Mask#createGeometryMask
-     * @since 3.6.2
-     *
-     * @generic {Phaser.GameObjects.Graphics} G
-     * @generic {Phaser.GameObjects.Shape} S
-     * @genericUse {(G|S)} [graphics]
-     *
-     * @param {Phaser.GameObjects.Graphics|Phaser.GameObjects.Shape} [graphics] - A Graphics Game Object, or any kind of Shape Game Object. The geometry within it will be used as the mask.
-     *
-     * @return {Phaser.Display.Masks.GeometryMask} This Geometry Mask that was created.
-     */
-    createGeometryMask: function (graphics)
-    {
-        if (graphics === undefined && (this.type === 'Graphics' || this.geom))
-        {
-            // eslint-disable-next-line consistent-this
-            graphics = this;
-        }
-
-        return new GeometryMask(this.scene, graphics);
     }
 
 };
