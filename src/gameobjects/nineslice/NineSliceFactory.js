@@ -75,8 +75,6 @@ var GameObjectFactory = require('../GameObjectFactory');
  * together and can co-exist with other Sprites and graphics on the display
  * list, without incurring any additional overhead.
  *
- * As of Phaser 3.60 this Game Object is WebGL only.
- *
  * @method Phaser.GameObjects.GameObjectFactory#nineslice
  * @webglOnly
  * @since 3.60.0
@@ -96,10 +94,7 @@ var GameObjectFactory = require('../GameObjectFactory');
  *
  * @return {Phaser.GameObjects.NineSlice} The Game Object that was created.
  */
-if (typeof WEBGL_RENDERER)
+GameObjectFactory.register('nineslice', function (x, y, texture, frame, width, height, leftWidth, rightWidth, topHeight, bottomHeight, tileX, tileY)
 {
-    GameObjectFactory.register('nineslice', function (x, y, texture, frame, width, height, leftWidth, rightWidth, topHeight, bottomHeight, tileX, tileY)
-    {
-        return this.displayList.add(new NineSlice(this.scene, x, y, texture, frame, width, height, leftWidth, rightWidth, topHeight, bottomHeight, tileX, tileY));
-    });
-}
+    return this.displayList.add(new NineSlice(this.scene, x, y, texture, frame, width, height, leftWidth, rightWidth, topHeight, bottomHeight, tileX, tileY));
+});
