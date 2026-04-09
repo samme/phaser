@@ -7,6 +7,7 @@
 var NOOP = require('../../utils/NOOP');
 var renderWebGL = NOOP;
 var renderCanvas = NOOP;
+var renderCSS = require('./NineSliceCSSRenderer');
 
 if (typeof WEBGL_RENDERER)
 {
@@ -16,6 +17,7 @@ if (typeof WEBGL_RENDERER)
 module.exports = {
 
     renderWebGL: renderWebGL,
-    renderCanvas: renderCanvas
+    renderCanvas: renderCanvas,
+    renderCSS: renderCSS
 
 };
