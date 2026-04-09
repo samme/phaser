@@ -75,21 +75,6 @@ var Vertex = require('./NineSliceVertex');
  * can be is the total of `topHeight` + `bottomHeight`.
  * If you need to display this object at a smaller size, you can scale it.
  *
- * In terms of performance, using a 3 slice Game Object is the equivalent of
- * having 3 Sprites in a row. Using a 9 slice Game Object is the equivalent
- * of having 9 Sprites in a row. The vertices of this object are all batched
- * together and can co-exist with other Sprites and graphics on the display
- * list, without incurring any additional overhead.
- *
- * This Game Object can now populate its values automatically
- * if they have been set within Texture Packer 7.1.0 or above and exported with
- * the atlas json. If this is the case, you can just create this Game Object without
- * specifying anything more than the texture key and frame and it will pull the
- * area data from the atlas.
- *
- * This object does not support trimmed textures from Texture Packer.
- * Trimming interferes with the ability to stretch the texture correctly.
- *
  * @class NineSlice
  * @extends Phaser.GameObjects.GameObject
  * @memberof Phaser.GameObjects
@@ -119,9 +104,9 @@ var Vertex = require('./NineSliceVertex');
  * @param {number} [rightWidth=10] - The size of the right vertical column (B).
  * @param {number} [topHeight=0] - The size of the top horizontal row (C). Set to zero or undefined to create a 3 slice object.
  * @param {number} [bottomHeight=0] - The size of the bottom horizontal row (D). Set to zero or undefined to create a 3 slice object.
- * @param {boolean} [tileX=false] - When enabled, the scalable horizontal regions are repeated across the object instead of being stretched. Each tile is still slightly stretched so that it remains visible in full, which may cause minor distortion but far less than pure stretching. The texture should be seamless to avoid visible artifacts between tiles.
- * @param {boolean} [tileY=false] - When enabled, the scalable vertical regions are repeated across the object instead of being stretched. Each tile is still slightly stretched so that it remains visible in full, which may cause minor distortion but far less than pure stretching. The texture should be seamless to avoid visible artifacts between tiles.
- */
+ * @param {string} [repeatX='stretch'] - Controls how the scalable horizontal regions of the Nine Slice are rendered. Accepts CSS `border-image-repeat` values: `'stretch'`, `'repeat'`, `'round'`, or `'space'`.
+ * @param {string} [repeatY='stretch'] - Controls how the scalable vertical regions of the Nine Slice are rendered. Accepts CSS `border-image-repeat` values: `'stretch'`, `'repeat'`, `'round'`, or `'space'`.
+*/
 var NineSlice = new Class({
 
     Extends: GameObject,
@@ -143,7 +128,7 @@ var NineSlice = new Class({
 
     initialize:
 
-    function NineSlice (scene, x, y, texture, frame, width, height, leftWidth, rightWidth, topHeight, bottomHeight, tileX, tileY)
+    function NineSlice (scene, x, y, texture, frame, width, height, leftWidth, rightWidth, topHeight, bottomHeight, repeatX, repeatY)
     {
         // if (width === undefined) { width = 256; }
         // if (height === undefined) { height = 256; }
@@ -278,48 +263,28 @@ var NineSlice = new Class({
         this.bottomHeight;
 
         /**
-         * Indicates whether the scalable horizontal regions of the Nine Slice
-         * are repeated across the object instead of being stretched. Each tile
-         * is still slightly stretched so that it remains visible in full.
+         * Controls how the scalable horizontal regions of the Nine Slice
+         * are rendered. Accepts CSS `border-image-repeat` values:
+         * `'stretch'`, `'repeat'`, `'round'`, or `'space'`.
          *
-         * @name Phaser.GameObjects.NineSlice#tileX
-         * @type {boolean}
-         * @readonly
-         * @since 4.0.0
+         * @name Phaser.GameObjects.NineSlice#repeatX
+         * @type {string}
+         * @default 'stretch'
+         * @since 5.0.0
          */
-        this.tileX = tileX || false;
+        this.repeatX = repeatX || 'stretch';
 
         /**
-         * Indicates whether the scalable vertical regions of the Nine Slice
-         * are repeated across the object instead of being stretched. Each tile
-         * is still slightly stretched so that it remains visible in full.
+         * Controls how the scalable vertical regions of the Nine Slice
+         * are rendered. Accepts CSS `border-image-repeat` values:
+         * `'stretch'`, `'repeat'`, `'round'`, or `'space'`.
          *
-         * @name Phaser.GameObjects.NineSlice#tileY
-         * @type {boolean}
-         * @readonly
-         * @since 4.0.0
+         * @name Phaser.GameObjects.NineSlice#repeatY
+         * @type {string}
+         * @default 'stretch'
+         * @since 5.0.0
          */
-        this.tileY = tileY || false;
-
-        /**
-         * Internal horizontal repeat count. Do not modify directly.
-         *
-         * @name Phaser.GameObjects.NineSlice#_repeatCountX
-         * @private
-         * @type {number}
-         * @since 4.0.0
-         */
-        this._repeatCountX = 1;
-
-        /**
-         * Internal vertical repeat count. Do not modify directly.
-         *
-         * @name Phaser.GameObjects.NineSlice#_repeatCountY
-         * @private
-         * @type {number}
-         * @since 4.0.0
-         */
-        this._repeatCountY = 1;
+        this.repeatY = repeatY || 'stretch';
 
         /**
          * The tint value being applied to the Game Object.
@@ -351,6 +316,11 @@ var NineSlice = new Class({
         this.tintMode = TintModes.MULTIPLY;
 
         var textureFrame = scene.textures.getFrame(texture, frame);
+
+        if (textureFrame.name !== '__BASE')
+        {
+            throw new Error('NineSlice must use the __BASE frame of its Texture.');
+        }
 
         /**
          * This property is `true` if this Nine Slice Game Object was configured
@@ -579,8 +549,8 @@ var NineSlice = new Class({
 
     /**
      * Recalculates all of the vertices in this Nine Slice Game Object
-     * based on the `leftWidth`, `rightWidth`, `topHeight`, `bottomHeight`,
-     * `tileX` and `tileY` properties, combined with the Game Object size.
+     * based on the `leftWidth`, `rightWidth`, `topHeight`, and `bottomHeight`
+     * properties, combined with the Game Object size.
      *
      * This method is called automatically when this object is created
      * or if its origin is changed.
