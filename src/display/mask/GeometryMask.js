@@ -37,9 +37,11 @@ var GeometryMask = new Class({
         this.shape = shape;
 
         this.clipPath = clipPath;
+
+        this.name = 'clip-path';
     },
 
-    getCSSClipPath: function ()
+    getCSSValue: function ()
     {
         return this.clipPath || this.shape.getCSSClipPath();
     },
