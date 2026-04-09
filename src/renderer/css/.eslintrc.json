@@ -4,6 +4,8 @@
     "rules": {
         "no-var": "error",
 
+        "no-unused-vars": "warn",
+
         "prefer-const": ["error", {
             "destructuring": "any",
             "ignoreReadBeforeAssign": false
