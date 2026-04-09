@@ -298,6 +298,13 @@ var Gradient = new Class({
         return `${(value * 100).toFixed(1)}%`;
     },
 
+    hasCSSGradient: function ()
+    {
+        var bands = this.ramp.bands;
+
+        return (bands && bands.length > 0);
+    },
+
     /**
      * Converts this Gradient to a CSS `background-image` string.
      *
@@ -307,13 +314,13 @@ var Gradient = new Class({
      *
      * @method Phaser.GameObjects.Gradient#toCSSGradient
      * @since 4.0.0
-     * @returns {string|null} A CSS gradient string, or null if not supported.
+     * @returns {null} A CSS gradient string or 'none' if not supported.
      */
     getCSSGradient: function ()
     {
-        var bands = this.ramp.bands;
-        if (!bands || bands.length === 0) { return null; }
+        if (!this.hasCSSGradient()) { return 'none'; }
 
+        var bands = this.ramp.bands;
         var stops = [];
         for (var i = 0; i < bands.length; i++)
         {
