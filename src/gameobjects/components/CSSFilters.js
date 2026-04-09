@@ -1,36 +1,15 @@
 const IntegerToColor = require('../../display/color/IntegerToColor');
 const Color = require('../../display/color/Color');
+const CSSFilter = require('../../renderer/css/CSSFilter');
+const DropShadowFilter = require('../../renderer/css/DropShadowFilter');
 
 const tempColor = new Color();
-
-const toStringUnitless = function ()
-{
-    return `${this.name}(${this.value})`;
-};
-
-const toStringPixels = function ()
-{
-    return `${this.name}(${this.value}px)`;
-};
-
-const toStringRadians = function ()
-{
-    return `${this.name}(${this.value}rad)`;
-};
-
-const toStringDropShadow = function ()
-{
-    const { offsetX, offsetY, blur, color } = this.value;
-    const { rgba } = IntegerToColor(color, tempColor);
-
-    return `${this.name}(${offsetX}px ${offsetY}px ${blur}px ${rgba})`;
-};
 
 class CSSFilters
 {
     constructor ()
     {
-        // { name: string, value: number | object, active: boolean, toString: function }[]
+        // CSSFilter[]
         this._filters = [];
         this._css = null;
     }
@@ -99,57 +78,59 @@ class CSSFilters
 
     addBlur (length)
     {
-        return this.add({ name: 'blur', value: length, active: true, toString: toStringPixels });
+        return this.add(new CSSFilter('blur', length, 'px'));
     }
 
     addBrightness (amount)
     {
-        return this.add({ name: 'brightness', value: amount, active: true, toString: toStringUnitless });
+        return this.add(new CSSFilter('brightness', amount));
     }
 
     addContrast (amount)
     {
-        return this.add({ name: 'contrast', value: amount, active: true, toString: toStringUnitless });
+        return this.add(new CSSFilter('contrast', amount));
     }
 
     addDropShadow (offsetX, offsetY, blur, color)
     {
-        return this.add({ name: 'drop-shadow', value: { offsetX, offsetY, blur, color }, active: true, toString: toStringDropShadow });
+        const { rgba } = IntegerToColor(color, tempColor);
+
+        return this.add(new DropShadowFilter(offsetX, offsetY, blur, rgba));
     }
 
     addGrayscale (amount)
     {
-        return this.add({ name: 'grayscale', value: amount, active: true, toString: toStringUnitless });
+        return this.add(new CSSFilter('grayscale', amount));
     }
 
     addHueRotate (angle)
     {
-        return this.add({ name: 'hue-rotate', value: angle, active: true, toString: toStringRadians });
+        return this.add(new CSSFilter('hue-rotate', angle, 'rad'));
     }
 
     addInvert (amount)
     {
-        return this.add({ name: 'invert', value: amount, active: true, toString: toStringUnitless });
+        return this.add(new CSSFilter('invert', amount));
     }
 
     addOpacity (amount)
     {
-        return this.add({ name: 'opacity', value: amount, active: true, toString: toStringUnitless });
+        return this.add(new CSSFilter('opacity', amount));
     }
 
     addSaturate (amount)
     {
-        return this.add({ name: 'saturate', value: amount, active: true, toString: toStringUnitless });
+        return this.add(new CSSFilter('saturate', amount));
     }
 
     addSepia (amount)
     {
-        return this.add({ name: 'sepia', value: amount, active: true, toString: toStringUnitless });
+        return this.add(new CSSFilter('sepia', amount));
     }
 
     addURL (url)
     {
-        return this.add({ name: 'url', value: url, active: true, toString: toStringUnitless });
+        return this.add(new CSSFilter('url', url));
     }
 }
 
