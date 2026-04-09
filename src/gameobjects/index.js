@@ -35,6 +35,7 @@ var GameObjects = {
     Group: require('./group/Group'),
     Image: require('./image/Image'),
     Layer: require('./layer/Layer'),
+    NineSlice: require('./nineslice/NineSlice'),
     Particles: require('./particles'),
     PathFollower: require('./pathfollower/PathFollower'),
     RenderTexture: require('./rendertexture/RenderTexture'),
@@ -84,6 +85,7 @@ var GameObjects = {
         Group: require('./group/GroupFactory'),
         Image: require('./image/ImageFactory'),
         Layer: require('./layer/LayerFactory'),
+        NineSlice: require('./nineslice/NineSliceFactory'),
         Particles: require('./particles/ParticleEmitterFactory'),
         PathFollower: require('./pathfollower/PathFollowerFactory'),
         RenderTexture: require('./rendertexture/RenderTextureFactory'),
@@ -123,6 +125,7 @@ var GameObjects = {
         Group: require('./group/GroupCreator'),
         Image: require('./image/ImageCreator'),
         Layer: require('./layer/LayerCreator'),
+        NineSlice: require('./nineslice/NineSliceCreator'),
         Particles: require('./particles/ParticleEmitterCreator'),
         RenderTexture: require('./rendertexture/RenderTextureCreator'),
         Rope: require('./rope/RopeCreator'),
@@ -151,7 +154,6 @@ if (typeof WEBGL_RENDERER)
     GameObjects.NoiseSimplex2D = require('./noise/noisesimplex2d/NoiseSimplex2D');
     GameObjects.NoiseSimplex3D = require('./noise/noisesimplex3d/NoiseSimplex3D');
     GameObjects.Shader = require('./shader/Shader');
-    GameObjects.NineSlice = require('./nineslice/NineSlice');
     GameObjects.SpriteGPULayer = require('./spritegpulayer/SpriteGPULayer');
 
     GameObjects.Factories.CaptureFrame = require('./captureframe/CaptureFrameFactory');
@@ -162,7 +164,6 @@ if (typeof WEBGL_RENDERER)
     GameObjects.Factories.NoiseSimplex2D = require('./noise/noisesimplex2d/NoiseSimplex2DFactory');
     GameObjects.Factories.NoiseSimplex3D = require('./noise/noisesimplex3d/NoiseSimplex3DFactory');
     GameObjects.Factories.Shader = require('./shader/ShaderFactory');
-    GameObjects.Factories.NineSlice = require('./nineslice/NineSliceFactory');
     GameObjects.Factories.SpriteGPULayer = require('./spritegpulayer/SpriteGPULayerFactory');
 
     GameObjects.Creators.CaptureFrame = require('./captureframe/CaptureFrameCreator');
@@ -173,7 +174,6 @@ if (typeof WEBGL_RENDERER)
     GameObjects.Creators.NoiseSimplex2D = require('./noise/noisesimplex2d/NoiseSimplex2DCreator');
     GameObjects.Creators.NoiseSimplex3D = require('./noise/noisesimplex3d/NoiseSimplex3DCreator');
     GameObjects.Creators.Shader = require('./shader/ShaderCreator');
-    GameObjects.Creators.NineSlice = require('./nineslice/NineSliceCreator');
     GameObjects.Creators.SpriteGPULayer = require('./spritegpulayer/SpriteGPULayerCreator');
 
     GameObjects.Light = require('./lights/Light');
