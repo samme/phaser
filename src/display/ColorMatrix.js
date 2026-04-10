@@ -165,6 +165,23 @@ var ColorMatrix = new Class({
     },
 
     /**
+     * Gets the ColorMatrix as an SVG feColorMatrix values string.
+     *
+     * Can be used directly in SVG filter definitions.
+     *
+     * @method Phaser.Display.ColorMatrix#getSVGString
+     * @since 5.0.0
+     *
+     * @return {string} The ColorMatrix as an SVG feColorMatrix values string.
+     */
+    getSVGString: function ()
+    {
+        var data = this.getData();
+
+        return `${data[0]} ${data[1]} ${data[2]} ${data[3]} ${data[4]} ${data[5]} ${data[6]} ${data[7]} ${data[8]} ${data[9]} ${data[10]} ${data[11]} ${data[12]} ${data[13]} ${data[14]} ${data[15]} ${data[16]} ${data[17]} ${data[18]} ${data[19]}`;
+    },
+
+    /**
      * Changes the brightness of this ColorMatrix by the given amount.
      *
      * @method Phaser.Display.ColorMatrix#brightness
