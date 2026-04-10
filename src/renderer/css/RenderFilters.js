@@ -1,6 +1,6 @@
 const RenderFilters = function (gameObject)
 {
-    const { renderNode } = gameObject;
+    const { renderNode, tintNode } = gameObject;
 
     if (gameObject.isTinted)
     {
