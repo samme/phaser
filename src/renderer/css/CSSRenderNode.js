@@ -5,7 +5,6 @@ const IntegerToColor = require('../../display/color/IntegerToColor');
 // Transform modes:
 const XY = 0; //  translate only
 const TSR = 1; // translate, scale, rotate
-const SRT = 2; // scale, rotate, translate
 const TRS = 3; // translate, rotate, scale
 
 const tempColor = new Color();
@@ -172,21 +171,6 @@ class CSSRenderNode
             this._transformType = TSR;
 
             this.setProperty('transform', `translate(${tx}px, ${ty}px) scale(${scaleX}, ${scaleY}) rotate(${rotation}rad)`);
-        }
-    }
-
-    setSRT (scaleX, scaleY, rotation, tx, ty)
-    {
-        if (this._transformType !== SRT || this._tx !== tx || this._ty !== ty || this._scaleX !== scaleX || this._scaleY !== scaleY || this._rotation !== rotation)
-        {
-            this._tx = tx;
-            this._ty = ty;
-            this._scaleX = scaleX;
-            this._scaleY = scaleY;
-            this._rotation = rotation;
-            this._transformType = SRT;
-
-            this.setProperty('transform', `scale(${scaleX}, ${scaleY}) rotate(${rotation}rad) translate(${tx}px, ${ty}px)`);
         }
     }
 
