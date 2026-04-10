@@ -13,8 +13,6 @@ const _svgStrings = {
     Triangle: require('./shapes/triangle.svg')
 };
 
-console.debug(_svgStrings);
-
 const _parser = new DOMParser();
 
 let _templates = null;
