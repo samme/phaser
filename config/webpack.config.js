@@ -34,11 +34,15 @@ module.exports = [
                     use: ['style-loader', 'css-loader']
                 },
                 {
-                  test: /\.html$/,
-                  type: 'asset/source'
+                    test: /\.html$/,
+                    type: 'asset/source'
                 },
                 {
                     test: /\.svg$/,
+                    type: 'asset/source'
+                },
+                {
+                    test: /\.xml$/,
                     type: 'asset/source'
                 }
             ]
