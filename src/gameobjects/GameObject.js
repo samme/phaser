@@ -277,7 +277,7 @@ var GameObject = new Class({
 
         this.isShape = false;
 
-        this.filters = new CSSFilters();
+        this.filters = new CSSFilters(scene.sys.renderer);
 
         // Initialize RenderSteps mixin.
         if (this.addRenderStep)

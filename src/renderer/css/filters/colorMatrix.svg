@@ -1,12 +1,13 @@
-<svg>
-    <defs>
-        <filter id="colormatrix">
-            <feColorMatrix type="matrix" values="
-1 0 0 0 0
-0 1 0 0 0
-0 0 1 0 0
-0 0 0 1 0
-" in="SourceGraphic" result="colormatrix"/>
-        </filter>
-    </defs>
+<svg xmlns="http://www.w3.org/2000/svg"
+    width="0"
+    height="0">
+    <filter>
+        <feColorMatrix color-interpolation-filters="sRGB"
+            type="matrix"
+            in="SourceGraphic"
+            values="1 0 0 0 0
+                    0 1 0 0 0
+                    0 0 1 0 0
+                    0 0 0 1 0" />
+    </filter>
 </svg>

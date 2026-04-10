@@ -8,9 +8,19 @@ class CSSFilter
         this.active = true;
     }
 
-    toString ()
+    getCSSValue ()
     {
         return `${this.name}(${this.value}${this.unit})`;
+    }
+
+    preRender ()
+    {
+        // Nothing to do.
+    }
+
+    destroy ()
+    {
+        this.active = false;
     }
 }
 

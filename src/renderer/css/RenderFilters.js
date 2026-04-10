@@ -8,6 +8,8 @@ const RenderFilters = function (gameObject)
     }
     else if (gameObject.filters._filters.length > 0)
     {
+        gameObject.filters.preRender();
+
         renderNode.setProperty('filter', gameObject.filters.getCSS());
     }
     else

@@ -1,9 +1,18 @@
-<svg>
-    <defs>
-        <filter id="tint" color-interpolation-filters="sRGB">
-            <feFlood flood-color="rgba(255, 255, 255, 1)" result="flood" />
-            <feComposite in="flood" in2="SourceGraphic" operator="in" result="composite" />
-            <feBlend in="composite" in2="SourceGraphic" mode="multiply" />
-        </filter>
-    </defs>
+<svg xmlns="http://www.w3.org/2000/svg"
+    width="0"
+    height="0">
+    <filter>
+        <feFlood color-interpolation-filters="sRGB"
+            flood-color="rgba(255, 255, 255, 1)"
+            result="flood" />
+        <feComposite color-interpolation-filters="sRGB"
+            in="flood"
+            in2="SourceGraphic"
+            operator="in"
+            result="composite" />
+        <feBlend color-interpolation-filters="sRGB"
+            in="composite"
+            in2="SourceGraphic"
+            mode="multiply" />
+    </filter>
 </svg>

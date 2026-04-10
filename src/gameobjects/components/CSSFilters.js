@@ -1,17 +1,21 @@
-const IntegerToColor = require('../../display/color/IntegerToColor');
-const Color = require('../../display/color/Color');
+const ColorMatrixFilter = require('../../renderer/css/ColorMatrixFilter');
 const CSSFilter = require('../../renderer/css/CSSFilter');
 const DropShadowFilter = require('../../renderer/css/DropShadowFilter');
-
-const tempColor = new Color();
+const SVGFilterFactory = require('../../renderer/css/SVGFilterFactory');
+const TintFilter = require('../../renderer/css/TintFilter');
 
 class CSSFilters
 {
-    constructor ()
+    constructor (renderer)
     {
-        // CSSFilter[]
+        this.renderer = renderer;
+
+        // (CSSFilter|DropShadowFilter|SVGFilter)[]
         this._filters = [];
+
         this._css = null;
+
+        this._isFrozen = false;
     }
 
     add (filter)
@@ -29,6 +33,13 @@ class CSSFilters
         {
             this._filters.splice(index, 1);
 
+            if (filter.element)
+            {
+                filter.element.remove();
+            }
+
+            filter.destroy();
+
             return true;
         }
 
@@ -37,12 +48,47 @@ class CSSFilters
 
     clear ()
     {
+        for (const filter of this._filters)
+        {
+            if (filter.element)
+            {
+                filter.element.remove();
+            }
+
+            filter.destroy();
+        }
+
         this._filters.length = 0;
+
+        this.unfreeze();
+    }
+
+    preRender ()
+    {
+        if (this._isFrozen)
+        {
+            return;
+        }
+
+        for (const filter of this._filters)
+        {
+            if (filter.active)
+            {
+                filter.preRender();
+            }
+        }
+    }
+
+    destroy ()
+    {
+        this.clear();
+
+        this.renderer = null;
     }
 
     freeze ()
     {
-        this._frozen = true;
+        this._isFrozen = true;
 
         this._generateCSS();
 
@@ -51,7 +97,7 @@ class CSSFilters
 
     unfreeze ()
     {
-        this._frozen = false;
+        this._isFrozen = false;
         this._css = null;
 
         return this;
@@ -59,7 +105,7 @@ class CSSFilters
 
     getCSS ()
     {
-        return this._frozen ? this._css : this._generateCSS();
+        return this._isFrozen ? this._css : this._generateCSS();
     }
 
     _generateCSS ()
@@ -70,7 +116,7 @@ class CSSFilters
         }
         else
         {
-            this._css = this._filters.filter(f => f.active).map(f => f.toString()).join(' ');
+            this._css = this._filters.filter(f => f.active).map(f => f.getCSSValue()).join(' ');
         }
 
         return this._css;
@@ -93,9 +139,7 @@ class CSSFilters
 
     addDropShadow (offsetX, offsetY, blur, color)
     {
-        const { rgba } = IntegerToColor(color, tempColor);
-
-        return this.add(new DropShadowFilter(offsetX, offsetY, blur, rgba));
+        return this.add(new DropShadowFilter(offsetX, offsetY, blur, color));
     }
 
     addGrayscale (amount)
@@ -105,7 +149,7 @@ class CSSFilters
 
     addHueRotate (angle)
     {
-        return this.add(new CSSFilter('hue-rotate', angle, 'rad'));
+        return this.add(new CSSFilter('hue-rotate', angle, 'deg'));
     }
 
     addInvert (amount)
@@ -131,6 +175,20 @@ class CSSFilters
     addURL (url)
     {
         return this.add(new CSSFilter('url', url));
+    }
+
+    addColorMatrix ()
+    {
+        const filter = new ColorMatrixFilter(new SVGFilterFactory('ColorMatrix'));
+
+        return this.add(filter);
+    }
+
+    addTint (color, mode)
+    {
+        const filter = new TintFilter(new SVGFilterFactory('Tint'), color, mode);
+
+        return this.add(filter);
     }
 }
 
