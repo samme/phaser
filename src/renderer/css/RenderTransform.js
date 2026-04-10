@@ -24,7 +24,7 @@ const RenderTransform = function (gameObject, camera)
     }
     else
     {
-        renderNode.setTSR(x, y, gameObject.scaleX, gameObject.scaleY, gameObject.rotation);
+        renderNode.setTRS(x, y, gameObject.rotation, gameObject.scaleX, gameObject.scaleY);
     }
 };
 

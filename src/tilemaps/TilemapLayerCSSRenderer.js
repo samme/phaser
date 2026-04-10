@@ -105,7 +105,7 @@ var TilemapLayerCSSRenderer = function (renderer, src, camera)
             var scaleX = tile.flipX ? -1 : 1;
             var scaleY = tile.flipY ? -1 : 1;
 
-            node.setTSR(px, py, scaleX, scaleY, tile.rotation);
+            node.setTRS(px, py, tile.rotation, scaleX, scaleY);
             node.setTransformOrigin(halfWidth, halfHeight);
         }
         else

@@ -92,7 +92,7 @@ const ParticleEmitterCSSRenderer = function (renderer, emitter, camera)
             }
             else
             {
-                particleRenderNode.setTSR(x, y, particle.scaleX, particle.scaleY, particle.rotation);
+                particleRenderNode.setTRS(x, y, particle.rotation, particle.scaleX, particle.scaleY);
                 particleRenderNode.setTransformOrigin(frame.halfWidth, frame.halfHeight);
             }
         }

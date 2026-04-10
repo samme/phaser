@@ -1,3 +1,5 @@
+const RenderTransformWithSize = require('../../renderer/css/RenderTransformWithSize');
+
 /**
  * Renders this Game Object with the CSS Renderer to the given Camera.
  * The object will not render if any of its renderFlags are set or it is being actively filtered out by the Camera.
@@ -29,9 +31,8 @@ var TileSpriteCSSRenderer = function (renderer, src, camera)
 
     renderNode.setAlpha(src.alpha);
     renderNode.setBlendMode(src.blendMode);
-    renderNode.setSize(src.width, src.height);
-    renderNode.setTransformOrigin(src.displayOriginX, src.displayOriginY);
-    renderNode.setTSR(src.x - src.displayOriginX, src.y - src.displayOriginY, src.scaleX, src.scaleY, src.rotation);
+
+    RenderTransformWithSize(src, camera);
 
     // TODO: tints and filters
 
