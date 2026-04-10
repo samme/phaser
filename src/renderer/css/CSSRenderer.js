@@ -174,7 +174,6 @@ const CSSRenderer = new Class({
         this.stage = game.domContainer;
 
         this.pool = new HTMLElementPool('div');
-        this.pool.reserve(100);
 
         const filterContainer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         filterContainer.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
