@@ -263,7 +263,7 @@ var Container = new Class({
 
         get: function ()
         {
-            return 0.5;
+            return 0;
         }
 
     },
@@ -282,7 +282,7 @@ var Container = new Class({
 
         get: function ()
         {
-            return 0.5;
+            return 0;
         }
 
     },
@@ -301,7 +301,7 @@ var Container = new Class({
 
         get: function ()
         {
-            return this.width * 0.5;
+            return 0;
         }
 
     },
@@ -320,7 +320,7 @@ var Container = new Class({
 
         get: function ()
         {
-            return this.height * 0.5;
+            return 0;
         }
 
     },
