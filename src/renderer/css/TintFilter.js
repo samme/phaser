@@ -3,9 +3,12 @@ const CSSTintModes = require('./CSSTintModes');
 const IntegerToColor = require('../../display/color/IntegerToColor');
 const SVGFilter = require('./SVGFilter');
 
+const defaultColor = 0xffffff;
+const defaultMode = 0;
+
 class TintFilter extends SVGFilter
 {
-    constructor (element, color, mode)
+    constructor (element, color = defaultColor, mode = defaultMode)
     {
         super('tint', element);
 

@@ -86,6 +86,8 @@ var Tint = {
      */
     tintMode: TintModes.MULTIPLY,
 
+    tintFilter: null,
+
     /**
      * Clears all tint values associated with this Game Object.
      *
@@ -153,8 +155,8 @@ var Tint = {
         this.tintBottomLeft = bottomLeft;
         this.tintBottomRight = bottomRight;
 
-        this.initTintNode();
-        this.tintNode.setColor(topLeft);
+        this.initTintFilter();
+        this.tintFilter.color = topLeft;
 
         return this;
     },
@@ -176,8 +178,8 @@ var Tint = {
     {
         this.tintMode = mode;
 
-        this.initTintNode();
-        this.tintNode.setMode(mode);
+        this.initTintFilter();
+        this.tintFilter.mode = mode;
 
         return this;
     },
@@ -195,6 +197,23 @@ var Tint = {
     setTintFill: function ()
     {
         throw new Error('`setTintFill(color)` is removed as of Phaser 4. Use setTint(color).setTintMode(Phaser.TintModes.FILL)` instead.');
+    },
+
+    initTintFilter: function ()
+    {
+        if (!this.tintFilter)
+        {
+            this.tintFilter = this.scene.sys.renderer.createTintFilter();
+        }
+    },
+
+    destroyTintFilter: function ()
+    {
+        if (this.tintFilter)
+        {
+            this.tintFilter.destroy();
+            this.tintFilter = null;
+        }
     },
 
     /**

@@ -1,10 +1,10 @@
 const RenderFilters = function (gameObject)
 {
-    const { renderNode, tintNode } = gameObject;
+    const { renderNode, tintFilter } = gameObject;
 
     if (gameObject.isTinted)
     {
-        renderNode.setProperty('filter', tintNode.url);
+        renderNode.setProperty('filter', tintFilter.url);
     }
     else if (gameObject.filters._filters.length > 0)
     {

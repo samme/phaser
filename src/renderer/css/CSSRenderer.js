@@ -9,13 +9,14 @@ const CameraEvents = require('../../cameras/2d/events');
 const Class = require('../../utils/Class');
 const CONST = require('../../const');
 const CSSRenderNode = require('./CSSRenderNode');
-const CSSTintNode = require('./CSSTintNode');
 const EventEmitter = require('eventemitter3');
 const Events = require('../events');
 const HTMLElementPool = require('./HTMLElementPool');
 const ScaleEvents = require('../../scale/events');
 const TextureEvents = require('../../textures/events');
 const GameEvents = require('../../core/events');
+const TintFilter = require('./TintFilter');
+const SVGFilterFactory = require('./SVGFilterFactory');
 
 /**
  * @classdesc
@@ -326,25 +327,9 @@ const CSSRenderer = new Class({
         renderNode.destroy();
     },
 
-    createTintNode ()
+    createTintFilter ()
     {
-        return new CSSTintNode();
-    },
-
-    attachTintNode (tintNode)
-    {
-        this.filterContainer.appendChild(tintNode.element);
-
-        this.mutateCount++;
-    },
-
-    destroyTintNode (tintNode)
-    {
-        tintNode.element.remove();
-
-        tintNode.destroy();
-
-        this.mutateCount++;
+        return new TintFilter(new SVGFilterFactory('Tint'));
     },
 
     /**
@@ -447,9 +432,15 @@ const CSSRenderer = new Class({
         this.renderDuration = performance.now() - this.renderStartTime;
 
         drawCountMeter.value = drawCount;
+
         mutateCountMeter.value = mutateCount;
+
         poolMeter.value = usedSize;
         poolMeter.max = totalSize;
+
+        this.fpsMeter.value = actualFps;
+
+        this.deltaMeter.value = rawDelta;
 
         let efficiencyString;
 
