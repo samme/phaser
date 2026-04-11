@@ -169,6 +169,17 @@ var Color = new Class({
         /**
          * Pre-calculated internal color rgb string value.
          *
+         * @name Phaser.Display.Color#_rgb
+         * @type {string}
+         * @private
+         * @default ''
+         * @since 5.0.0
+         */
+        this._rgb = '';
+
+        /**
+         * Pre-calculated internal color rgb string value.
+         *
          * @name Phaser.Display.Color#_rgba
          * @type {string}
          * @private
@@ -332,6 +343,7 @@ var Color = new Class({
 
         this._color = GetColor(r, g, b);
         this._color32 = GetColor32(r, g, b, a);
+        this._rgb = 'rgb(' + r + ',' + g + ',' + b + ')';
         this._rgba = 'rgba(' + r + ',' + g + ',' + b + ',' + (a / 255) + ')';
 
         if (updateHSV)
@@ -380,7 +392,7 @@ var Color = new Class({
      *
      * @method Phaser.Display.Color#gray
      * @since 3.13.0
-     * 
+     *
      * @param {number} shade - A value between 0 and 255.
      *
      * @return {Phaser.Display.Color} This Color object.
@@ -395,7 +407,7 @@ var Color = new Class({
      *
      * @method Phaser.Display.Color#random
      * @since 3.13.0
-     * 
+     *
      * @param {number} [min=0] - The minimum random color value. Between 0 and 255.
      * @param {number} [max=255] - The maximum random color value. Between 0 and 255.
      *
@@ -418,7 +430,7 @@ var Color = new Class({
      *
      * @method Phaser.Display.Color#randomGray
      * @since 3.13.0
-     * 
+     *
      * @param {number} [min=0] - The minimum random color value. Between 0 and 255.
      * @param {number} [max=255] - The maximum random color value. Between 0 and 255.
      *
@@ -440,7 +452,7 @@ var Color = new Class({
      *
      * @method Phaser.Display.Color#saturate
      * @since 3.13.0
-     * 
+     *
      * @param {number} amount - The percentage amount to change this color by. A value between 0 and 100.
      *
      * @return {Phaser.Display.Color} This Color object.
@@ -458,7 +470,7 @@ var Color = new Class({
      *
      * @method Phaser.Display.Color#desaturate
      * @since 3.13.0
-     * 
+     *
      * @param {number} amount - The percentage amount to change this color by. A value between 0 and 100.
      *
      * @return {Phaser.Display.Color} This Color object.
@@ -475,7 +487,7 @@ var Color = new Class({
      *
      * @method Phaser.Display.Color#lighten
      * @since 3.13.0
-     * 
+     *
      * @param {number} amount - The percentage amount to change this color by. A value between 0 and 100.
      *
      * @return {Phaser.Display.Color} This Color object.
@@ -492,7 +504,7 @@ var Color = new Class({
      *
      * @method Phaser.Display.Color#darken
      * @since 3.13.0
-     * 
+     *
      * @param {number} amount - The percentage amount to change this color by. A value between 0 and 100.
      *
      * @return {Phaser.Display.Color} This Color object.
@@ -509,7 +521,7 @@ var Color = new Class({
      *
      * @method Phaser.Display.Color#brighten
      * @since 3.13.0
-     * 
+     *
      * @param {number} amount - The percentage amount to change this color by. A value between 0 and 100.
      *
      * @return {Phaser.Display.Color} This Color object.
@@ -557,6 +569,23 @@ var Color = new Class({
         get: function ()
         {
             return this._color32;
+        }
+
+    },
+
+    /**
+     * The color of this Color object as a CSS-compatible `rgb()` string, suitable for use with Canvas 2D or HTML elements.
+     *
+     * @name Phaser.Display.Color#rgb
+     * @type {string}
+     * @readonly
+     * @since 5.0.0
+     */
+    rgb: {
+
+        get: function ()
+        {
+            return this._rgb;
         }
 
     },
