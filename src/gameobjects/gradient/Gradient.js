@@ -298,7 +298,7 @@ var Gradient = new Class({
         return `${(value * 100).toFixed(1)}%`;
     },
 
-    hasCSSGradient: function ()
+    hasBands: function ()
     {
         var bands = this.ramp.bands;
 
@@ -374,7 +374,7 @@ var Gradient = new Class({
      * @param {number} position - Stop position 0-1.
      * @returns {string}
      */
-    _bandToColorStop: function (color, position)
+    _bandToCSSColorStop: function (color, position)
     {
         return `${color.rgba} ${this._pct(position)}`;
     }
