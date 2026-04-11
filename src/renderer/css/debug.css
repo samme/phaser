@@ -16,14 +16,10 @@
     background: #000c;
 }
 
-svg {
-    outline: thin solid lime;
-}
-
-svg * {
-    outline: thin solid aqua;
-}
-
 [data-type] {
     outline: thin solid red;
+}
+
+[data-type="Container"] {
+    outline: thin solid lime;
 }

@@ -434,24 +434,28 @@ const CSSRenderer = new Class({
      */
     postRender ()
     {
+        const { cleanCount, dirtyCount, drawCount, mutateCount, pool, game, drawCountMeter, mutateCountMeter, efficiencyMeter, poolMeter, fpsMeter, deltaMeter, debugText } = this;
+        const { usedSize, totalSize } = pool;
+        const { actualFps, rawDelta } = game.loop;
+
         this.emit(Events.POST_RENDER);
 
-        this.efficiency = this.cleanCount / (this.cleanCount + this.dirtyCount);
+        this.efficiency = cleanCount / (cleanCount + dirtyCount);
 
         const hasEfficiency = Number.isFinite(this.efficiency);
 
         this.renderDuration = performance.now() - this.renderStartTime;
 
-        this.drawCountMeter.value = this.drawCount;
-        this.mutateCountMeter.value = this.mutateCount;
-        this.poolMeter.value = this.pool.totalSize;
+        drawCountMeter.value = drawCount;
+        mutateCountMeter.value = mutateCount;
+        poolMeter.value = usedSize;
+        poolMeter.max = totalSize;
 
         let efficiencyString;
 
         if (hasEfficiency)
         {
-            this.efficiencyMeter.value = this.efficiency;
-
+            efficiencyMeter.value = this.efficiency;
             efficiencyString = `${(100 * this.efficiency).toFixed(0)}%`;
         }
         else
@@ -459,12 +463,7 @@ const CSSRenderer = new Class({
             efficiencyString = '----';
         }
 
-        const { actualFps, delta } = this.game.loop;
-
-        this.fpsMeter.value = actualFps;
-        this.deltaMeter.value = delta;
-
-        this.debugText.textContent = `Draw: ${String(this.drawCount).padStart(3, ' ')} | Mutate: ${String(this.mutateCount).padStart(3, ' ')} | Pool:  ${String(this.pool.totalSize).padStart(3, ' ')} | Clean: ${String(this.cleanCount).padStart(3, ' ')} | Dirty: ${String(this.dirtyCount).padStart(3, ' ')} | Efficiency: ${efficiencyString} | Render: ${this.renderDuration.toFixed(1)}ms`;
+        debugText.textContent = `Draw: ${String(drawCount).padStart(3, ' ')} | Mutate: ${String(mutateCount).padStart(3, ' ')} | Pool: ${usedSize}/${totalSize} | Efficiency: ${efficiencyString} (${cleanCount}:${dirtyCount}) | FPS: ${actualFps.toFixed(1)} | Δt: ${rawDelta.toFixed(1)}ms | Render: ${this.renderDuration.toFixed(1)}ms`;
     },
 
     renderCamera (camera)
