@@ -250,29 +250,6 @@ var Gradient = new Class({
     },
 
     /**
-     * The function which sets uniforms for the shader.
-     * This is provided to the Shader base class as `setupUniforms`.
-     * You should not override `setupUniforms` on a Gradient.
-     *
-     * @method Phaser.GameObjects.Gradient#_setupUniforms
-     * @private
-     * @since 4.0.0
-     * @param {function} setUniform - The function which sets uniforms. `(name: string, value: any) => void`.
-     * @param {Phaser.Renderer.WebGL.DrawingContext} drawingContext - A reference to the current drawing context.
-     */
-    _setupUniforms: function (setUniform, drawingContext)
-    {
-        setUniform('uRampResolution', this.ramp.dataTextureResolution);
-        setUniform('uRampBandStart', this.ramp.dataTextureFirstBand);
-        setUniform('uOffset', this.offset);
-        setUniform('uRepeatMode', this.repeatMode);
-        setUniform('uShapeMode', this.shapeMode);
-        setUniform('uStart', [ this.start.x, 1 - this.start.y ]);
-        setUniform('uShape', [ this.shape.x, -this.shape.y ]);
-        setUniform('uDither', this.dither);
-    },
-
-    /**
      * Internal destroy handler, called as part of the destroy process.
      *
      * @method Phaser.GameObjects.Shader#preDestroy
@@ -282,101 +259,6 @@ var Gradient = new Class({
     preDestroy: function ()
     {
         this.ramp.destroy();
-    },
-
-    /**
-     * Converts a 0-1 value to a CSS percentage string.
-     *
-     * @method Phaser.GameObjects.Gradient#_pct
-     * @private
-     * @since 4.0.0
-     * @param {number} value - A value between 0 and 1.
-     * @returns {string}
-     */
-    _pct: function (value)
-    {
-        return `${(value * 100).toFixed(1)}%`;
-    },
-
-    hasBands: function ()
-    {
-        var bands = this.ramp.bands;
-
-        return (bands && bands.length > 0);
-    },
-
-    /**
-     * Converts this Gradient to a CSS `background-image` string.
-     *
-     * Note: CSS gradients are a best-effort approximation.
-     * Dither, repeat modes beyond EXTEND/SAWTOOTH, and BILINEAR shape
-     * are not fully supported by CSS.
-     *
-     * @method Phaser.GameObjects.Gradient#toCSSGradient
-     * @since 4.0.0
-     * @returns {null} A CSS gradient string or 'none' if not supported.
-     */
-    getCSSGradient: function ()
-    {
-        if (!this.hasCSSGradient()) { return 'none'; }
-
-        var bands = this.ramp.bands;
-        var stops = [];
-        for (var i = 0; i < bands.length; i++)
-        {
-            var { colorStart, colorEnd, start, end } = bands[i];
-            stops.push(`${colorStart.rgba} ${this._pct(start)}`);
-            stops.push(`${colorEnd.rgba} ${this._pct(end)}`);
-        }
-        var stopsStr = stops.join(', ');
-        var fromAngle, position;
-
-        switch (this.shapeMode)
-        {
-            case 0: // LINEAR
-            case 1: // BILINEAR (approximate as linear)
-            {
-                var angle = Math.atan2(-this.shape.y, this.shape.x) + Math.PI / 2;
-                return `linear-gradient(${angle}rad, ${stopsStr})`;
-            }
-
-            case 2: // RADIAL
-            {
-                var radius = this.shape.length();
-                position = `circle ${this._pct(radius)} at ${this._pct(this.start.x)} ${this._pct(this.start.y)}`;
-                return `radial-gradient(${position}, ${stopsStr})`;
-            }
-
-            case 3: // CONIC_SYMMETRIC
-            {
-                throw new Error('CONIC_SYMMETRIC not supported');
-            }
-
-            case 4: // CONIC_ASYMMETRIC
-            {
-                fromAngle = Math.atan2(-this.shape.y, this.shape.x) + Math.PI / 2;
-                position = `from ${fromAngle}rad at ${this._pct(this.start.x)} ${this._pct(this.start.y)}`;
-                return `conic-gradient(${position}, ${stopsStr})`;
-            }
-
-            default:
-                return null;
-        }
-    },
-
-    /**
-     * Converts a ColorBand color value to a CSS color stop string.
-     *
-     * @method Phaser.GameObjects.Gradient#_bandToColorStop
-     * @private
-     * @since 4.0.0
-     * @param {number|number[]|object} color - A hex color or [r, g, b, a] array (0-1 range) or Color (??) object.
-     * @param {number} position - Stop position 0-1.
-     * @returns {string}
-     */
-    _bandToCSSColorStop: function (color, position)
-    {
-        return `${color.rgba} ${this._pct(position)}`;
     }
 
 });
