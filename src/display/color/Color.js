@@ -548,9 +548,9 @@ var Color = new Class({
         var g = this.g;
         var b = this.b;
 
-        r = Math.max(0, Math.min(255, r - Math.round(255 * - (amount / 100))));
-        g = Math.max(0, Math.min(255, g - Math.round(255 * - (amount / 100))));
-        b = Math.max(0, Math.min(255, b - Math.round(255 * - (amount / 100))));
+        r = Math.max(0, Math.min(255, r + Math.round(255 * amount / 100)));
+        g = Math.max(0, Math.min(255, g + Math.round(255 * amount / 100)));
+        b = Math.max(0, Math.min(255, b + Math.round(255 * amount / 100)));
 
         return this.setTo(r, g, b);
     },
