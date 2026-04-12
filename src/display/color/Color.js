@@ -375,6 +375,22 @@ var Color = new Class({
     },
 
     /**
+     * Copies the color values from a source Color object to this Color object.
+     *
+     * @method Phaser.Display.Color#copy
+     * @since 5.0.0
+     *
+     * @param {Phaser.Display.Color} source - The Color object to copy from.
+     * @param {boolean} [updateHSV=true] - Update the HSV values after setting the RGB values?
+     *
+     * @return {Phaser.Display.Color} This Color object.
+     */
+    copy: function (source, updateHSV)
+    {
+        return this.setTo(source.r, source.g, source.b, source.a, updateHSV);
+    },
+
+    /**
      * Returns a new Color component using the values from this one.
      *
      * @method Phaser.Display.Color#clone
