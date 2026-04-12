@@ -1037,7 +1037,6 @@ var GameObject = new Class({
         this.removeFromUpdateList();
 
         this.destroyRenderNode();
-        this.destroyTintNode();
 
         if (this.input)
         {
