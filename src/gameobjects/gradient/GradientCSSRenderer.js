@@ -19,7 +19,6 @@ const GradientCSSRenderer = function (renderer, src, camera)
 
     renderNode.setAlpha(src.alpha);
     renderNode.setBlendMode(src.blendMode);
-    renderNode.setProperty('backgroundImage', src.getCSSGradient());
 
     RenderFilters(src);
     RenderMask(src);

@@ -7,8 +7,10 @@
 var Class = require('../../utils/Class');
 var ColorRamp = require('../../display/ColorRamp');
 var Components = require('../components');
+var CreateSVGGradient = require('../../renderer/css/CreateSVGGradient');
 var GameObject = require('../GameObject');
 var GradientRender = require('./GradientRender');
+var UpdateSVGGradient = require('../../renderer/css/UpdateSVGGradient');
 var Vector2 = require('../../math/Vector2');
 
 /**
@@ -247,6 +249,15 @@ var Gradient = new Class({
          * @default false
          */
         this.dither = false;
+    },
+
+    postInitRenderNode: function ()
+    {
+        this.element = CreateSVGGradient(this.shapeMode);
+
+        UpdateSVGGradient(this.element, this);
+
+        this.renderNode.element.appendChild(this.element);
     },
 
     /**
