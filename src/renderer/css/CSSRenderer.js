@@ -438,9 +438,9 @@ const CSSRenderer = new Class({
         poolMeter.value = usedSize;
         poolMeter.max = totalSize;
 
-        this.fpsMeter.value = actualFps;
+        fpsMeter.value = actualFps;
 
-        this.deltaMeter.value = rawDelta;
+        deltaMeter.value = rawDelta;
 
         let efficiencyString;
 
