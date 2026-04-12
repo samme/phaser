@@ -4,12 +4,12 @@
  * @license      {@link https://opensource.org/licenses/MIT|MIT License}
  */
 
-var DefaultPointLightNodes = require('../../renderer/webgl/renderNodes/defaults/DefaultPointLightNodes');
 var Class = require('../../utils/Class');
 var Components = require('../components');
 var GameObject = require('../GameObject');
 var IntegerToColor = require('../../display/color/IntegerToColor');
 var Render = require('./PointLightRender');
+var SmoothStep = require('../../math/SmoothStep');
 
 /**
  * @classdesc
@@ -118,23 +118,6 @@ var PointLight = new Class({
     },
 
     /**
-     * The default render nodes for this Game Object.
-     *
-     * @name Phaser.GameObjects.PointLight#_defaultRenderNodesMap
-     * @type {Map<string, string>}
-     * @private
-     * @webglOnly
-     * @readonly
-     * @since 4.0.0
-     */
-    _defaultRenderNodesMap: {
-        get: function ()
-        {
-            return DefaultPointLightNodes;
-        }
-    },
-
-    /**
      * The radius of the Point Light, in pixels. Changing this value also updates
      * the `width` and `height` properties of this Game Object to `radius * 2`.
      *
@@ -226,37 +209,42 @@ var PointLight = new Class({
 
     },
 
-    /**
-     * Returns a CSS `radial-gradient` string representing this Point Light,
-     * suitable for use as a CSS `background-image` property.
-     *
-     * The gradient uses the light's color, intensity, attenuation and radius
-     * to approximate the visual appearance of the Point Light shader.
-     *
-     * @method Phaser.GameObjects.PointLight#getCSSBackground
-     * @since 4.0.0
-     *
-     * @return {string} A CSS radial-gradient string.
-     */
     getCSSBackground: function ()
     {
-        var { color, attenuation, intensity } = this;
-        var { red, green, blue, alpha, rgba } = color;
+        var color = this.color;
+        var attenuation = this.attenuation;
+        var intensity = this.intensity;
 
-        var adjustedColor = `rgba(${red}, ${green}, ${blue}, ${Math.min(1, intensity * alpha / 255)})`;
+        // Sample the shader's smoothstep falloff at 5 points across the radius.
+        // shader: radius = 1.0 - dist / lightRadius
+        //         intensity = smoothstep(0.0, 1.0, radius * attenuation)
+        var stops = [];
+        var numStops = 5;
 
-        console.log('adjustedColor', adjustedColor);
+        for (var i = 0; i < numStops; i++)
+        {
+            var t = i / (numStops - 1); // 0, 0.25, 0.5, 0.75, 1.0
 
-        // Attenuation is 0 (full), 0.1 (default), 1 (none)!
+            // Shader radius value at this distance
+            var r = 1 - t;
 
-        var stops = [
-            `${rgba} 0%`,
-            `${adjustedColor} ${100 * Math.min(1, Math.pow(attenuation, 0.2 / intensity))}%`,
-            'rgba(0, 0, 0, 0) 100%'
-        ].join(', ');
+            // Shader smoothstep intensity
+            var si = SmoothStep(r * attenuation, 0, 1);
 
+            // Scale si by the light intensity for color brightness
+            var lightIntensity = si * intensity * 255;
 
-        return `radial-gradient(circle closest-side at center, ${stops})`;
+            var red = Math.min(255, Math.round(color.r * lightIntensity));
+            var green = Math.min(255, Math.round(color.g * lightIntensity));
+            var blue = Math.min(255, Math.round(color.b * lightIntensity));
+            var alpha = si * this.alpha * 255;
+
+            stops.push('rgba(' + red + ',' + green + ',' + blue + ',' + alpha + ') ' + (t * 100) + '%');
+        }
+
+        var grad = 'radial-gradient(circle closest-side at center, ' + stops.join(', ') + ')';
+
+        return grad;
     }
 
 });
