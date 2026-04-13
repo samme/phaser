@@ -32,6 +32,8 @@ const ParticleEmitterCSSRenderer = function (renderer, emitter, camera)
         return;
     }
 
+    camera.addToRenderList(emitter);
+
     renderer.drawCount += aliveCount;
 
     const renderNode = emitter.renderNode;

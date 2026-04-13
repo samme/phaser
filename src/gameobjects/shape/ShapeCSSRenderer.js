@@ -24,6 +24,8 @@ const ShapeCSSRenderer = function (renderer, shape, camera)
         return;
     }
 
+    camera.addToRenderList(shape);
+
     renderNode.show();
     renderNode.setAlpha(shape.alpha);
     renderNode.setBlendMode(shape.blendMode);
