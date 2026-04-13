@@ -48,6 +48,8 @@ var ParseRetroFont = function (scene, config)
     var textureY = frame.cutY;
     var textureWidth = frame.source.width;
     var textureHeight = frame.source.height;
+    var texture = frame.texture;
+    var sourceIndex = frame.sourceIndex;
 
     var offsetX = GetValue(config, 'offset.x', 0);
     var offsetY = GetValue(config, 'offset.y', 0);
@@ -107,6 +109,13 @@ var ParseRetroFont = function (scene, config)
             u1: u1,
             v1: v1
         };
+
+        if (w > 0 && h > 0)
+        {
+            texture.add(letters[i], sourceIndex, x, y, w, h);
+
+            console.debug('add frame', texture.key, letters[i], sourceIndex, x, y, w, h);
+        }
 
         r++;
 
