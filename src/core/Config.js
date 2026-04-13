@@ -212,7 +212,7 @@ var Config = new Class({
          * @const {?string} Phaser.Core.Config#domPointerEvents - The default `pointerEvents` attribute set on the DOM Container.
          */
         // TODO: change to 'auto' once pointer input has been redone.
-        this.domPointerEvents = GetValue(config, 'dom.pointerEvents', 'auto');
+        this.domPointerEvents = GetValue(config, 'dom.pointerEvents', 'none');
 
         //  Input
 
