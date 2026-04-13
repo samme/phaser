@@ -28,6 +28,8 @@ const CSSRenderNode = {
         const { renderer } = this.scene.sys;
 
         renderer.destroyRenderNode(this.renderNode);
+
+        this.renderNode = null;
     },
 
     willRenderCSS: function ()
