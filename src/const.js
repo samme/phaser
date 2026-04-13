@@ -20,7 +20,7 @@ var CONST = {
      * @type {string}
      * @since 3.0.0
      */
-    VERSION: '4.0.0',
+    VERSION: '5.0.0',
 
     /**
      * Phaser Release Version as displayed in the console.log header URL.
@@ -30,7 +30,7 @@ var CONST = {
      * @type {string}
      * @since 3.87.0
      */
-    LOG_VERSION: 'v400 👽 CSS/SVG Renderer',
+    LOG_VERSION: 'v500',
 
     BlendModes: require('./renderer/BlendModes'),
 
