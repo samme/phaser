@@ -541,7 +541,7 @@ var InputPlugin = new Class({
     /**
      * Sets a custom cursor on the parent canvas element of the game, based on the `cursor`
      * setting of the given Interactive Object (i.e. a Sprite).
-     * 
+     *
      * See the CSS property `cursor` for more information on MDN:
      *
      * https://developer.mozilla.org/en-US/docs/Web/CSS/cursor
@@ -2086,11 +2086,11 @@ var InputPlugin = new Class({
 
     /**
      * This method will force the given Game Object into the 'down' input state.
-     * 
+     *
      * This will check to see if the Game Object is enabled for input, and if so,
      * it will emit the `GAMEOBJECT_POINTER_DOWN` event for it. If that doesn't change
      * the input state, it will then emit the `GAMEOBJECT_DOWN` event.
-     * 
+     *
      * The Game Object is not checked against the Pointer to see if it can enter this state,
      * that is up to you to do before calling this method.
      *
@@ -2109,11 +2109,11 @@ var InputPlugin = new Class({
 
     /**
      * This method will force the given Game Object into the 'up' input state.
-     * 
+     *
      * This will check to see if the Game Object is enabled for input, and if so,
      * it will emit the `GAMEOBJECT_POINTER_UP` event for it. If that doesn't change
      * the input state, it will then emit the `GAMEOBJECT_UP` event.
-     * 
+     *
      * The Game Object is not checked against the Pointer to see if it can enter this state,
      * that is up to you to do before calling this method.
      *
@@ -2132,11 +2132,11 @@ var InputPlugin = new Class({
 
     /**
      * This method will force the given Game Object into the 'over' input state.
-     * 
+     *
      * This will check to see if the Game Object is enabled for input, and if so,
      * it will emit the `GAMEOBJECT_POINTER_OVER` event for it. If that doesn't change
      * the input state, it will then emit the `GAMEOBJECT_OVER` event.
-     * 
+     *
      * The Game Object is not checked against the Pointer to see if it can enter this state,
      * that is up to you to do before calling this method.
      *
@@ -2155,11 +2155,11 @@ var InputPlugin = new Class({
 
     /**
      * This method will force the given Game Object into the 'out' input state.
-     * 
+     *
      * This will check to see if the Game Object is enabled for input, and if so,
      * it will emit the `GAMEOBJECT_POINTER_OUT` event for it. If that doesn't change
      * the input state, it will then emit the `GAMEOBJECT_OUT` event.
-     * 
+     *
      * The Game Object is not checked against the Pointer to see if it can enter this state,
      * that is up to you to do before calling this method.
      *
@@ -2178,10 +2178,10 @@ var InputPlugin = new Class({
 
     /**
      * This method will force the given Game Object into the given input state.
-     * 
+     *
      * @method Phaser.Input.InputPlugin#forceState
      * @since 3.85.0
-     * 
+     *
      * @param {Phaser.Input.Pointer} pointer - The pointer to use when setting the state.
      * @param {Phaser.GameObjects.GameObject} gameObject - The Game Object to have its state set.
      * @param {string} gameObjectEvent - The event to emit on the Game Object.
@@ -2349,7 +2349,7 @@ var InputPlugin = new Class({
      * The hit area callback is the function that takes an `x` and `y` coordinate and returns a boolean if
      * those values fall within the area of the shape or not. All of the Phaser geometry objects provide this,
      * such as `Phaser.Geom.Rectangle.Contains`.
-     * 
+     *
      * A hit area callback can be supplied to the `hitArea` parameter without using the `hitAreaCallback` parameter.
      *
      * @method Phaser.Input.InputPlugin#setHitArea
