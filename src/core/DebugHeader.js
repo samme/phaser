@@ -30,7 +30,7 @@ var DebugHeader = function (game)
         return;
     }
 
-    var renderType = [ '?', 'WebGL', 'Canvas', 'Headless', 'CSS' ][config.renderType];
+    var renderType = { 0: '?', 1: 'WebGL', 2: 'Canvas', 3: 'Headless', 10: 'CSS/SVG' }[config.renderType];
     var audioConfig = config.audio;
     var deviceAudio = game.device.audio;
     var audioType;
@@ -48,7 +48,8 @@ var DebugHeader = function (game)
         audioType = 'HTML5 Audio';
     }
 
-    console.log('Phaser v%s (%s | %s) %s', CONST.VERSION, renderType, audioType, 'TODO');
+    // 'Shock and Awesome v1 / Phaser v4.0.0 (WebGL | Web Audio) http://shockandawe.io'
+    console.log('👽 Quasar v%s (%s | %s) %s', CONST.VERSION, renderType, audioType, 'samme/quasar');
 };
 
 module.exports = DebugHeader;
