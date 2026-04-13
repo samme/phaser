@@ -13,7 +13,7 @@
     white-space: nowrap;
     font: 12px/20px monospace;
     color: white;
-    background: #000c;
+    background: #0009;
 }
 
 [data-type] {
@@ -22,4 +22,8 @@
 
 [data-type="Container"] {
     outline: thin solid lime;
+}
+
+[data-input="true"] {
+    outline: thin solid yellow;
 }
