@@ -66,10 +66,7 @@ class HTMLElementPool
 
         this._used.delete(element);
 
-        if (element.parentNode)
-        {
-            element.parentNode.removeChild(element);
-        }
+        element.remove();
 
         this._free.push(element);
 
@@ -94,10 +91,7 @@ class HTMLElementPool
     {
         for (const element of this._used)
         {
-            if (element.parentNode)
-            {
-                element.parentNode.removeChild(element);
-            }
+            element.remove();
         }
 
         this._used.clear();

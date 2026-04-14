@@ -321,6 +321,8 @@ const CSSRenderer = new Class({
 
         if (released)
         {
+            // Assume this was a removal.
+
             this.mutateCount++;
         }
 
