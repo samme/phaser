@@ -286,7 +286,7 @@ const CSSRenderer = new Class({
         this.mutateCount++;
     },
 
-    appendChildToParentRenderNode (child, parent)
+    append (child, parent)
     {
         parent.element.appendChild(child.element);
 
@@ -304,10 +304,10 @@ const CSSRenderer = new Class({
     {
         const { viewportRenderNode, worldViewRenderNode, fadeRenderNode, flashRenderNode } = camera;
 
-        this.appendChildToParentRenderNode(worldViewRenderNode, viewportRenderNode);
-        this.appendChildToParentRenderNode(fadeRenderNode, viewportRenderNode);
-        this.appendChildToParentRenderNode(flashRenderNode, viewportRenderNode);
-        this.appendChildToParentRenderNode(viewportRenderNode, camera.scene.sys.renderNode);
+        this.append(worldViewRenderNode, viewportRenderNode);
+        this.append(fadeRenderNode, viewportRenderNode);
+        this.append(flashRenderNode, viewportRenderNode);
+        this.append(viewportRenderNode, camera.scene.sys.renderNode);
     },
 
     createRenderNode ()
