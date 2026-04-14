@@ -156,7 +156,6 @@ var CameraManager = new Class({
         }
 
         this.main = this.cameras[0];
-        this.main.initRenderNodes();
 
         //  Create a default camera
         this.default = new Camera(0, 0, sys.scale.width, sys.scale.height).setScene(this.scene);
@@ -195,8 +194,10 @@ var CameraManager = new Class({
             }
 
             this.main = this.cameras[0];
-            this.main.initRenderNodes();
         }
+
+        this.main.initRenderNodes();
+        this.main.initFilters();
 
         var eventEmitter = this.systems.events;
 
@@ -255,6 +256,11 @@ var CameraManager = new Class({
         if (makeMain)
         {
             this.main = camera;
+        }
+
+        if (this.cameras.length > 1)
+        {
+            console.warn('Only the main camera in scene "%s" will render.', this.scene.sys.settings.key);
         }
 
         return camera;

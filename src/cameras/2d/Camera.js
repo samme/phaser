@@ -8,7 +8,7 @@ var BaseCamera = require('./BaseCamera');
 var CenterOn = require('../../geom/rectangle/CenterOn');
 var Clamp = require('../../math/Clamp');
 var Class = require('../../utils/Class');
-var Components = require('../../gameobjects/components');
+var CSSFilters = require('../../gameobjects/components/CSSFilters');
 var Effects = require('./effects');
 var Events = require('./events');
 var Linear = require('../../math/Linear');
@@ -75,19 +75,11 @@ var Camera = new Class({
 
         /**
          * The filters for this camera.
-         * Filters control special effects and masks.
-         *
-         * This object contains two lists of filters: `internal` and `external`.
-         * See {@link Phaser.GameObjects.Components.FilterList} for more information.
          *
          * @name Phaser.Cameras.Scene2D.Camera#filters
-         * @type {Phaser.Types.GameObjects.FiltersInternalExternal}
-         * @since 4.0.0
+         * @since 5.0.0
          */
-        this.filters = {
-            internal: new Components.FilterList(this),
-            external: new Components.FilterList(this)
-        };
+        this.filters = null;
 
         /**
          * Is this Camera for Game Object transform inversion?
@@ -235,6 +227,56 @@ var Camera = new Class({
          * @since 3.0.0
          */
         this._follow = null;
+
+        this.viewportRenderNode = null;
+        this.worldViewRenderNode = null;
+        this.fadeRenderNode = null;
+        this.flashRenderNode = null;
+    },
+
+    initRenderNodes: function ()
+    {
+        const { renderer } = this.scene.sys;
+
+        this.viewportRenderNode = renderer.createRenderNode();
+        this.viewportRenderNode.element.dataset.cameraId = this.id;
+        this.viewportRenderNode.setName(this.name);
+        this.viewportRenderNode.setProperty('contain', 'strict');
+        this.viewportRenderNode.setProperty('overflow', 'hidden');
+        this.viewportRenderNode.setType('CameraViewport');
+
+        this.worldViewRenderNode = renderer.createRenderNode();
+        this.worldViewRenderNode.setType('CameraWorldView');
+
+        this.fadeRenderNode = renderer.createRenderNode();
+        this.fadeRenderNode.setType('CameraFadeEffect');
+
+        this.flashRenderNode = renderer.createRenderNode();
+        this.flashRenderNode.setType('CameraFlashEffect');
+
+        renderer.attachCamera(this);
+    },
+
+    destroyRenderNodes: function ()
+    {
+        const { renderer } = this.scene.sys;
+
+        renderer.destroyRenderNode(this.viewportRenderNode);
+        renderer.destroyRenderNode(this.worldViewRenderNode);
+        renderer.destroyRenderNode(this.fadeRenderNode);
+        renderer.destroyRenderNode(this.flashRenderNode);
+    },
+
+    initFilters: function ()
+    {
+        this.filters = new CSSFilters(this.scene.sys.renderer);
+    },
+
+    destroyFilters: function ()
+    {
+        this.filters.destroy();
+
+        this.filters = null;
     },
 
     /**

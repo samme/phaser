@@ -471,12 +471,17 @@ const CSSRenderer = new Class({
             worldViewRenderNode
         } = camera;
 
-        if (mask)
-        {
-            mask.preRenderCSS(this, null, camera._maskCamera);
-        }
-
         viewportRenderNode.setAlpha(camera.alpha);
+
+        if (mask && mask.active)
+        {
+            viewportRenderNode.setProperty(mask.name, mask.getCSSValue());
+        }
+        else
+        {
+            viewportRenderNode.setProperty('clipPath', null);
+            viewportRenderNode.setProperty('mask', null);
+        }
 
         if (camera.transparent)
         {
@@ -501,9 +506,12 @@ const CSSRenderer = new Class({
 
             // Camera origin seems to be included here.
             worldViewRenderNode.setProperty('transform', camera.matrix.getCSSMatrix());
-
-            // We don't mark the camera clean until the end of the render.
         }
+
+        fadeRenderNode.element.dataset.isRunning = fadeEffect.isRunning;
+        fadeRenderNode.element.dataset.isComplete = fadeEffect.isComplete;
+
+        flashRenderNode.element.dataset.isRunning = flashEffect.isRunning;
 
         if (fadeEffect.isRunning || fadeEffect.isComplete)
         {
@@ -515,7 +523,7 @@ const CSSRenderer = new Class({
             fadeRenderNode.hide();
         }
 
-        if (flashEffect.isRunning || flashEffect.isComplete)
+        if (flashEffect.isRunning)
         {
             flashRenderNode.show();
             flashRenderNode.setProperty('backgroundColor', `rgba(${flashEffect.red}, ${flashEffect.green}, ${flashEffect.blue}, ${flashEffect.alpha})`);
