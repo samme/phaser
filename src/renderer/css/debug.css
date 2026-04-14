@@ -10,7 +10,7 @@
     height: 20px;
     padding: 0;
     overflow: hidden;
-    white-space: nowrap;
+    white-space: pre;
     font: 12px/20px monospace;
     color: white;
     background: #0009;
