@@ -1,5 +1,5 @@
-const RenderFilters = require('../../renderer/RenderFilters');
-const RenderMask = require('../../renderer/RenderMask');
+const RenderFilters = require('../../renderer/css/RenderFilters');
+const RenderMask = require('../../renderer/css/RenderMask');
 
 /**
  * @author       Richard Davey <rich@phaser.io>
