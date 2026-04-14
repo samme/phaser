@@ -36,7 +36,7 @@ const ParticleEmitterCSSRenderer = function (renderer, emitter, camera)
 
     renderer.drawCount += aliveCount;
 
-    const renderNode = emitter.renderNode;
+    const { blendMode, renderNode } = emitter;
 
     renderNode.show();
     renderNode.setAlpha(emitter.alpha);
@@ -50,7 +50,7 @@ const ParticleEmitterCSSRenderer = function (renderer, emitter, camera)
         emitter.depthSort();
     }
 
-    const { blendMode } = emitter;
+    const emitterElement = renderNode.element;
 
     for (let i = 0; i < aliveCount; i++)
     {
@@ -62,9 +62,11 @@ const ParticleEmitterCSSRenderer = function (renderer, emitter, camera)
 
         if (dirty)
         {
-            renderer.appendChildToParentRenderNode(particleRenderNode, renderNode);
+            emitterElement.appendChild(particleRenderNode.element);
 
             particle.dirty = false;
+
+            renderer.mutateCount++;
         }
 
         const alpha = particle.alpha;
@@ -86,6 +88,7 @@ const ParticleEmitterCSSRenderer = function (renderer, emitter, camera)
             particleRenderNode.setProperty('background', frame.cssBackground);
             particleRenderNode.setSize(frame.cutWidth, frame.cutHeight);
 
+            // center (particle.x, particle.y) -> top-left (x, y)
             const x = particle.x - frame.halfWidth;
             const y = particle.y - frame.halfHeight;
 
