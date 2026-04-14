@@ -27,6 +27,8 @@ const BitmapMask = new Class({
         this.mode = mode;
 
         this.name = 'mask';
+
+        this.active = true;
     },
 
     getCSSValue: function ()

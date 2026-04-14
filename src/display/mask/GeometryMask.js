@@ -39,6 +39,8 @@ var GeometryMask = new Class({
         this.clipPath = clipPath;
 
         this.name = 'clip-path';
+
+        this.active = true;
     },
 
     getCSSValue: function ()
