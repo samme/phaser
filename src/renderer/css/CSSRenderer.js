@@ -464,6 +464,7 @@ const CSSRenderer = new Class({
         const {
             fadeEffect,
             fadeRenderNode,
+            filters,
             flashEffect,
             flashRenderNode,
             mask,
@@ -472,6 +473,17 @@ const CSSRenderer = new Class({
         } = camera;
 
         viewportRenderNode.setAlpha(camera.alpha);
+
+        if (filters._filters.length > 0)
+        {
+            filters.preRender();
+
+            viewportRenderNode.setProperty('filter', filters.getCSS());
+        }
+        else
+        {
+            viewportRenderNode.setProperty('filter', null);
+        }
 
         if (mask && mask.active)
         {
