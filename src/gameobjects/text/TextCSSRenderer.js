@@ -28,9 +28,11 @@ var TextCSSRenderer = function (renderer, src, camera)
 
     renderNode.show();
 
-    const { text, x, y, scaleX, scaleY, rotation, originX, originY, padding, dirty } = src;
+    const { text, x, y, scaleX, scaleY, rotation, originX, originY, scrollFactorX, scrollFactorY, padding, dirty } = src;
+    const sx = (1 - scrollFactorX) * scrollX;
+    const sy = (1 - scrollFactorY) * scrollY;
 
-    renderNode.setProperty('transform', `translate(${-100 * originX}%, ${-100 * originY}%) translate(${x}px, ${y}px) scale(${scaleX}, ${scaleY}) rotate(${rotation}rad)`);
+    renderNode.setProperty('transform', `translate(${-100 * originX}%, ${-100 * originY}%) translate(${x + sx}px, ${y + sy}px) scale(${scaleX}, ${scaleY}) rotate(${rotation}rad)`);
 
     if (dirty)
     {
