@@ -19,8 +19,9 @@ const BlitterCSSRenderer = function (renderer, src, camera)
 {
     const { renderNode } = src;
     const { list } = src.children;
+    const childCount = list.length;
 
-    if (!src.willRenderCSS() || list.length === 0)
+    if (!src.willRenderCSS() || childCount === 0)
     {
         renderNode.hide();
 
@@ -31,8 +32,6 @@ const BlitterCSSRenderer = function (renderer, src, camera)
     camera.addToRenderList(src);
 
     const { dirty } = src;
-
-    renderer.countDirtyState(dirty, list.length);
 
     renderNode.show();
     renderNode.setAlpha(src.alpha);
@@ -49,9 +48,14 @@ const BlitterCSSRenderer = function (renderer, src, camera)
         src._frozenRendered = true;
     }
 
+    renderer.countDirtyState(dirty, childCount);
+
+    renderer.drawCount += childCount;
+
+    const srcElement = renderNode.element;
+
     for (let i = 0; i < list.length; i++)
     {
-
         const bob = list[i];
         const bobRenderNode = bob.renderNode;
 
@@ -81,11 +85,11 @@ const BlitterCSSRenderer = function (renderer, src, camera)
 
         if (dirty)
         {
-            renderer.appendChildToParentRenderNode(bobRenderNode, renderNode);
+            srcElement.appendChild(bobRenderNode.element);
+
+            renderer.mutateCount++;
         }
     }
-
-    renderer.drawCount += list.length;
 
     src.dirty = false;
 };
