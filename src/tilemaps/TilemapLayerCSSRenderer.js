@@ -12,18 +12,23 @@ const RenderTransformWithSize = require('../renderer/css/RenderTransformWithSize
  *
  * @param {Phaser.Renderer.CSS.CSSRenderer} renderer - A reference to the current active CSS renderer.
  * @param {Phaser.Tilemaps.TilemapLayer} src - The Game Object being rendered in this call.
+ * @param {Phaser.Cameras.Scene2D.Camera} camera - The Camera that is rendering the Game Object.
  */
 var TilemapLayerCSSRenderer = function (renderer, src, camera)
 {
+    var { renderNode } = src;
+
     if (!src.willRenderCSS())
     {
-        src.renderNode.hide();
+        renderNode.hide();
         return;
     }
 
-    src.renderNode.show();
-    src.renderNode.setAlpha(src.alpha);
-    src.renderNode.setBlendMode(src.blendMode);
+    camera.addToRenderList(src);
+
+    renderNode.show();
+    renderNode.setAlpha(src.alpha);
+    renderNode.setBlendMode(src.blendMode);
 
     RenderFilters(src);
     RenderMask(src);
@@ -39,7 +44,9 @@ var TilemapLayerCSSRenderer = function (renderer, src, camera)
     var gidMap = src.gidMap;
     var tileRenderNodes = src.tileRenderNodes;
     var tiles = src.cull(camera);
-    var drawCount = 0;
+    var styleCount = 0;
+    var visibleCount = 0;
+    var srcElement = renderNode.element;
 
     for (var tile of tiles)
     {
@@ -48,8 +55,7 @@ var TilemapLayerCSSRenderer = function (renderer, src, camera)
             continue;
         }
 
-        // We count all styled tiles, visible or not.
-        drawCount++;
+        styleCount++;
 
         var node = tileRenderNodes.get(tile);
 
@@ -60,8 +66,12 @@ var TilemapLayerCSSRenderer = function (renderer, src, camera)
         else
         {
             node = renderer.createRenderNode();
-            renderer.appendChildToParentRenderNode(node, src.renderNode);
+
             tileRenderNodes.set(tile, node);
+
+            srcElement.appendChild(node.element);
+
+            renderer.mutateCount++;
             renderer.countDirtyState(true, 1);
         }
 
@@ -89,21 +99,24 @@ var TilemapLayerCSSRenderer = function (renderer, src, camera)
             continue;
         }
 
+        visibleCount++;
+
         node.show();
 
         node.setSize(tileWidth, tileHeight);
         node.setAlpha(tile.alpha);
         node.setProperty('background', tileTexCoords.cssBackground);
 
+        // top-left (pixelX, pixelY)
         var px = tile.pixelX;
         var py = tile.pixelY;
-        var halfWidth = tileWidth * 0.5;
-        var halfHeight = tileHeight * 0.5;
 
         if (tile.rotation !== 0 || tile.flipX || tile.flipY)
         {
             var scaleX = tile.flipX ? -1 : 1;
             var scaleY = tile.flipY ? -1 : 1;
+            var halfWidth = tileWidth * 0.5;
+            var halfHeight = tileHeight * 0.5;
 
             node.setTRS(px, py, tile.rotation, scaleX, scaleY);
             node.setTransformOrigin(halfWidth, halfHeight);
@@ -116,9 +129,9 @@ var TilemapLayerCSSRenderer = function (renderer, src, camera)
 
     }
 
-    src.tilesDrawn = drawCount;
+    src.tilesDrawn = visibleCount;
 
-    renderer.drawCount += drawCount;
+    renderer.drawCount += styleCount;
 };
 
 module.exports = TilemapLayerCSSRenderer;
