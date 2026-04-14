@@ -29,15 +29,14 @@ var ContainerCSSRenderer = function (renderer, src, camera)
     camera.addToRenderList(src);
 
     const children = src.list;
+    const childCount = children.length;
 
-    if (children.length === 0)
+    if (childCount === 0)
     {
         renderNode.hide();
 
         return;
     }
-
-    renderer.countDirtyState(dirty, children.length);
 
     renderNode.show();
     renderNode.setAlpha(src.alpha);
@@ -54,9 +53,13 @@ var ContainerCSSRenderer = function (renderer, src, camera)
         src._frozenRendered = true;
     }
 
+    renderer.countDirtyState(dirty, childCount);
+
+    renderer.drawCount += childCount;
+
     const containerElement = renderNode.element;
 
-    for (var i = 0; i < children.length; i++)
+    for (var i = 0; i < childCount; i++)
     {
         var child = children[i];
 
@@ -71,7 +74,6 @@ var ContainerCSSRenderer = function (renderer, src, camera)
     }
 
     src.dirty = false;
-
 };
 
 module.exports = ContainerCSSRenderer;
