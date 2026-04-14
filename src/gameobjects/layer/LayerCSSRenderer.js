@@ -1,3 +1,6 @@
+const RenderFilters = require('../../renderer/RenderFilters');
+const RenderMask = require('../../renderer/RenderMask');
+
 /**
  * @author       Richard Davey <rich@phaser.io>
  * @author       Felipe Alfonso <@bitnenfer>
@@ -32,8 +35,9 @@ var LayerCSSRenderer = function (renderer, src, camera)
     camera.addToRenderList(src);
 
     const children = src.list;
+    const childCount = children.length;
 
-    if (children.length === 0)
+    if (childCount === 0)
     {
         renderNode.hide();
 
@@ -41,14 +45,12 @@ var LayerCSSRenderer = function (renderer, src, camera)
     }
 
     renderNode.show();
-    renderNode.setBlendMode(src.blendMode);
-    renderNode.setAlpha(src.alpha);
 
-    if (src.mask)
-    {
-        // TODO
-        // layer.mask.preRenderCSS(renderer, null, camera);
-    }
+    renderNode.setAlpha(src.alpha);
+    renderNode.setBlendMode(src.blendMode);
+
+    RenderFilters(src);
+    RenderMask(src);
 
     if (src.isFrozen)
     {
@@ -57,11 +59,10 @@ var LayerCSSRenderer = function (renderer, src, camera)
         src._frozenRendered = true;
     }
 
-    renderer.countDirtyState(dirty, children.length);
+    renderer.countDirtyState(dirty, childCount);
+    renderer.drawCount += childCount;
 
-    renderer.drawCount += children.length;
-
-    for (var i = 0; i < children.length; i++)
+    for (var i = 0; i < childCount; i++)
     {
         var child = children[i];
 
@@ -76,7 +77,6 @@ var LayerCSSRenderer = function (renderer, src, camera)
     }
 
     src.dirty = false;
-
 };
 
 module.exports = LayerCSSRenderer;
