@@ -40,7 +40,6 @@ const ParticleEmitterCSSRenderer = function (renderer, emitter, camera)
 
     renderNode.show();
     renderNode.setAlpha(emitter.alpha);
-    renderNode.setBlendMode(emitter.blendMode);
 
     RenderFilters(emitter);
     RenderMask(emitter);
@@ -50,6 +49,8 @@ const ParticleEmitterCSSRenderer = function (renderer, emitter, camera)
     {
         emitter.depthSort();
     }
+
+    const { blendMode } = emitter;
 
     for (let i = 0; i < aliveCount; i++)
     {
@@ -81,7 +82,7 @@ const ParticleEmitterCSSRenderer = function (renderer, emitter, camera)
         {
             particleRenderNode.show();
             particleRenderNode.setAlpha(alpha);
-            particleRenderNode.setBlendMode(particle.blendMode);
+            particleRenderNode.setBlendMode(blendMode);
             particleRenderNode.setProperty('background', frame.cssBackground);
             particleRenderNode.setSize(frame.cutWidth, frame.cutHeight);
 
