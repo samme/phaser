@@ -1624,8 +1624,6 @@ var BaseCamera = new Class({
 
         this.removeAllListeners();
 
-        this.destroyRenderNodes();
-
         this.matrix.destroy();
         this.matrixCombined.destroy();
         this.matrixExternal.destroy();

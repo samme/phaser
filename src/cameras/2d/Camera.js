@@ -259,12 +259,22 @@ var Camera = new Class({
 
     destroyRenderNodes: function ()
     {
+        if (!this.scene || !this.viewportRenderNode)
+        {
+            return;
+        }
+
         const { renderer } = this.scene.sys;
 
         renderer.destroyRenderNode(this.viewportRenderNode);
         renderer.destroyRenderNode(this.worldViewRenderNode);
         renderer.destroyRenderNode(this.fadeRenderNode);
         renderer.destroyRenderNode(this.flashRenderNode);
+
+        this.viewportRenderNode = null;
+        this.worldViewRenderNode = null;
+        this.fadeRenderNode = null;
+        this.flashRenderNode = null;
     },
 
     initFilters: function ()
@@ -989,10 +999,18 @@ var Camera = new Class({
      */
     destroy: function ()
     {
+        console.debug('destroy camera %s scene %s', this.id, this.scene.sys.settings.key);
+
         this.resetFX();
 
-        this.filters.internal.destroy();
-        this.filters.external.destroy();
+        this.destroyRenderNodes();
+
+        if (this.filters)
+        {
+            this.filters.destroy();
+
+            this.filters = null;
+        }
 
         BaseCamera.prototype.destroy.call(this);
 
