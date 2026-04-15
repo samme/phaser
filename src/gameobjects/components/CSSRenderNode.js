@@ -3,8 +3,6 @@ const RENDER_MASK = 15;
 const CSSRenderNode = {
     renderNode: null,
 
-    tintNode: null,
-
     initRenderNode: function ()
     {
         if (!this.renderNode)
