@@ -1,4 +1,4 @@
-
+var RenderTransformWithSize = require('../../renderer/css/RenderTransformWithSize');
 
 /**
  * Renders this Game Object with the CSS Renderer to the given Camera.
@@ -28,11 +28,11 @@ var TextCSSRenderer = function (renderer, src, camera)
 
     renderNode.show();
 
-    const { text, x, y, scaleX, scaleY, rotation, originX, originY, scrollFactorX, scrollFactorY, padding, dirty } = src;
-    const sx = (1 - scrollFactorX) * scrollX;
-    const sy = (1 - scrollFactorY) * scrollY;
+    const { dirty, padding, text } = src;
 
-    renderNode.setProperty('transform', `translate(${-100 * originX}%, ${-100 * originY}%) translate(${x + sx}px, ${y + sy}px) scale(${scaleX}, ${scaleY}) rotate(${rotation}rad)`);
+    // TODO: Reconcile width/height with fixedWidth/fixedHeight.
+
+    RenderTransformWithSize(src, camera);
 
     if (dirty)
     {
