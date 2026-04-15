@@ -42,10 +42,6 @@ var VideoRender = require('./VideoRender');
  * }
  * ```
  *
- * To all intents and purposes, a video is a standard Game Object, just like a Sprite. And as such, you can do
- * all the usual things to it, such as scaling, rotating, cropping, tinting, making interactive, giving a
- * physics body, etc.
- *
  * Transparent videos are also possible via the WebM file format. Providing the video file has was encoded with
  * an alpha channel, and providing the browser supports WebM playback (not all of them do), then it will render
  * in-game with full transparency.
@@ -919,6 +915,10 @@ var Video = new Class({
 
             this.setSizeToFrame();
             this.updateDisplayOrigin();
+
+            this.video.setAttribute('style', 'position: absolute; left: 0; top: 0');
+
+            this.renderNode.element.replaceChildren(this.video);
         }
         else
         {
