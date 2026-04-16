@@ -10,7 +10,7 @@ const BitmapMask = new Class({
 
     initialize:
 
-    function BitmapMask (scene, x, y, texture, maskPosition = null, maskSize = null, repeat = 'no-repeat', mode = 'alpha')
+    function BitmapMask (scene, x, y, texture, cssPosition = null, cssSize = null, repeat = 'no-repeat', mode = 'alpha')
     {
         this.scene = scene;
         this.x = x;
@@ -21,8 +21,8 @@ const BitmapMask = new Class({
 
         this.setTexture(texture);
 
-        this.maskPosition = maskPosition;
-        this.maskSize = maskSize;
+        this.cssPosition = cssPosition;
+        this.cssSize = cssSize;
         this.repeat = repeat;
         this.mode = mode;
 
@@ -33,10 +33,10 @@ const BitmapMask = new Class({
 
     getCSSValue: function ()
     {
-        const maskPosition = this.maskPosition || `${this.x}px ${this.y}px`;
-        const maskSize = this.maskSize || `${this.displayWidth}px ${this.displayHeight}px`;
+        const cssPosition = this.cssPosition || `${this.x}px ${this.y}px`;
+        const cssSize = this.cssSize || `${this.displayWidth}px ${this.displayHeight}px`;
 
-        return `${this.frame.source.cssImage} ${maskPosition} / ${maskSize} ${this.repeat} ${this.mode}`;
+        return `${this.frame.source.cssImage} ${cssPosition} / ${cssSize} ${this.repeat} ${this.mode}`;
     }
 
 });
