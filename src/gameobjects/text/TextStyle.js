@@ -405,6 +405,14 @@ var TextStyle = new Class({
             }
         }
 
+        //  Sync dimensions if non-zero.
+        if (this.fixedWidth > 0 || this.fixedHeight > 0)
+        {
+            console.warn('TextStyle.setStyle: fixedWidth and fixedHeight are deprecated. Use Text.setSize() instead.');
+
+            this.parent.setSize(this.fixedWidth, this.fixedHeight);
+        }
+
         //  Allow for 'font' override
         var font = GetValue(style, 'font', null);
 
@@ -685,6 +693,7 @@ var TextStyle = new Class({
      *
      * @method Phaser.GameObjects.TextStyle#setFixedSize
      * @since 3.0.0
+     * @deprecated 5.0.0. Use `Text.setSize()` instead.
      *
      * @param {number} width - The fixed width to set.
      * @param {number} height - The fixed height to set.
@@ -693,18 +702,15 @@ var TextStyle = new Class({
      */
     setFixedSize: function (width, height)
     {
+        if (width > 0 || height > 0)
+        {
+            console.warn('TextStyle.setFixedSize() is deprecated. Use Text.setSize() instead.');
+        }
+
         this.fixedWidth = width;
         this.fixedHeight = height;
 
-        if (width)
-        {
-            this.parent.width = width;
-        }
-
-        if (height)
-        {
-            this.parent.height = height;
-        }
+        this.parent.setSize(width, height);
 
         return this.update(false);
     },

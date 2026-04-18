@@ -1,3 +1,6 @@
+var RenderFilters = require('../../renderer/css/RenderFilters');
+var RenderMask = require('../../renderer/css/RenderMask');
+var RenderTransform = require('../../renderer/css/RenderTransform');
 var RenderTransformWithSize = require('../../renderer/css/RenderTransformWithSize');
 
 /**
@@ -30,9 +33,26 @@ var TextCSSRenderer = function (renderer, src, camera)
 
     const { dirty, padding, text } = src;
 
-    // TODO: Reconcile width/height with fixedWidth/fixedHeight.
+    renderNode.setAlpha(src.alpha);
+    renderNode.setBlendMode(src.blendMode);
 
-    RenderTransformWithSize(src, camera);
+    RenderFilters(src);
+    RenderMask(src);
+
+    if (src.hasFixedSize())
+    {
+        RenderTransformWithSize(src, camera);
+    }
+    else
+    {
+        RenderTransform(src, camera);
+
+        // Clear the cached dimensions so RenderTransformWithSize() can force an update later.
+        renderNode._width = null;
+        renderNode._height = null;
+        renderNode.setProperty('width', 'max-content');
+        renderNode.setProperty('height', 'auto');
+    }
 
     if (dirty)
     {
@@ -47,8 +67,6 @@ var TextCSSRenderer = function (renderer, src, camera)
             align,
             backgroundColor,
             color,
-            fixedHeight,
-            fixedWidth,
             shadowBlur,
             shadowColor,
             shadowOffsetX,
@@ -61,8 +79,6 @@ var TextCSSRenderer = function (renderer, src, camera)
         renderNode.setProperty('font', _font);
         renderNode.setProperty('textAlign', align);
         renderNode.setProperty('textShadow', `${shadowColor} ${shadowOffsetX}px ${shadowOffsetY}px ${shadowBlur}px`);
-        renderNode.setProperty('width', fixedWidth > 0 ? `${fixedWidth}px` : 'max-content');
-        renderNode.setProperty('height', fixedHeight > 0 ? `${fixedHeight}px` : 'auto');
 
         // Clean!
         src.dirty = false;

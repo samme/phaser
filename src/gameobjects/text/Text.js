@@ -184,20 +184,20 @@ var Text = new Class({
          *
          * @name Phaser.GameObjects.Text#width
          * @type {number}
-         * @default 100
+         * @default 0
          * @since 3.0.0
          */
-        this.width = 1;
+        this.width = 0;
 
         /**
          * The height of this Text object.
          *
          * @name Phaser.GameObjects.Text#height
          * @type {number}
-         * @default 1
+         * @default 0
          * @since 3.0.0
          */
-        this.height = 1;
+        this.height = 0;
 
         /**
          * The line spacing value.
@@ -295,6 +295,21 @@ var Text = new Class({
         {
             return DefaultImageNodes;
         }
+    },
+
+    setSize: function (width, height)
+    {
+        this.width = width;
+        this.height = height;
+
+        this.updateDisplayOrigin();
+
+        return this;
+    },
+
+    hasFixedSize: function ()
+    {
+        return this.width > 0 && this.height > 0;
     },
 
     /**
