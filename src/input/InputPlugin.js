@@ -2425,11 +2425,6 @@ var InputPlugin = new Class({
                 continue;
             }
 
-            if (gameObject.type === 'Text' && hitArea.width === 1 && hitArea.height === 1)
-            {
-                console.warn('This 1x1 hit area is probably too small. Call a Text Game Object\'s setSize(w, h) before setInteractive() or provide a custom hit area shape and callback.');
-            }
-
             var io = (!gameObject.input) ? CreateInteractiveObject(gameObject, hitArea, hitAreaCallback) : gameObject.input;
 
             io.customHitArea = customHitArea;
@@ -2539,9 +2534,9 @@ var InputPlugin = new Class({
                 height = frame.realHeight;
             }
 
-            if (gameObject.type === 'Container' && (width === 0 || height === 0))
+            if (width === 0 || height === 0)
             {
-                console.warn('Container.setInteractive must specify a Shape or call setSize() first');
+                console.warn('This ' + gameObject.type + ' can\'t be made interactive with width or height 0. Specify a hit area or call setSize() first.');
                 continue;
             }
 
