@@ -29,7 +29,7 @@ const SPREAD_METHODS = [ 'pad', 'pad', 'repeat', 'reflect' ];
  * Has no effect on unsupported gradient types.
  *
  * @function UpdateSVGGradient
- * @since 4.0.0
+ * @since 5.0.0
  *
  * @param {SVGSVGElement} svg - The SVG element to update.
  * @param {Phaser.GameObjects.Gradient} gradient - The Gradient Game Object to read data from.
@@ -41,11 +41,6 @@ const UpdateSVGGradient = function (svg, gradient)
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
     svg.setAttribute('width', width);
     svg.setAttribute('height', height);
-
-    if (shapeMode !== LINEAR && shapeMode !== RADIAL)
-    {
-        return;
-    }
 
     let gradientEl;
 
@@ -59,7 +54,7 @@ const UpdateSVGGradient = function (svg, gradient)
         gradientEl.setAttribute('x2', gradient.start.x + gradient.shape.x);
         gradientEl.setAttribute('y2', gradient.start.y + gradient.shape.y);
     }
-    else
+    else if (shapeMode === RADIAL)
     {
         gradientEl = svg.querySelector('radialGradient');
 
@@ -72,6 +67,14 @@ const UpdateSVGGradient = function (svg, gradient)
         gradientEl.setAttribute('fx', cx);
         gradientEl.setAttribute('fy', cy);
         gradientEl.setAttribute('r', r);
+    }
+    else
+    {
+        const rect = svg.querySelector('rect');
+
+        rect.setAttribute('fill', gradient.ramp.bands[0].colorStart.rgb);
+
+        return;
     }
 
     const spreadMethod = SPREAD_METHODS[gradient.repeatMode] || 'pad';
