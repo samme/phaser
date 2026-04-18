@@ -897,7 +897,7 @@ var InputPlugin = new Class({
             this.resetCursor();
         }
 
-        if (gameObject.renderNode)
+        if (gameObject.input && gameObject.renderNode)
         {
             gameObject.renderNode.element.dataset.input = gameObject.input.enabled;
         }
@@ -952,7 +952,10 @@ var InputPlugin = new Class({
             gameObject.input.dropZone = dropZone;
         }
 
-        gameObject.renderNode.element.dataset.input = gameObject.input.enabled;
+        if (gameObject.input)
+        {
+            gameObject.renderNode.element.dataset.input = gameObject.input.enabled;
+        }
 
         return this;
     },
