@@ -8,6 +8,7 @@ var BlendModes = require('../../renderer/BlendModes');
 var Class = require('../../utils/Class');
 var Components = require('../components');
 var ComponentsToJSON = require('../components/ToJSON');
+var CSSFilters = require('../components/CSSFilters');
 var DataManager = require('../../data/DataManager');
 var EventEmitter = require('eventemitter3');
 var GameObjectEvents = require('../events');
@@ -80,6 +81,7 @@ var Layer = new Class({
     Mixins: [
         Components.AlphaSingle,
         Components.BlendMode,
+        Components.CSSFreeze,
         Components.CSSRenderNode,
         Components.Depth,
         Components.Filters,
@@ -95,6 +97,7 @@ var Layer = new Class({
     function Layer (scene, children)
     {
         List.call(this, scene);
+
         EventEmitter.call(this);
 
         /**
@@ -300,6 +303,8 @@ var Layer = new Class({
         this.sortChildrenFlag = false;
 
         this.dirty = false;
+
+        this.filters = new CSSFilters(scene.sys.renderer);
 
         //  Set the List callbacks
         this.addCallback = this.addChildCallback;
