@@ -399,7 +399,7 @@ const CSSRenderer = new Class({
 
             if (displayListDirty)
             {
-                parentElement.appendChild(child.renderNode.element);
+                parentElement.appendChild(child.node || child.renderNode.element);
 
                 this.mutateCount++;
             }

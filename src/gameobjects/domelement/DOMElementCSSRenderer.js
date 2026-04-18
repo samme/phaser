@@ -33,28 +33,13 @@ var DOMElementCSSRenderer = function (renderer, src, camera, parentMatrix)
         return;
     }
 
-    if (camera.camera)
-    {
-        // `camera` is really a DrawingContext object, used in WebGL rendering.
-        camera = camera.camera;
-    }
-
     var style = src.node.style;
-    var settings = src.scene.sys.settings;
 
-    if (!style || !settings.visible || GameObject.RENDER_MASK !== src.renderFlags || (src.cameraFilter !== 0 && (src.cameraFilter & camera.id)) || (src.parentContainer && !src.parentContainer.willRender()))
+    if (GameObject.RENDER_MASK !== src.renderFlags)
     {
         style.display = 'none';
 
         return;
-    }
-
-    var parent = src.parentContainer;
-    var alpha = camera.alpha * src.alpha;
-
-    if (parent)
-    {
-        alpha *= parent.alpha;
     }
 
     var camMatrix = tempMatrix1;
@@ -64,26 +49,14 @@ var DOMElementCSSRenderer = function (renderer, src, camera, parentMatrix)
     var dx = src.width * src.originX;
     var dy = src.height * src.originY;
 
-    var tx = '0%';
-    var ty = '0%';
+    var tx = (100 * src.originX) + '%';
+    var ty = (100 * src.originY) + '%';
 
     camMatrix.copyWithScrollFactorFrom(
-        camera.matrix,
+        camera.cameraManager.default.matrix,
         camera.scrollX, camera.scrollY,
         src.scrollFactorX, src.scrollFactorY
     );
-
-    if (parentMatrix)
-    {
-        camMatrix.multiply(parentMatrix);
-        dx *= src.scaleX;
-        dy *= src.scaleY;
-    }
-    else
-    {
-        tx = (100 * src.originX) + '%';
-        ty = (100 * src.originY) + '%';
-    }
 
     camMatrix.translate(-dx, -dy);
 
@@ -98,8 +71,7 @@ var DOMElementCSSRenderer = function (renderer, src, camera, parentMatrix)
     if (!src.transformOnly)
     {
         style.display = 'block';
-        style.opacity = alpha;
-        style.zIndex = src._depth;
+        style.opacity = src.alpha;
         style.pointerEvents = src.pointerEvents;
         style.mixBlendMode = CSSBlendModes[src._blendMode];
     }
