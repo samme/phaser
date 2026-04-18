@@ -20,10 +20,25 @@
     outline: thin solid red;
 }
 
+[data-type]::before {
+    content: attr(data-type);
+    position: absolute;
+    left: 0;
+    top: 0;
+    font: 12px/1 monospace;
+    color: white;
+    background: #0009;
+}
+
 [data-type="Container"] {
     outline: thin solid lime;
 }
 
 [data-input="true"] {
     outline: thin solid yellow;
+}
+
+[data-type="CameraViewport"] {
+    background-image: linear-gradient(0deg, #666 1px, transparent 1px), linear-gradient(90deg, #666 1px, transparent 1px);
+    background-size: 200px 200px;
 }
