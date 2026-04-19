@@ -160,17 +160,21 @@ var Gradient = new Class({
          * where 0 is the start of the `shape` vector and 1 is the end.
          * Repeat mode tells us how to handle that number below 0/above 1.
          *
-         * This can be only the following:
+         * This can be one of the following:
          *
          * - 0 (EXTEND): values are clamped between 0 and 1,
          *   so the ends of the gradient become flat color.
+         * - 2 (SAWTOOTH): values are modulo 1,
+         *   so the gradient repeats.
+         * - 3 (TRIANGULAR): values rise to 1 then fall to 0,
+         *   so the gradient goes smoothly back and forth.
          *
          * @name Phaser.GameObjects.Gradient#repeatMode
          * @type {number}
          * @default 0
          * @since 4.0.0
          */
-        this.repeatMode = 0;
+        this.repeatMode = config.repeatMode || 0;
 
         /**
          * The shape mode of the gradient.
