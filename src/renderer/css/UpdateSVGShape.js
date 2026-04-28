@@ -87,16 +87,21 @@ const updateCurve = function (shape, svg)
         return;
     }
 
-    let d = `M ${ path[0] } ${ path[1]}`;
+    const dx = shape._curveBounds.x;
+    const dy = shape._curveBounds.y;
 
-    for (let i = 2; i < path.length - 1; i += 2)
+    let pathLength = path.length - 1;
+
+    if (!shape.closePath)
     {
-        d += ` L ${ path[i] } ${ path[i + 1]}`;
+        pathLength -= 2;
     }
 
-    if (shape.closePath)
+    let d = `M ${ path[0] - dx } ${ path[1] - dy }`;
+
+    for (let i = 2; i < pathLength; i += 2)
     {
-        d += ' Z';
+        d += ` L ${ path[i] - dx } ${ path[i + 1] - dy }`;
     }
 
     el.setAttribute('d', d);
