@@ -60,7 +60,7 @@ var TextCSSRenderer = function (renderer, src, camera)
         renderNode.element.innerText = text;
 
         // Padding
-        renderNode.setProperty('padding', `${padding.left}px ${padding.top}px ${padding.right}px ${padding.bottom}px`);
+        renderNode.setProperty('padding', `${padding.top}px ${padding.right}px ${padding.bottom}px ${padding.left}px`);
 
         // Style
         const {
