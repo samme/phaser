@@ -297,6 +297,14 @@ var Text = new Class({
         }
     },
 
+    postInitRenderNode: function ()
+    {
+        var style = this.renderNode.element.style;
+
+        style.boxSizing = 'border-box';
+        style.contain = 'layout';
+    },
+
     setSize: function (width, height)
     {
         this.width = width;
