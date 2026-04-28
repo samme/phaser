@@ -226,6 +226,23 @@ var Shape = new Class({
 
         this.element = SVGShapeFactory(this.type);
 
+        this.elements = {};
+
+        const shapeTypeElm = this.element.querySelector('[data-shape-type]');
+
+        if (shapeTypeElm)
+        {
+            this.elements.Shape = shapeTypeElm;
+            this.elements[shapeTypeElm.dataset.shapeType] = shapeTypeElm;
+        }
+
+        for (const elm of Array.from(this.element.querySelectorAll('[data-face]')))
+        {
+            this.elements[elm.dataset.face + 'Face'] = elm;
+        }
+
+        console.debug('elements', this.elements);
+
         this.initRenderNode();
 
         this.renderNode.element.appendChild(this.element);
@@ -387,6 +404,8 @@ var Shape = new Class({
         this._tempLine = null;
         this.pathData = [];
         this.pathIndexes = [];
+        this.element = null;
+        this.elements = null;
     },
 
     /**

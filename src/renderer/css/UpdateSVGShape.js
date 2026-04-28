@@ -66,7 +66,7 @@ const updateViewBox = function (shape, svg)
 
 const updateCircle = function (shape, svg)
 {
-    const el = svg.querySelector('[data-shape-type="Circle"]');
+    const el = shape.elements.Circle;
     const r = shape.geom.radius;
 
     el.setAttribute('cx', r);
@@ -79,7 +79,7 @@ const updateCircle = function (shape, svg)
 
 const updateCurve = function (shape, svg)
 {
-    const el = svg.querySelector('[data-shape-type="Curve"]');
+    const el = shape.elements.Curve;
     const path = shape.pathData;
 
     if (!path || path.length < 2)
@@ -106,7 +106,7 @@ const updateCurve = function (shape, svg)
 
 const updateEllipse = function (shape, svg)
 {
-    const el = svg.querySelector('[data-shape-type="Ellipse"]');
+    const el = shape.elements.Ellipse;
     const w = shape.width;
     const h = shape.height;
 
@@ -121,7 +121,7 @@ const updateEllipse = function (shape, svg)
 
 const updateGrid = function (shape, svg)
 {
-    const g = svg.querySelector('[data-shape-type="Grid"]');
+    const g = shape.elements.Grid;
 
     //  Remove all existing cell rects
     while (g.firstChild)
@@ -179,7 +179,6 @@ const updateGrid = function (shape, svg)
 
 const updateIsoBox = function (shape, svg)
 {
-    const g = svg.querySelector('[data-shape-type="IsoBox"]');
     const w = shape.width;
     const h = shape.height;
     const proj = shape.projection;
@@ -194,8 +193,9 @@ const updateIsoBox = function (shape, svg)
     //  Total SVG height: top face peak (topY) + side face height (h) + bottom projection (topY)
     const totalH = topY + h + topY;
 
+    const { topFace, leftFace, rightFace } = shape.elements;
+
     //  Top face diamond
-    const topFace = g.querySelector('[data-face="top"]');
     const topPoints =
         `${sideW},0 ${w},${topY} ${sideW},${topY * 2} 0,${topY}`;
     topFace.setAttribute('points', topPoints);
@@ -203,7 +203,6 @@ const updateIsoBox = function (shape, svg)
     topFace.setAttribute('display', shape.showTop ? '' : 'none');
 
     //  Left face
-    const leftFace = g.querySelector('[data-face="left"]');
     const leftPoints =
         `0,${topY} ${sideW},${topY * 2} ${sideW},${sideBottom} 0,${sideBottom - topY}`;
     leftFace.setAttribute('points', leftPoints);
@@ -211,7 +210,6 @@ const updateIsoBox = function (shape, svg)
     leftFace.setAttribute('display', shape.showLeft ? '' : 'none');
 
     //  Right face
-    const rightFace = g.querySelector('[data-face="right"]');
     const rightPoints =
         `${sideW},${topY * 2} ${w},${topY} ${w},${sideBottom - topY} ${sideW},${sideBottom}`;
     rightFace.setAttribute('points', rightPoints);
@@ -225,7 +223,6 @@ const updateIsoBox = function (shape, svg)
 
 const updateIsoTriangle = function (shape, svg)
 {
-    const g = svg.querySelector('[data-shape-type="IsoTriangle"]');
     const w = shape.width;
     const h = shape.height;
     const proj = shape.projection;
@@ -234,9 +231,7 @@ const updateIsoTriangle = function (shape, svg)
     const sideW = Math.floor(w / 2);
     const topY = Math.floor(w / proj);
 
-    const topFace = g.querySelector('[data-face="top"]');
-    const leftFace = g.querySelector('[data-face="left"]');
-    const rightFace = g.querySelector('[data-face="right"]');
+    const { topFace, leftFace, rightFace } = shape.elements;
 
     if (reversed)
     {
@@ -294,7 +289,7 @@ const updateIsoTriangle = function (shape, svg)
 
 const updateLine = function (shape, svg)
 {
-    const el = svg.querySelector('[data-shape-type="Line"]');
+    const el = svg.elements.Line;
     const {geom} = shape;
 
     el.setAttribute('x1', geom.x1);
@@ -313,13 +308,12 @@ const updateLine = function (shape, svg)
  * Shared updater for Triangle, Polygon, and Star — all store their
  * final vertex data in shape.pathData as a flat [x0,y0, x1,y1, ...] array.
  *
- * @param {string} selector - The data-shape-type selector string.
  * @param {Phaser.GameObjects.Shape} shape
  * @param {SVGSVGElement} svg
  */
-const updatePathDataShape = function (selector, shape, svg)
+const updatePathDataShape = function (shape, svg)
 {
-    const el = svg.querySelector(`[data-shape-type="${ selector }"]`);
+    const el = shape.elements.Shape;
     const path = shape.pathData;
 
     if (!path || path.length < 4)
@@ -341,7 +335,7 @@ const updatePathDataShape = function (selector, shape, svg)
 
 const updateRectangle = function (shape, svg)
 {
-    const el = svg.querySelector('[data-shape-type="Rectangle"]');
+    const el = shape.elements.Rectangle;
     const w = shape.width;
     const h = shape.height;
 
@@ -379,7 +373,7 @@ const UpdateSVGShape = function (shape, svg)
 {
     switch (shape.type)
     {
-        case 'Arc': updatePathDataShape('Arc', shape, svg); break;
+        case 'Arc': updatePathDataShape(shape, svg); break;
         case 'Circle': updateCircle(shape, svg); break;
         case 'Curve': updateCurve(shape, svg); break;
         case 'Ellipse': updateEllipse(shape, svg); break;
@@ -387,10 +381,10 @@ const UpdateSVGShape = function (shape, svg)
         case 'IsoBox': updateIsoBox(shape, svg); break;
         case 'IsoTriangle': updateIsoTriangle(shape, svg); break;
         case 'Line': updateLine(shape, svg); break;
-        case 'Polygon': updatePathDataShape('Polygon', shape, svg); break;
+        case 'Polygon': updatePathDataShape(shape, svg); break;
         case 'Rectangle': updateRectangle(shape, svg); break;
-        case 'Star': updatePathDataShape('Star', shape, svg); break;
-        case 'Triangle': updatePathDataShape('Triangle', shape, svg); break;
+        case 'Star': updatePathDataShape(shape, svg); break;
+        case 'Triangle': updatePathDataShape(shape, svg); break;
     }
 };
 
