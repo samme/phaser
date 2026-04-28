@@ -28,13 +28,14 @@
     font: 12px/1 monospace;
     color: white;
     background: #0009;
+    display: none;
 }
 
 [data-type="Container"] {
     outline: thin solid lime;
 }
 
-[data-input="true"] {
+svg * {
     outline: thin solid yellow;
 }
 
