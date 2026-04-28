@@ -145,6 +145,7 @@ var IsoTriangle = new Class({
 
         this.setPosition(x, y);
         this.setSize(size, height);
+        this.setOrigin(0.5, 1);
 
         this.updateDisplayOrigin();
     },
