@@ -253,6 +253,8 @@ var Gradient = new Class({
          * @default false
          */
         this.dither = false;
+
+        this.transform = new Components.TransformMatrix();
     },
 
     postInitRenderNode: function ()

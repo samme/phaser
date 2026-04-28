@@ -81,6 +81,8 @@ const UpdateSVGGradient = function (svg, gradient)
 
     gradientEl.setAttribute('spreadMethod', spreadMethod);
 
+    gradientEl.setAttribute('gradientTransform', gradient.transform.getCSSMatrix());
+
     // Rebuild stops from ramp bands.
     const stops = [];
     const {bands} = gradient.ramp;

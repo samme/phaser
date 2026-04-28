@@ -2,6 +2,8 @@ const RenderFilters = require('../../renderer/css/RenderFilters');
 const RenderTransformWithSize = require('../../renderer/css/RenderTransformWithSize');
 const RenderMask = require('../../renderer/css/RenderMask');
 
+const UpdateSVGGradient = require('../../renderer/css/UpdateSVGGradient');
+
 const GradientCSSRenderer = function (renderer, src, camera)
 {
     const { renderNode } = src;
@@ -16,13 +18,14 @@ const GradientCSSRenderer = function (renderer, src, camera)
     camera.addToRenderList(src);
 
     renderNode.show();
-
     renderNode.setAlpha(src.alpha);
     renderNode.setBlendMode(src.blendMode);
 
     RenderFilters(src);
     RenderMask(src);
     RenderTransformWithSize(src, camera);
+
+    UpdateSVGGradient(src.element, src);
 };
 
 module.exports = GradientCSSRenderer;
