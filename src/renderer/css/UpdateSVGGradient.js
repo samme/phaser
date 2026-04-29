@@ -85,7 +85,7 @@ const UpdateSVGGradient = function (svg, gradient)
 
     // Rebuild stops from ramp bands.
     const stops = [];
-    const {bands} = gradient.ramp;
+    const { bands } = gradient.ramp;
     const ns = 'http://www.w3.org/2000/svg';
 
     for (const band of bands)

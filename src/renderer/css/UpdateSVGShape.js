@@ -137,8 +137,8 @@ const updateGrid = function (shape, svg)
     const ns = 'http://www.w3.org/2000/svg';
     const totalWidth = shape.width;
     const totalHeight = shape.height;
-    const {cellWidth} = shape;
-    const {cellHeight} = shape;
+    const { cellWidth } = shape;
+    const { cellHeight } = shape;
     const padding = shape.cellPadding;
 
     const fillColor = shape.isFilled ? toSVGColor(shape.fillColor) : 'none';
@@ -295,7 +295,7 @@ const updateIsoTriangle = function (shape, svg)
 const updateLine = function (shape, svg)
 {
     const el = svg.elements.Line;
-    const {geom} = shape;
+    const { geom } = shape;
 
     el.setAttribute('x1', geom.x1);
     el.setAttribute('y1', geom.y1);

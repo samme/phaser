@@ -155,7 +155,7 @@ const CSSRenderer = new Class({
      */
     init ()
     {
-        const {game} = this;
+        const { game } = this;
 
         game.events.once(GameEvents.BOOT, this.preBoot, this);
 
@@ -228,8 +228,8 @@ const CSSRenderer = new Class({
      */
     boot ()
     {
-        const {game} = this;
-        const {baseSize} = game.scale;
+        const { game } = this;
+        const { baseSize } = game.scale;
 
         this.width = baseSize.width;
         this.height = baseSize.height;
