@@ -128,12 +128,6 @@ const updateGrid = function (shape, svg)
 {
     const g = shape.elements.Grid;
 
-    //  Remove all existing cell rects
-    while (g.firstChild)
-    {
-        g.removeChild(g.firstChild);
-    }
-
     const ns = 'http://www.w3.org/2000/svg';
     const totalWidth = shape.width;
     const totalHeight = shape.height;
@@ -148,6 +142,8 @@ const updateGrid = function (shape, svg)
 
     const strokeColor = shape.isStroked ? toSVGColor(shape.strokeColor) : 'none';
     const strokeAlpha = shape.isStroked ? shape.strokeAlpha : 1;
+
+    const rects = [];
 
     let col = 0;
     let row = 0;
@@ -171,13 +167,15 @@ const updateGrid = function (shape, svg)
             rect.setAttribute('stroke-opacity', strokeAlpha);
             rect.setAttribute('stroke-width', shape.lineWidth);
 
-            g.appendChild(rect);
+            rects.push(rect);
 
             col++;
         }
 
         row++;
     }
+
+    g.replaceChildren(...rects);
 
     updateViewBox(shape, svg);
 };
