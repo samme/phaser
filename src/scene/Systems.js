@@ -389,10 +389,7 @@ var Systems = new Class({
 
         this.renderNode.show();
 
-        if (this.settings.active)
-        {
-            this.cameras.render(renderer, displayList);
-        }
+        this.cameras.render(renderer, displayList);
 
         this.events.emit(Events.RENDER, renderer);
     },
