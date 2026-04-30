@@ -158,6 +158,8 @@ var Bob = new Class({
 
         this.scene = this.parent.scene;
 
+        this.type = 'Bob';
+
         this.initRenderNode();
     },
 
