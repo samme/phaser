@@ -128,17 +128,6 @@ var Text = new Class({
         this.context = null;
 
         /**
-         * The Text Style object.
-         *
-         * Manages the style of this Text object.
-         *
-         * @name Phaser.GameObjects.Text#style
-         * @type {Phaser.GameObjects.TextStyle}
-         * @since 3.0.0
-         */
-        this.style = new TextStyle(this, style);
-
-        /**
          * Whether to automatically round line positions.
          *
          * @name Phaser.GameObjects.Text#autoRound
@@ -226,12 +215,6 @@ var Text = new Class({
          */
         this.letterSpacing = 0;
 
-        //  If resolution wasn't set, force it to 1
-        if (this.style.resolution === 0)
-        {
-            this.style.resolution = 1;
-        }
-
         /**
          * The internal crop data object, as used by `setCrop` and passed to the `Frame.setCropUVs` method.
          *
@@ -263,6 +246,17 @@ var Text = new Class({
         this.initRTL();
 
         this.setText(text);
+
+        /**
+         * The Text Style object.
+         *
+         * Manages the style of this Text object.
+         *
+         * @name Phaser.GameObjects.Text#style
+         * @type {Phaser.GameObjects.TextStyle}
+         * @since 3.0.0
+         */
+        this.style = new TextStyle(this, style);
 
         if (style && style.padding)
         {
