@@ -122,6 +122,8 @@ class CSSRenderNode
 
     setType (type)
     {
+        if (!type) { throw new Error('Type cannot be empty'); }
+
         this.element.dataset.type = type;
     }
 
