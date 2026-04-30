@@ -461,9 +461,16 @@ var TilemapLayer = new Class({
      */
     destroy: function (removeFromTilemap)
     {
+        if (this.isDestroyed)
+        {
+            return;
+        }
+
+        var renderer = this.scene.sys.renderer;
+
         for (var node of this.tileRenderNodes.values())
         {
-            node.destroy();
+            renderer.destroyRenderNode(node);
         }
 
         this.tileRenderNodes.clear();

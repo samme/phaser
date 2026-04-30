@@ -1182,7 +1182,7 @@ var TilemapLayerBase = new Class({
     {
         if (removeFromTilemap === undefined) { removeFromTilemap = true; }
 
-        if (!this.tilemap)
+        if (this.isDestroyed)
         {
             //  Abort, we've already been destroyed
             return;
