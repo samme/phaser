@@ -30,7 +30,7 @@ var CONST = {
      * @type {string}
      * @since 3.87.0
      */
-    LOG_VERSION: 'v500',
+    LOG_VERSION: 'v400',
 
     PHASER_VERSION: '4.0.0',
 
