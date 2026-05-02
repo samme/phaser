@@ -9,16 +9,16 @@ var BlitterText = new Class({
 
     function BlitterText (scene, x, y, font, text = '')
     {
-        var entry = scene.sys.cache.bitmapFont.get(font);
+        var fontEntry = scene.sys.cache.bitmapFont.get(font);
 
-        if (!entry)
+        if (!fontEntry)
         {
             throw new Error('No Bitmap Font key of "' + font + '" found in the Bitmap Font Cache');
         }
 
-        Blitter.call(this, scene, x, y, entry.texture, entry.frame);
+        Blitter.call(this, scene, x, y, fontEntry.texture, fontEntry.frame);
 
-        this.fontData = entry.data;
+        this.fontData = fontEntry.data;
 
         console.debug('fontData', this.fontData);
 
@@ -42,6 +42,7 @@ var BlitterText = new Class({
 
         this._text = text;
 
+        const { chars } = this.fontData;
         const { list } = this.children;
 
         let bobIndex = 0;
@@ -50,6 +51,7 @@ var BlitterText = new Class({
         for (let i = 0; i < text.length; i++)
         {
             const char = text[i];
+            const charData = chars[char.charCodeAt(0)];
 
             if (char === ' ')
             {
@@ -72,7 +74,7 @@ var BlitterText = new Class({
             bob.setVisible(true);
             bob.setFrame(char);
             bob.x = xOffset;
-            bob.y = 0;
+            bob.y = charData.yOffset;
 
             xOffset += bob.frame.width;
             bobIndex++;
