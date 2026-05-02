@@ -71,6 +71,7 @@ var TextCSSRenderer = function (renderer, src, camera)
             shadowColor,
             shadowOffsetX,
             shadowOffsetY,
+            whiteSpace,
             _font
         } = src.style;
 
@@ -79,6 +80,7 @@ var TextCSSRenderer = function (renderer, src, camera)
         renderNode.setProperty('font', _font);
         renderNode.setProperty('textAlign', align);
         renderNode.setProperty('textShadow', `${shadowColor} ${shadowOffsetX}px ${shadowOffsetY}px ${shadowBlur}px`);
+        renderNode.setProperty('whiteSpace', whiteSpace);
 
         // Clean!
         src.dirty = false;
