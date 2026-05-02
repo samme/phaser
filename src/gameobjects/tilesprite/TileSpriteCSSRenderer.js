@@ -41,7 +41,7 @@ var TileSpriteCSSRenderer = function (renderer, src, camera)
         const frame = src.texture.get('__BASE');
         const backgroundUrl = `url('${frame.source.image.src}')`;
         const backgroundSize = `${frame.width * src.tileScaleX}px ${frame.height * src.tileScaleY}px`;
-        const backgroundPosition = `${src.tilePositionX}px ${src.tilePositionY}px`;
+        const backgroundPosition = `${-src.tilePositionX}px ${-src.tilePositionY}px`;
 
         renderNode.setProperty('backgroundImage', backgroundUrl);
         renderNode.setProperty('backgroundSize', backgroundSize);
