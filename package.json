@@ -57,6 +57,8 @@
     "web audio"
   ],
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.5",
+    "@eslint/js": "^10.0.1",
     "@types/offscreencanvas": "^2019.7.3",
     "@types/source-map": "^0.5.7",
     "clean-webpack-plugin": "^4.0.0",
@@ -66,6 +68,7 @@
     "eslint-plugin-es5": "^1.5.0",
     "exports-loader": "^5.0.0",
     "fs-extra": "^11.3.4",
+    "globals": "^17.6.0",
     "html-loader": "^5.1.0",
     "imports-loader": "^5.0.0",
     "jsdoc": "3.x.x",
