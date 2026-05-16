@@ -732,7 +732,7 @@ var TextureManager = new Class({
      */
     addDynamicTexture: function (key, width, height, forceEven)
     {
-        var texture = null;
+        var texture;
 
         if (typeof(key) === 'string' && !this.exists(key))
         {
@@ -1248,26 +1248,26 @@ var TextureManager = new Class({
     },
 
     /**
-     * Creates a texture from a color and alpha.
+     * Creates a texture from a color and alpha, canvas gradient, or canvas pattern.
      * The texture will be filled with the given color and alpha.
      *
-     * This may be used as a proxy texture,
-     * which can later be replaced with a real texture.
-     * See {@link Phaser.Textures.Texture#setSource}
-     * for more information on replacing the proxy with a real texture.
+     * The texture is not created right away.
+     * Use the events dispatched by this method to know when the texture is ready or if an error occurred.
      *
-     * @method Phaser.Textures.TextureManager#addFlatColor
+     * @method Phaser.Textures.TextureManager#addFill
      * @fires Phaser.Textures.Events#ADD
+     * @fires Phaser.Textures.Events#ERROR
+     * @fires Phaser.Textures.Events#LOAD
      * @since 5.0.0
      *
      * @param {string} key - The unique string-based key of the Texture.
      * @param {number} width - The width of the texture.
      * @param {number} height - The height of the texture.
-     * @param {number} [color=0x000000] - The color of the texture.
+     * @param {(number|string|CanvasGradient|CanvasPattern)} [fill=0x000000] - The color or fill style of the texture.
      * @param {number} [alpha=0] - The alpha of the texture.
-     * @return {?Phaser.Textures.CanvasTexture} The Texture that was created, or `null` if the key is already in use or the width or height is not positive.
+     * @return {this} This Texture Manager instance.
      */
-    addFlatColor: function (key, width, height, color, alpha)
+    addFill: function (key, width, height, fill, alpha)
     {
         if (
             !this.checkKey(key) ||
@@ -1275,20 +1275,123 @@ var TextureManager = new Class({
             height <= 0
         )
         {
-            return null;
+            return this;
         }
 
-        if (color === undefined) { color = 0x000000; }
+        if (fill === undefined) { fill = 0x000000; }
         if (alpha === undefined) { alpha = 0; }
 
-        var col = IntegerToColor(color);
-        var texture = this.createCanvas(key, width, height);
-        var ctx = texture.getContext();
+        var fillStyle = (typeof fill === 'number') ? IntegerToColor(fill).rgb : fill;
+        var canvas = CanvasPool.create2D(this, width, height);
+        var ctx = canvas.getContext('2d');
+        var _this = this;
 
-        ctx.fillStyle = col.rgba;
+        ctx.fillStyle = fillStyle;
+        ctx.globalAlpha = alpha;
         ctx.fillRect(0, 0, width, height);
 
-        return texture;
+        canvas.toBlob(function (blob)
+        {
+            if (!blob)
+            {
+                CanvasPool.remove(canvas);
+                _this.emit(Events.ERROR, key);
+
+                return;
+            }
+
+            var img = new Image(width, height);
+            var src = URL.createObjectURL(blob);
+
+            img.src = src;
+
+            img.onload = function ()
+            {
+                CanvasPool.remove(canvas);
+                URL.revokeObjectURL(src);
+                _this.addImage(key, img);
+            };
+
+            img.onerror = function ()
+            {
+                CanvasPool.remove(canvas);
+                URL.revokeObjectURL(src);
+                _this.emit(Events.ERROR, key);
+            };
+        });
+
+        return this;
+    },
+
+    /**
+     * Creates a conic gradient on the internal canvas context.
+     *
+     * @method Phaser.Textures.TextureManager#createConicGradient
+     * @since 5.0.0
+     *
+     * @param {number} startAngle - The angle in radians where the gradient starts.
+     * @param {number} x - The x-axis coordinate of the gradient center.
+     * @param {number} y - The y-axis coordinate of the gradient center.
+     *
+     * @return {CanvasGradient} A conic gradient object.
+     */
+    createConicGradient: function (startAngle, x, y)
+    {
+        return this._tempContext.createConicGradient(startAngle, x, y);
+    },
+
+    /**
+     * Creates a linear gradient on the internal canvas context.
+     *
+     * @method Phaser.Textures.TextureManager#createLinearGradient
+     * @since 5.0.0
+     *
+     * @param {number} x0 - The x-axis coordinate of the start point.
+     * @param {number} y0 - The y-axis coordinate of the start point.
+     * @param {number} x1 - The x-axis coordinate of the end point.
+     * @param {number} y1 - The y-axis coordinate of the end point.
+     *
+     * @return {CanvasGradient} A linear gradient object.
+     */
+    createLinearGradient: function (x0, y0, x1, y1)
+    {
+        return this._tempContext.createLinearGradient(x0, y0, x1, y1);
+    },
+
+    /**
+     * Creates a radial gradient on the internal canvas context.
+     *
+     * @method Phaser.Textures.TextureManager#createRadialGradient
+     * @since 5.0.0
+     *
+     * @param {number} x0 - The x-axis coordinate of the start circle.
+     * @param {number} y0 - The y-axis coordinate of the start circle.
+     * @param {number} r0 - The radius of the start circle.
+     * @param {number} x1 - The x-axis coordinate of the end circle.
+     * @param {number} y1 - The y-axis coordinate of the end circle.
+     * @param {number} r1 - The radius of the end circle.
+     *
+     * @return {CanvasGradient} A radial gradient object.
+     */
+    createRadialGradient: function (x0, y0, r0, x1, y1, r1)
+    {
+        return this._tempContext.createRadialGradient(x0, y0, r0, x1, y1, r1);
+    },
+
+    /**
+     * Creates a pattern on the internal canvas context.
+     *
+     * @method Phaser.Textures.TextureManager#createPattern
+     * @since 5.0.0
+     *
+     * @param {CanvasImageSource} image - The image to use for the pattern.
+     * @param {string} repetition - How the pattern repeats. Can be 'repeat', 'repeat-x', 'repeat-y', or 'no-repeat'.
+     *
+     * @return {CanvasPattern} A pattern object.
+     */
+    createPattern: function (image, repetition)
+    {
+        return this._tempContext.createPattern(image, repetition);
     },
 
     /**
