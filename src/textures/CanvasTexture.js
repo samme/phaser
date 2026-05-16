@@ -207,6 +207,8 @@ var CanvasTexture = new Class({
             this.refresh();
         }
 
+        console.count('update CanvasTexture ' + this.key);
+
         return this;
     },
 
