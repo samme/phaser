@@ -20,8 +20,6 @@ const RenderFrameWithCrop = function (gameObject, camera)
     const sx = (1 - scrollFactorX) * scrollX;
     const sy = (1 - scrollFactorY) * scrollY;
 
-    let frameX = frame.cutX;
-    let frameY = frame.cutY;
     let frameWidth = frame.cutWidth;
     let frameHeight = frame.cutHeight;
 
@@ -37,13 +35,10 @@ const RenderFrameWithCrop = function (gameObject, camera)
         frameWidth = crop.cw;
         frameHeight = crop.ch;
 
-        frameX = crop.cx;
-        frameY = crop.cy;
-
         x = -displayOriginX + crop.x + sx;
         y = -displayOriginY + crop.y + sy;
 
-        background = `${-frameX}px ${-frameY}px ${frame.source.cssImage}`;
+        background = `${-crop.cx}px ${-crop.cy}px ${frame.source.cssImage}`;
     }
     else
     {

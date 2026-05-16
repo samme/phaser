@@ -145,12 +145,11 @@ const updateGrid = function (shape, svg)
 
     const rects = [];
 
-    let col = 0;
     let row = 0;
 
     for (let y = 0; y < totalHeight; y += cellHeight)
     {
-        col = 0;
+        let col = 0;
 
         for (let x = 0; x < totalWidth; x += cellWidth)
         {
