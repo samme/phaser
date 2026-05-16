@@ -59,6 +59,8 @@ export default defineConfig([ globalIgnores([
             args: 'none'
         } ],
 
+        'no-useless-assignment': 'warn',
+
         'accessor-pairs': 'error',
         curly: 'error',
         eqeqeq: [ 'error', 'smart' ],
@@ -70,7 +72,7 @@ export default defineConfig([ globalIgnores([
         } ],
 
         'no-floating-decimal': 'error',
-        'no-invalid-this': 'error',
+        'no-invalid-this': 'off',
         'no-multi-spaces': 'error',
         'no-multi-str': 'error',
         'no-new-func': 'error',
