@@ -8,6 +8,7 @@ export default defineConfig([
         rules: {
             'no-var': 'error',
             'no-unused-vars': 'warn',
+            'no-useless-assignment': 'warn',
             'object-curly-spacing': [ 'warn', 'always' ],
 
             'prefer-const': [ 'error', {

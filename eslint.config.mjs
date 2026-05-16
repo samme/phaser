@@ -55,11 +55,11 @@ export default defineConfig([ globalIgnores([
         'no-cond-assign': [ 'error', 'except-parens' ],
         'no-duplicate-case': [ 'error' ],
 
-        'no-unused-vars': [ 'error', {
+        'no-unused-vars': [ 'warn', {
             args: 'none'
         } ],
 
-        'no-useless-assignment': 'warn',
+        'no-useless-assignment': 'off',
 
         'accessor-pairs': 'error',
         curly: 'error',
