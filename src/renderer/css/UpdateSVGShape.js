@@ -1,4 +1,6 @@
-// WIP
+let gridPatternCounter = 0;
+
+
 /**
  * Converts a Phaser integer color value to a CSS hex string.
  *
@@ -126,14 +128,9 @@ const updateEllipse = function (shape, svg)
 
 const updateGrid = function (shape, svg)
 {
-    const g = shape.elements.Grid;
-
-    const ns = 'http://www.w3.org/2000/svg';
     const totalWidth = shape.width;
     const totalHeight = shape.height;
-    const { cellWidth } = shape;
-    const { cellHeight } = shape;
-    const padding = shape.cellPadding;
+    const { cellWidth, cellHeight, cellPadding, lineWidth } = shape;
 
     const fillColor = shape.isFilled ? toSVGColor(shape.fillColor) : 'none';
     const fillAlpha = shape.isFilled ? shape.fillAlpha : 1;
@@ -143,38 +140,51 @@ const updateGrid = function (shape, svg)
     const strokeColor = shape.isStroked ? toSVGColor(shape.strokeColor) : 'none';
     const strokeAlpha = shape.isStroked ? shape.strokeAlpha : 1;
 
-    const rects = [];
+    const grid = shape.elements.Grid;
+    const { cell1, cell2, cell3, cell4, pattern } = shape.elements;
 
-    let row = 0;
+    grid.setAttribute('width', totalWidth);
+    grid.setAttribute('height', totalHeight);
 
-    for (let y = 0; y < totalHeight; y += cellHeight)
+    pattern.setAttribute('width', cellWidth * 2);
+    pattern.setAttribute('height', cellHeight * 2);
+
+    if (!pattern.id)
     {
-        let col = 0;
+        const patternId = `grid-pattern-${ gridPatternCounter++ }`;
 
-        for (let x = 0; x < totalWidth; x += cellWidth)
-        {
-            const isAlt = (col + row) % 2 === 1;
-            const rect = document.createElementNS(ns, 'rect');
-
-            rect.setAttribute('x', x + padding);
-            rect.setAttribute('y', y + padding);
-            rect.setAttribute('width', Math.min(cellWidth - padding * 2, totalWidth - x - padding));
-            rect.setAttribute('height', Math.min(cellHeight - padding * 2, totalHeight - y - padding));
-            rect.setAttribute('fill', isAlt ? altFillColor : fillColor);
-            rect.setAttribute('fill-opacity', isAlt ? altFillAlpha : fillAlpha);
-            rect.setAttribute('stroke', strokeColor);
-            rect.setAttribute('stroke-opacity', strokeAlpha);
-            rect.setAttribute('stroke-width', shape.lineWidth);
-
-            rects.push(rect);
-
-            col++;
-        }
-
-        row++;
+        pattern.setAttribute('id', patternId);
+        grid.setAttribute('fill', `url(#${ patternId })`);
     }
 
-    g.replaceChildren(...rects);
+    for (const cell of [ cell1, cell2, cell3, cell4 ])
+    {
+        cell.setAttribute('width', cellWidth - cellPadding * 2);
+        cell.setAttribute('height', cellHeight - cellPadding * 2);
+        cell.setAttribute('stroke', strokeColor);
+        cell.setAttribute('stroke-opacity', strokeAlpha);
+        cell.setAttribute('stroke-width', lineWidth);
+    }
+
+    cell1.setAttribute('x', cellPadding);
+    cell1.setAttribute('y', cellPadding);
+    cell1.setAttribute('fill', fillColor);
+    cell1.setAttribute('fill-opacity', fillAlpha);
+
+    cell2.setAttribute('x', cellWidth + cellPadding);
+    cell2.setAttribute('y', cellPadding);
+    cell2.setAttribute('fill', altFillColor);
+    cell2.setAttribute('fill-opacity', altFillAlpha);
+
+    cell3.setAttribute('x', cellPadding);
+    cell3.setAttribute('y', cellHeight + cellPadding);
+    cell3.setAttribute('fill', altFillColor);
+    cell3.setAttribute('fill-opacity', altFillAlpha);
+
+    cell4.setAttribute('x', cellWidth + cellPadding);
+    cell4.setAttribute('y', cellHeight + cellPadding);
+    cell4.setAttribute('fill', fillColor);
+    cell4.setAttribute('fill-opacity', fillAlpha);
 
     updateViewBox(shape, svg);
 };

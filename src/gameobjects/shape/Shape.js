@@ -236,9 +236,9 @@ var Shape = new Class({
             this.elements[shapeTypeElm.dataset.shapeType] = shapeTypeElm;
         }
 
-        for (const elm of Array.from(this.element.querySelectorAll('[data-face]')))
+        for (const elm of Array.from(this.element.querySelectorAll('[data-element]')))
         {
-            this.elements[elm.dataset.face + 'Face'] = elm;
+            this.elements[elm.dataset.element] = elm;
         }
 
         console.debug('elements', this.elements);
