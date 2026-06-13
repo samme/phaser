@@ -126,11 +126,24 @@ const updateEllipse = function (shape, svg)
     updateStyle(shape, el);
 };
 
+const updateGridCell = function (cell, x, y, cellWidth, cellHeight, cellPadding, fillColor, fillAlpha, strokeColor, strokeAlpha, lineWidth)
+{
+    cell.setAttribute('x', x + cellPadding);
+    cell.setAttribute('y', y + cellPadding);
+    cell.setAttribute('width', cellWidth - cellPadding * 2);
+    cell.setAttribute('height', cellHeight - cellPadding * 2);
+    cell.setAttribute('stroke', strokeColor);
+    cell.setAttribute('stroke-opacity', strokeAlpha);
+    cell.setAttribute('stroke-width', lineWidth);
+    cell.setAttribute('fill', fillColor);
+    cell.setAttribute('fill-opacity', fillAlpha);
+};
+
 const updateGrid = function (shape, svg)
 {
     const totalWidth = shape.width;
     const totalHeight = shape.height;
-    const { cellWidth, cellHeight, cellPadding, lineWidth } = shape;
+    const { cellWidth, cellHeight, cellPadding, lineWidth, elements, strokeOutside } = shape;
 
     const fillColor = shape.isFilled ? toSVGColor(shape.fillColor) : 'none';
     const fillAlpha = shape.isFilled ? shape.fillAlpha : 1;
@@ -140,11 +153,14 @@ const updateGrid = function (shape, svg)
     const strokeColor = shape.isStroked ? toSVGColor(shape.strokeColor) : 'none';
     const strokeAlpha = shape.isStroked ? shape.strokeAlpha : 1;
 
-    const grid = shape.elements.Grid;
-    const { cell1, cell2, cell3, cell4, pattern } = shape.elements;
+    const grid = elements.Grid;
+    const { cell1, cell2, cell3, cell4, pattern } = elements;
 
     grid.setAttribute('width', totalWidth);
     grid.setAttribute('height', totalHeight);
+    grid.setAttribute('stroke', strokeOutside ? strokeColor : 'none');
+    grid.setAttribute('stroke-opacity', strokeOutside ? strokeAlpha : 1);
+    grid.setAttribute('stroke-width', strokeOutside ? lineWidth : 0);
 
     pattern.setAttribute('width', cellWidth * 2);
     pattern.setAttribute('height', cellHeight * 2);
@@ -157,34 +173,10 @@ const updateGrid = function (shape, svg)
         grid.setAttribute('fill', `url(#${ patternId })`);
     }
 
-    for (const cell of [ cell1, cell2, cell3, cell4 ])
-    {
-        cell.setAttribute('width', cellWidth - cellPadding * 2);
-        cell.setAttribute('height', cellHeight - cellPadding * 2);
-        cell.setAttribute('stroke', strokeColor);
-        cell.setAttribute('stroke-opacity', strokeAlpha);
-        cell.setAttribute('stroke-width', lineWidth);
-    }
-
-    cell1.setAttribute('x', cellPadding);
-    cell1.setAttribute('y', cellPadding);
-    cell1.setAttribute('fill', fillColor);
-    cell1.setAttribute('fill-opacity', fillAlpha);
-
-    cell2.setAttribute('x', cellWidth + cellPadding);
-    cell2.setAttribute('y', cellPadding);
-    cell2.setAttribute('fill', altFillColor);
-    cell2.setAttribute('fill-opacity', altFillAlpha);
-
-    cell3.setAttribute('x', cellPadding);
-    cell3.setAttribute('y', cellHeight + cellPadding);
-    cell3.setAttribute('fill', altFillColor);
-    cell3.setAttribute('fill-opacity', altFillAlpha);
-
-    cell4.setAttribute('x', cellWidth + cellPadding);
-    cell4.setAttribute('y', cellHeight + cellPadding);
-    cell4.setAttribute('fill', fillColor);
-    cell4.setAttribute('fill-opacity', fillAlpha);
+    updateGridCell(cell1, 0, 0, cellWidth, cellHeight, cellPadding, fillColor, fillAlpha, strokeColor, strokeAlpha, lineWidth);
+    updateGridCell(cell2, cellWidth, 0, cellWidth, cellHeight, cellPadding, altFillColor, altFillAlpha, strokeColor, strokeAlpha, lineWidth);
+    updateGridCell(cell3, 0, cellHeight, cellWidth, cellHeight, cellPadding, altFillColor, altFillAlpha, strokeColor, strokeAlpha, lineWidth);
+    updateGridCell(cell4, cellWidth, cellHeight, cellWidth, cellHeight, cellPadding, fillColor, fillAlpha, strokeColor, strokeAlpha, lineWidth);
 
     updateViewBox(shape, svg);
 };
