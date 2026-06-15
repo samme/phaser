@@ -244,17 +244,17 @@ const updateIsoTriangle = function (shape, svg)
 
         //  Top face: 4-point isometric rhombus (not a triangle)
         topFace.setAttribute('points',
-            `0,${topY} ${sideW},0 ${w},${topY} ${sideW},${topY * 2}`);
+            `0,0 ${sideW},${-topY} ${w},0 ${sideW},${topY}`);
         topFace.setAttribute('display', shape.showTop ? '' : 'none');
 
         //  Left face
         leftFace.setAttribute('points',
-            `0,${topY} ${sideW},${totalH} ${sideW},${topY * 2}`);
+            `0,0 ${sideW},${totalH - topY} ${sideW},${topY}`);
         leftFace.setAttribute('display', shape.showLeft ? '' : 'none');
 
         //  Right face
         rightFace.setAttribute('points',
-            `${w},${topY} ${sideW},${totalH} ${sideW},${topY * 2}`);
+            `${w},0 ${sideW},${totalH - topY} ${sideW},${topY}`);
         rightFace.setAttribute('display', shape.showRight ? '' : 'none');
 
         svg.setAttribute('viewBox', `0 0 ${w} ${totalH}`);
@@ -268,12 +268,12 @@ const updateIsoTriangle = function (shape, svg)
 
         //  Left face
         leftFace.setAttribute('points',
-            `0,${h - topY} ${sideW},${h} ${sideW},0`);
+            `0,${h} ${sideW},${h + topY} ${sideW},${topY}`);
         leftFace.setAttribute('display', shape.showLeft ? '' : 'none');
 
         //  Right face
         rightFace.setAttribute('points',
-            `${w},${h - topY} ${sideW},${h} ${sideW},0`);
+            `${w},${h} ${sideW},${h + topY} ${sideW},${topY}`);
         rightFace.setAttribute('display', shape.showRight ? '' : 'none');
 
         updateViewBox(shape, svg);
