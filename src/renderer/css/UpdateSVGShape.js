@@ -390,6 +390,8 @@ const UpdateSVGShape = function (shape, svg)
         case 'Star': updatePathDataShape(shape, svg); break;
         case 'Triangle': updatePathDataShape(shape, svg); break;
     }
+
+    console.count(`UpdateSVGShape: ${shape.type}`);
 };
 
 module.exports = UpdateSVGShape;

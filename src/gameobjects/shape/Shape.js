@@ -222,6 +222,8 @@ var Shape = new Class({
 
         this.isShape = true;
 
+        console.info('You may need to set Shape `dirty = true` to render changes.');
+
         this.dirty = false;
 
         this.element = SVGShapeFactory(this.type);
@@ -240,8 +242,6 @@ var Shape = new Class({
         {
             this.elements[elm.dataset.element] = elm;
         }
-
-        console.debug('elements', this.elements);
 
         this.initRenderNode();
 
@@ -280,6 +280,8 @@ var Shape = new Class({
             this.isFilled = true;
         }
 
+        this.dirty = true;
+
         return this;
     },
 
@@ -317,6 +319,8 @@ var Shape = new Class({
             this.isStroked = true;
         }
 
+        this.dirty = true;
+
         return this;
     },
 
@@ -336,6 +340,8 @@ var Shape = new Class({
     setClosePath: function (value)
     {
         this.closePath = value;
+
+        this.dirty = true;
 
         return this;
     },
@@ -364,6 +370,8 @@ var Shape = new Class({
     {
         this.width = width;
         this.height = height;
+
+        this.dirty = true;
 
         return this;
     },

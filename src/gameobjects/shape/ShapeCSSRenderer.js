@@ -34,7 +34,12 @@ const ShapeCSSRenderer = function (renderer, shape, camera)
     RenderMask(shape);
     RenderTransformWithSize(shape, camera);
 
-    UpdateSVGShape(shape, shape.element);
+    if (shape.dirty)
+    {
+        UpdateSVGShape(shape, shape.element);
+
+        shape.dirty = false;
+    }
 };
 
 module.exports = ShapeCSSRenderer;
