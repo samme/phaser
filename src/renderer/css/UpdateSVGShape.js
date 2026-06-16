@@ -181,6 +181,15 @@ const updateGrid = function (shape, svg)
     updateViewBox(shape, svg);
 };
 
+const updateBoxFace = function (face, x1, y1, x2, y2, x3, y3, x4, y4, fill, visible)
+{
+    const points = `${x1},${y1} ${x2},${y2} ${x3},${y3} ${x4},${y4}`;
+
+    face.setAttribute('points', points);
+    face.setAttribute('fill', fill);
+    face.setAttribute('display', visible ? '' : 'none');
+};
+
 const updateIsoBox = function (shape, svg)
 {
     const w = shape.width;
@@ -199,26 +208,9 @@ const updateIsoBox = function (shape, svg)
 
     const { topFace, leftFace, rightFace } = shape.elements;
 
-    //  Top face diamond
-    const topPoints =
-        `${sideW},0 ${w},${topY} ${sideW},${topY * 2} 0,${topY}`;
-    topFace.setAttribute('points', topPoints);
-    topFace.setAttribute('fill', toSVGColor(shape.fillTop));
-    topFace.setAttribute('display', shape.showTop ? '' : 'none');
-
-    //  Left face
-    const leftPoints =
-        `0,${topY} ${sideW},${topY * 2} ${sideW},${sideBottom} 0,${sideBottom - topY}`;
-    leftFace.setAttribute('points', leftPoints);
-    leftFace.setAttribute('fill', toSVGColor(shape.fillLeft));
-    leftFace.setAttribute('display', shape.showLeft ? '' : 'none');
-
-    //  Right face
-    const rightPoints =
-        `${sideW},${topY * 2} ${w},${topY} ${w},${sideBottom - topY} ${sideW},${sideBottom}`;
-    rightFace.setAttribute('points', rightPoints);
-    rightFace.setAttribute('fill', toSVGColor(shape.fillRight));
-    rightFace.setAttribute('display', shape.showRight ? '' : 'none');
+    updateBoxFace(topFace, sideW, 0, w, topY, sideW, topY * 2, 0, topY, toSVGColor(shape.fillTop), shape.showTop);
+    updateBoxFace(leftFace, 0, topY, sideW, topY * 2, sideW, sideBottom, 0, sideBottom - topY, toSVGColor(shape.fillLeft), shape.showLeft);
+    updateBoxFace(rightFace, sideW, topY * 2, w, topY, w, sideBottom - topY, sideW, sideBottom, toSVGColor(shape.fillRight), shape.showRight);
 
     svg.setAttribute('viewBox', `0 0 ${w} ${totalH}`);
     svg.setAttribute('width', w);
