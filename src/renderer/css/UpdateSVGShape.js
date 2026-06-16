@@ -208,9 +208,9 @@ const updateIsoBox = function (shape, svg)
 
     const { topFace, leftFace, rightFace } = shape.elements;
 
-    updateBoxFace(topFace, sideW, 0, w, topY, sideW, topY * 2, 0, topY, toSVGColor(shape.fillTop), shape.showTop);
-    updateBoxFace(leftFace, 0, topY, sideW, topY * 2, sideW, sideBottom, 0, sideBottom - topY, toSVGColor(shape.fillLeft), shape.showLeft);
-    updateBoxFace(rightFace, sideW, topY * 2, w, topY, w, sideBottom - topY, sideW, sideBottom, toSVGColor(shape.fillRight), shape.showRight);
+    updateBoxFace(topFace, sideW, -topY, w, 0, sideW, topY, 0, 0, toSVGColor(shape.fillTop), shape.showTop);
+    updateBoxFace(leftFace, 0, 0, sideW, topY, sideW, sideBottom - topY, 0, sideBottom - 2 * topY, toSVGColor(shape.fillLeft), shape.showLeft);
+    updateBoxFace(rightFace, sideW, topY, w, 0, w, sideBottom - 2 * topY, sideW, sideBottom - topY, toSVGColor(shape.fillRight), shape.showRight);
 
     svg.setAttribute('viewBox', `0 0 ${w} ${totalH}`);
     svg.setAttribute('width', w);
