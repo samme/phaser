@@ -99,14 +99,15 @@ const updateCurve = function (shape, svg)
         pathLength -= 2;
     }
 
-    let d = `M ${ path[0] - dx } ${ path[1] - dy }`;
+    const d = [ `M ${path[0] - dx} ${path[1] - dy}` ];
 
     for (let i = 2; i < pathLength; i += 2)
     {
-        d += ` L ${ path[i] - dx } ${ path[i + 1] - dy }`;
+        d.push(`L ${path[i] - dx} ${path[i + 1] - dy}`);
     }
 
-    el.setAttribute('d', d);
+    el.setAttribute('d', d.join(' '));
+
     updateViewBox(shape, svg);
     updateStyle(shape, el);
 };
@@ -294,14 +295,15 @@ const updatePathDataShape = function (shape, svg)
         return;
     }
 
-    let points = '';
+    const points = [];
 
     for (let i = 0; i < path.length - 1; i += 2)
     {
-        points += `${path[i] },${ path[i + 1] } `;
+        points.push(`${path[i]},${path[i + 1]}`);
     }
 
-    el.setAttribute('points', points.trim());
+    el.setAttribute('points', points.join(' '));
+
     updateViewBox(shape, svg);
     updateStyle(shape, el);
 };
