@@ -181,7 +181,8 @@ const updateGrid = function (shape, svg)
     updateViewBox(shape, svg);
 };
 
-const updateBoxFace = function (face, x1, y1, x2, y2, x3, y3, x4, y4, fill, visible)
+// Also works for IsoTriangle top face.
+const updateIsoBoxFace = function (face, x1, y1, x2, y2, x3, y3, x4, y4, fill, visible)
 {
     const points = `${x1},${y1} ${x2},${y2} ${x3},${y3} ${x4},${y4}`;
 
@@ -203,9 +204,9 @@ const updateIsoBox = function (shape, svg)
 
     const { topFace, leftFace, rightFace } = shape.elements;
 
-    updateBoxFace(topFace, sideW, -projH, w, 0, sideW, projH, 0, 0, toSVGColor(shape.fillTop), shape.showTop);
-    updateBoxFace(leftFace, 0, 0, sideW, projH, sideW, totalH - projH, 0, h, toSVGColor(shape.fillLeft), shape.showLeft);
-    updateBoxFace(rightFace, sideW, projH, w, 0, w, h, sideW, totalH - projH, toSVGColor(shape.fillRight), shape.showRight);
+    updateIsoBoxFace(topFace, sideW, -projH, w, 0, sideW, projH, 0, 0, toSVGColor(shape.fillTop), shape.showTop);
+    updateIsoBoxFace(leftFace, 0, 0, sideW, projH, sideW, totalH - projH, 0, h, toSVGColor(shape.fillLeft), shape.showLeft);
+    updateIsoBoxFace(rightFace, sideW, projH, w, 0, w, h, sideW, totalH - projH, toSVGColor(shape.fillRight), shape.showRight);
 
     svg.setAttribute('viewBox', `0 0 ${w} ${totalH}`);
     svg.setAttribute('width', w);
