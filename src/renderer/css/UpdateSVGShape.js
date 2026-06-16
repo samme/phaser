@@ -213,37 +213,38 @@ const updateIsoBox = function (shape, svg)
     svg.setAttribute('height', totalH);
 };
 
+const updateIsoTriangleFace = function (face, x1, y1, x2, y2, x3, y3, fill, visible)
+{
+    const points = `${x1},${y1} ${x2},${y2} ${x3},${y3}`;
+
+    face.setAttribute('points', points);
+    face.setAttribute('fill', fill);
+    face.setAttribute('display', visible ? '' : 'none');
+};
+
 const updateIsoTriangle = function (shape, svg)
 {
     const w = shape.width;
     const h = shape.height;
-    const proj = shape.projection;
-    const reversed = shape.isReversed;
+    const { isReversed, projection } = shape;
 
-    const sideW = Math.floor(w / 2);
-    const topY = Math.floor(w / proj);
+    const sideW = w / 2;
+    const projH = w / projection;
+
+    const fillTop = toSVGColor(shape.fillTop);
+    const fillLeft = toSVGColor(shape.fillLeft);
+    const fillRight = toSVGColor(shape.fillRight);
 
     const { topFace, leftFace, rightFace } = shape.elements;
 
-    if (reversed)
+    if (isReversed)
     {
         //  Total SVG height: top projection + side height + bottom projection
-        const totalH = topY * 2 + h;
+        const totalH = projH * 2 + h;
 
-        //  Top face: 4-point isometric rhombus (not a triangle)
-        topFace.setAttribute('points',
-            `0,0 ${sideW},${-topY} ${w},0 ${sideW},${topY}`);
-        topFace.setAttribute('display', shape.showTop ? '' : 'none');
-
-        //  Left face
-        leftFace.setAttribute('points',
-            `0,0 ${sideW},${totalH - topY} ${sideW},${topY}`);
-        leftFace.setAttribute('display', shape.showLeft ? '' : 'none');
-
-        //  Right face
-        rightFace.setAttribute('points',
-            `${w},0 ${sideW},${totalH - topY} ${sideW},${topY}`);
-        rightFace.setAttribute('display', shape.showRight ? '' : 'none');
+        updateIsoBoxFace(topFace, 0, 0, sideW, -projH, w, 0, sideW, projH, fillTop, shape.showTop);
+        updateIsoTriangleFace(leftFace, 0, 0, sideW, totalH - projH, sideW, projH, fillLeft, shape.showLeft);
+        updateIsoTriangleFace(rightFace, w, 0, sideW, totalH - projH, sideW, projH, fillRight, shape.showRight);
 
         svg.setAttribute('viewBox', `0 0 ${w} ${totalH}`);
         svg.setAttribute('width', w);
@@ -251,25 +252,12 @@ const updateIsoTriangle = function (shape, svg)
     }
     else
     {
-        //  Non-reversed (pyramid): peak is a single point — no top face
-        topFace.setAttribute('display', 'none');
-
-        //  Left face
-        leftFace.setAttribute('points',
-            `0,${h} ${sideW},${h + topY} ${sideW},${topY}`);
-        leftFace.setAttribute('display', shape.showLeft ? '' : 'none');
-
-        //  Right face
-        rightFace.setAttribute('points',
-            `${w},${h} ${sideW},${h + topY} ${sideW},${topY}`);
-        rightFace.setAttribute('display', shape.showRight ? '' : 'none');
+        updateIsoBoxFace(topFace, 0, 0, 0, 0, 0, 0, 0, 0, fillTop, false);
+        updateIsoTriangleFace(leftFace, 0, h, sideW, h + projH, sideW, projH, fillLeft, shape.showLeft);
+        updateIsoTriangleFace(rightFace, w, h, sideW, h + projH, sideW, projH, fillRight, shape.showRight);
 
         updateViewBox(shape, svg);
     }
-
-    topFace.setAttribute('fill', toSVGColor(shape.fillTop));
-    leftFace.setAttribute('fill', toSVGColor(shape.fillLeft));
-    rightFace.setAttribute('fill', toSVGColor(shape.fillRight));
 };
 
 const updateLine = function (shape, svg)
