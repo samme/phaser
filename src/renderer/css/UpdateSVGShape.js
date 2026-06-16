@@ -84,15 +84,15 @@ const updateCurve = function (shape, svg)
     const el = shape.elements.Curve;
     const path = shape.pathData;
 
-    if (!path || path.length < 2)
+    if (!path || path.length < 2 || path.length % 2 !== 0)
     {
-        return;
+        throw new Error('Invalid path data for Curve');
     }
 
     const dx = shape._curveBounds.x;
     const dy = shape._curveBounds.y;
 
-    let pathLength = path.length - 1;
+    let pathLength = path.length - 2;
 
     if (!shape.closePath)
     {
@@ -205,6 +205,7 @@ const updateIsoBox = function (shape, svg)
 
     const { topFace, leftFace, rightFace } = shape.elements;
 
+    // Minimum y must be -projH to match Canvas/WebGL rendering position.
     updateIsoBoxFace(topFace, sideW, -projH, w, 0, sideW, projH, 0, 0, toSVGColor(shape.fillTop), shape.showTop);
     updateIsoBoxFace(leftFace, 0, 0, sideW, projH, sideW, totalH - projH, 0, h, toSVGColor(shape.fillLeft), shape.showLeft);
     updateIsoBoxFace(rightFace, sideW, projH, w, 0, w, h, sideW, totalH - projH, toSVGColor(shape.fillRight), shape.showRight);
@@ -273,7 +274,7 @@ const updateLine = function (shape, svg)
 
     el.setAttribute('stroke', shape.isStroked ? toSVGColor(shape.strokeColor) : 'none');
     el.setAttribute('stroke-opacity', shape.strokeAlpha);
-    el.setAttribute('stroke-width', shape._startWidth);
+    el.setAttribute('stroke-width', shape.lineWidth);
 
     updateViewBox(shape, svg);
 };
@@ -360,6 +361,7 @@ const UpdateSVGShape = function (shape, svg)
         case 'Rectangle': updateRectangle(shape, svg); break;
         case 'Star': updatePathDataShape(shape, svg); break;
         case 'Triangle': updatePathDataShape(shape, svg); break;
+        default: throw new Error(`Unsupported shape type: ${shape.type}`);
     }
 
     console.count(`UpdateSVGShape: ${shape.type}`);
