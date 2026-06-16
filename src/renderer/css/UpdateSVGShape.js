@@ -195,22 +195,17 @@ const updateIsoBox = function (shape, svg)
     const w = shape.width;
     const h = shape.height;
     const proj = shape.projection;
+    const projH = w / proj;
+    const sideW = w / 2;
 
-    const topY = Math.floor(w / proj);
-    const sideW = Math.floor(w / 2);
-
-    //  sideBottom is where the bottom edge of the left/right faces sit.
-    //  The top face diamond ends at topY * 2, and the side faces are h pixels tall.
-    const sideBottom = topY * 2 + h;
-
-    //  Total SVG height: top face peak (topY) + side face height (h) + bottom projection (topY)
-    const totalH = topY + h + topY;
+    //  Total SVG height: side face height (h) + top and bottom projection
+    const totalH = 2 * projH + h;
 
     const { topFace, leftFace, rightFace } = shape.elements;
 
-    updateBoxFace(topFace, sideW, -topY, w, 0, sideW, topY, 0, 0, toSVGColor(shape.fillTop), shape.showTop);
-    updateBoxFace(leftFace, 0, 0, sideW, topY, sideW, sideBottom - topY, 0, sideBottom - 2 * topY, toSVGColor(shape.fillLeft), shape.showLeft);
-    updateBoxFace(rightFace, sideW, topY, w, 0, w, sideBottom - 2 * topY, sideW, sideBottom - topY, toSVGColor(shape.fillRight), shape.showRight);
+    updateBoxFace(topFace, sideW, -projH, w, 0, sideW, projH, 0, 0, toSVGColor(shape.fillTop), shape.showTop);
+    updateBoxFace(leftFace, 0, 0, sideW, projH, sideW, totalH - projH, 0, h, toSVGColor(shape.fillLeft), shape.showLeft);
+    updateBoxFace(rightFace, sideW, projH, w, 0, w, h, sideW, totalH - projH, toSVGColor(shape.fillRight), shape.showRight);
 
     svg.setAttribute('viewBox', `0 0 ${w} ${totalH}`);
     svg.setAttribute('width', w);
