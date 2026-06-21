@@ -125,6 +125,7 @@ const CSSRenderer = new Class({
          */
         this.isBooted = false;
 
+        this.debugString = '';
         this.debugText = null;
         this.drawCountMeter = null;
         this.efficiency = 0;
@@ -449,14 +450,25 @@ const CSSRenderer = new Class({
         if (hasEfficiency)
         {
             efficiencyMeter.value = this.efficiency;
-            efficiencyString = `${(100 * this.efficiency).toFixed(0)}%`;
+            efficiencyString = `${(100 * this.efficiency).toFixed(0)}%`.padStart(4, ' ');
         }
         else
         {
             efficiencyString = '----';
         }
 
-        debugText.textContent = `Draw: ${String(drawCount).padStart(3, ' ')} | Mutate: ${String(mutateCount).padStart(3, ' ')} | Pool: ${usedSize}/${totalSize} | Efficiency: ${efficiencyString} (${cleanCount}:${dirtyCount}) | FPS: ${actualFps.toFixed(1)} | Δt: ${rawDelta.toFixed(1)}ms | Render: ${this.renderDuration.toFixed(1)}ms`;
+        const poolString = `${usedSize}/${totalSize}`.padStart(9, ' ');
+
+        const efficiencyRatioString = `(${cleanCount}:${dirtyCount})`.padStart(9, ' ');
+
+        const debugString = `Draw: ${String(drawCount).padStart(3, ' ')} | Mutate: ${String(mutateCount).padStart(3, ' ')} | Pool: ${poolString} | Stability: ${efficiencyString} ${efficiencyRatioString} | FPS: ${actualFps.toFixed(1).padStart(5, ' ')} | Δt: ${rawDelta.toFixed(1)}ms | Render: ${this.renderDuration.toFixed(1)}ms`;
+
+        if (debugString !== this.debugString)
+        {
+            this.debugString = debugString;
+
+            debugText.textContent = debugString;
+        }
     },
 
     renderCamera (camera)
