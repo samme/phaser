@@ -599,6 +599,8 @@ var Particle = new Class({
      */
     update: function (delta, step, processors)
     {
+        var isDead = false;
+
         if (this.lifeCurrent <= 0)
         {
             //  Particle is dead via `Particle.kill` method, or being held
@@ -606,10 +608,19 @@ var Particle = new Class({
             {
                 this.holdCurrent -= delta;
 
-                return (this.holdCurrent <= 0);
+                isDead = (this.holdCurrent <= 0);
+
+                if (isDead)
+                {
+                    this.dirty = true;
+                }
+
+                return isDead;
             }
             else
             {
+                this.dirty = true;
+
                 return true;
             }
         }
@@ -668,6 +679,8 @@ var Particle = new Class({
         {
             this.lifeCurrent = 0;
 
+            this.dirty = true;
+
             //  No need to go any further, particle has been killed
             return true;
         }
@@ -685,7 +698,14 @@ var Particle = new Class({
 
         this.lifeCurrent -= delta;
 
-        return (this.lifeCurrent <= 0 && this.holdCurrent <= 0);
+        isDead = (this.lifeCurrent <= 0 && this.holdCurrent <= 0);
+
+        if (isDead)
+        {
+            this.dirty = true;
+        }
+
+        return isDead;
     },
 
     /**
